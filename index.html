@@ -8,6 +8,7 @@
 <meta content="Azubi-Tagebuch Küche: Kalender, Tages-/Wochen-/Monats-Checks, Notizen, Wissen &amp; Glossar nach 3 Lehrjahren. Offline nutzbar." name="description"/>
 <title>Azubi Tagebuch Küche · 3 Lehrjahre</title>
 <link href="styles.css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 <div class="app">
@@ -154,23 +155,6 @@
 <option value="split">Split</option>
 <option value="frei">Frei</option>
 </select>
-</div>
-<div class="field">
-<label for="glossarLetterFilter">Buchstabe</label>
-<select id="glossarLetterFilter">
-<option value="all">Alle</option>
-<option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option>
-<option value="E">E</option><option value="F">F</option><option value="G">G</option><option value="H">H</option>
-<option value="I">I</option><option value="J">J</option><option value="K">K</option><option value="L">L</option>
-<option value="M">M</option><option value="N">N</option><option value="O">O</option><option value="P">P</option>
-<option value="Q">Q</option><option value="R">R</option><option value="S">S</option><option value="T">T</option>
-<option value="U">U</option><option value="V">V</option><option value="W">W</option><option value="X">X</option>
-<option value="Y">Y</option><option value="Z">Z</option>
-</select>
-</div>
-<div class="field">
-<label>&nbsp;</label>
-<button class="btn" id="glossarReset" type="button">Reset</button>
 </div>
 </div>
 <div class="divider"></div>
@@ -391,12 +375,49 @@
 <option value="1">Lehrjahr 1</option>
 <option value="2">Lehrjahr 2</option>
 <option value="3">Lehrjahr 3</option>
-<option value="allgemein">Allgemein</option>
 </select>
 </div>
 </div>
 <div class="divider"></div>
-<div class="glossarList" id="glossarList"></div>
+
+<div class="glossarActions">
+  <div class="seg" role="group" aria-label="Glossar Modus">
+    <button class="seg__btn is-active" id="glossarModeIndex" type="button">Verzeichnis</button>
+    <button class="seg__btn" id="glossarModeQuiz" type="button">Quiz</button>
+  </div>
+  <div class="actions">
+    <button class="btn" id="btnGlossarReset" type="button">Reset</button>
+    <button class="btn" id="btnGlossarFlashcards" type="button">Flashcards PDF</button>
+    <button class="btn btn--primary" id="btnGlossarExport" type="button">Glossar PDF</button>
+    <button class="btn btn--primary" id="btnGlossarStartQuiz" type="button">Quiz starten (10)</button>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="glossarIndex" id="glossarIndex"></div>
+
+<div class="glossarQuiz" id="glossarQuiz" style="display:none;">
+  <div class="quizTop">
+    <div class="pill" id="quizStats">0/0 · 0%</div>
+    <div class="muted" id="quizHint">Multiple Choice · faire Distraktoren</div>
+  </div>
+  <div class="quizCard">
+    <div class="quizMeta">
+      <div class="pill" id="quizQIndex">Frage 1/10</div>
+      <div class="pill" id="quizQYear">Lehrjahr 1</div>
+      <div class="pill" id="quizQCat">Kategorie —</div>
+    </div>
+    <div class="quizQuestion" id="quizQuestion">—</div>
+    <div class="quizChoices" id="quizChoices"></div>
+    <div class="quizFeedback" id="quizFeedback" style="display:none;"></div>
+    <div class="quizActions">
+      <button class="btn" id="btnQuizBackToIndex" type="button">Zurück</button>
+      <button class="btn btn--primary" id="btnQuizNext" type="button" disabled>Nächste Frage</button>
+    </div>
+  </div>
+</div>
+
 </div>
 </section>
 <!-- ENTRIES -->

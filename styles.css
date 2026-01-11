@@ -420,3 +420,64 @@ input:focus,select:focus,textarea:focus{
   .sign{display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-top:14px;}
   .sigline{border-top:1px solid #666; padding-top:6px; font-size:11px;}
 }
+
+
+/* ===== Glossar: Verzeichnis + Quiz (robust++) ===== */
+.glossarActions{display:flex; flex-direction:column; gap:12px}
+.glossarActions .actions{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+.seg{display:flex; gap:8px; flex-wrap:wrap}
+.seg__btn{
+  appearance:none; border:1px solid var(--line); background:rgba(255,255,255,.04);
+  color:var(--text); padding:10px 12px; border-radius:999px; font-weight:800; cursor:pointer;
+}
+.seg__btn.is-active{background:rgba(196,154,108,.18); border-color:rgba(196,154,108,.35)}
+.glossarIndex{display:flex; flex-direction:column; gap:18px}
+.glossarYearBlock{padding:10px 0}
+.glossarYearTitle{display:flex; align-items:center; gap:10px; margin:2px 0 12px}
+.glossarYearTitle .h2{margin:0; font-size:18px; letter-spacing:.02em}
+.letterBlock{border:1px solid var(--line); border-radius:16px; overflow:hidden; background:rgba(255,255,255,.03)}
+.letterHead{
+  display:flex; justify-content:space-between; align-items:center;
+  padding:10px 12px; background:rgba(255,255,255,.02); border-bottom:1px solid var(--line);
+}
+.letterHead .letter{font-weight:1000; color:var(--accent); letter-spacing:.08em}
+.letterHead .count{color:var(--muted); font-weight:700; font-size:13px}
+.termList{display:flex; flex-direction:column}
+.termItem{padding:10px 12px; border-top:1px solid var(--line)}
+.termItem:first-child{border-top:none}
+.termItem details{border-radius:14px}
+.termItem summary{
+  list-style:none; cursor:pointer; display:flex; justify-content:space-between; align-items:flex-start; gap:12px;
+}
+.termItem summary::-webkit-details-marker{display:none}
+.termName{font-weight:1000; color:var(--text)}
+.termMeta{color:var(--muted); font-size:13px}
+.termBody{margin-top:10px; color:rgba(230,230,230,.92)}
+.termBody .kv{display:grid; gap:10px}
+.termBody .kv .k{color:var(--muted); font-weight:800; font-size:12px; letter-spacing:.08em; text-transform:uppercase}
+.termBody .kv .v{margin-top:4px; line-height:1.6}
+.termBody .tag{display:inline-flex; padding:6px 10px; border:1px solid var(--line); border-radius:999px; font-weight:800; font-size:12px; color:var(--muted); margin-right:8px}
+
+/* Quiz */
+.glossarQuiz .quizTop{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:10px}
+.quizCard{border:1px solid var(--line); border-radius:18px; padding:12px; background:rgba(255,255,255,.03)}
+.quizMeta{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px}
+.quizQuestion{font-weight:1000; font-size:18px; margin:8px 0 12px}
+.quizChoices{display:grid; gap:10px}
+.quizChoice{
+  width:100%; text-align:left; padding:12px; border-radius:16px;
+  border:1px solid var(--line); background:rgba(255,255,255,.04);
+  color:var(--text); font-weight:900; cursor:pointer;
+}
+.quizChoice:hover{transform:translateY(-1px)}
+.quizChoice.is-correct{border-color:rgba(16,185,129,.35); background:rgba(16,185,129,.10)}
+.quizChoice.is-wrong{border-color:rgba(239,68,68,.35); background:rgba(239,68,68,.10)}
+.quizFeedback{margin-top:10px; padding:12px; border-radius:16px; border:1px solid var(--line); background:rgba(255,255,255,.02)}
+.quizFeedback.ok{border-color:rgba(16,185,129,.25); background:rgba(16,185,129,.08)}
+.quizFeedback.no{border-color:rgba(239,68,68,.25); background:rgba(239,68,68,.08)}
+.quizActions{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
+
+@media (min-width: 860px){
+  .glossarActions{flex-direction:row; justify-content:space-between; align-items:center}
+  .seg{flex:0 0 auto}
+}

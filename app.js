@@ -1025,103 +1025,592 @@
     `;
   }
 
-  // Glossar
-  
-  // Glossar
+  // Glossar (Verzeichnis + Quiz)
   const glossarSearch = $("#glossarSearch");
   const glossarYearFilter = $("#glossarYearFilter");
-  const glossarLetterFilter = $("#glossarLetterFilter");
-  const glossarReset = $("#glossarReset");
-  const glossarList = $("#glossarList");
+  const glossarIndex = $("#glossarIndex");
+  const glossarQuiz = $("#glossarQuiz");
   const glossarCount = $("#glossarCount");
 
-  // re-render on interactions
-  glossarSearch?.addEventListener("input", renderGlossar);
-  glossarYearFilter?.addEventListener("change", renderGlossar);
-  glossarLetterFilter?.addEventListener("change", renderGlossar);
+  const btnGlossarReset = $("#btnGlossarReset");
+  const btnGlossarFlashcards = $("#btnGlossarFlashcards");
+  const btnGlossarExport = $("#btnGlossarExport");
+  const btnGlossarStartQuiz = $("#btnGlossarStartQuiz");
 
-  glossarReset?.addEventListener("click", () => {
-    if (glossarSearch) glossarSearch.value = "";
-    if (glossarYearFilter) glossarYearFilter.value = "all";
-    if (glossarLetterFilter) glossarLetterFilter.value = "all";
+  const glossarModeIndex = $("#glossarModeIndex");
+  const glossarModeQuiz = $("#glossarModeQuiz");
+
+  const quizStats = $("#quizStats");
+  const quizQIndex = $("#quizQIndex");
+  const quizQYear = $("#quizQYear");
+  const quizQCat = $("#quizQCat");
+  const quizQuestion = $("#quizQuestion");
+  const quizChoices = $("#quizChoices");
+  const quizFeedback = $("#quizFeedback");
+  const btnQuizNext = $("#btnQuizNext");
+  const btnQuizBackToIndex = $("#btnQuizBackToIndex");
+
+  // default: follow activeYear
+  if (glossarYearFilter && glossarYearFilter.value === "all") {
+    glossarYearFilter.value = String(activeYear || 1);
+  }
+
+  let glossarMode = "index"; // index | quiz
+  let quizState = { items: [], idx: 0, correct: 0, total: 0, locked: false };
+
+  glossarSearch.addEventListener("input", () => renderGlossar());
+  glossarYearFilter.addEventListener("change", () => renderGlossar());
+
+  glossarModeIndex.addEventListener("click", () => setGlossarMode("index"));
+  glossarModeQuiz.addEventListener("click", () => setGlossarMode("quiz"));
+
+  btnGlossarReset.addEventListener("click", () => {
+    glossarSearch.value = "";
+    glossarYearFilter.value = String(activeYear || 1);
+    setGlossarMode("index");
     renderGlossar();
-    glossarSearch?.focus();
   });
 
-  function renderGlossar() {
+  btnGlossarExport.addEventListener("click", exportGlossarPDF);
+  btnGlossarFlashcards.addEventListener("click", exportFlashcardsPDF);
+  btnGlossarStartQuiz.addEventListener("click", startGlossarQuiz);
+
+  btnQuizBackToIndex.addEventListener("click", () => setGlossarMode("index"));
+  btnQuizNext.addEventListener("click", nextQuizQuestion);
+
+  function setGlossarMode(mode) {
+    glossarMode = mode;
+    glossarModeIndex.classList.toggle("is-active", mode === "index");
+    glossarModeQuiz.classList.toggle("is-active", mode === "quiz");
+    glossarIndex.style.display = mode === "index" ? "" : "none";
+    glossarQuiz.style.display = mode === "quiz" ? "" : "none";
+    if (mode === "quiz" && quizState.items.length === 0) {
+      startGlossarQuiz();
+    }
+  }
+
+
+function renderGlossar() {
     const pack = window.AZUBI_GLOSSARY_PRO || window.AZUBI_GLOSSARY || null;
-    const items = pack && Array.isArray(pack.items) ? pack.items : (Array.isArray(pack) ? pack : []);
+    const items = pack && Array.isArray(pack.items) ? pack.items : (pack && Array.isArray(pack) ? pack : []);
+    const q = (glossarSearch.value || "").trim().toLowerCase();
+    const yearSel = String(glossarYearFilter.value || "all");
 
-    const q = (glossarSearch?.value || "").trim().toLowerCase();
-    const yearSel = (glossarYearFilter?.value || "all").trim().toLowerCase();
-    const letterSel = (glossarLetterFilter?.value || "all").trim().toUpperCase();
-
+    // filter base
     let list = items.slice();
-
-    // Lehrjahr-Filter (Dropdown)
-    if (yearSel === "1" || yearSel === "2" || yearSel === "3") {
-      const y = Number(yearSel);
+    if (yearSel !== "all") {
+      const y = parseInt(yearSel, 10);
       list = list.filter(x => Array.isArray(x.years) ? x.years.includes(y) : true);
-    } else if (yearSel === "allgemein") {
-      list = list.filter(x => String(x.category || "").toLowerCase() === "allgemein");
-    } // "all" => keine Einschränkung
-
-    // Buchstaben-Filter
-    if (letterSel !== "ALL") {
-      list = list.filter(x => String(x.term || "").trim().toUpperCase().startsWith(letterSel));
     }
-
-    // Suche
     if (q) {
-      list = list.filter(x => JSON.stringify(x).toLowerCase().includes(q));
+      list = list.filter(x => {
+        const hay = `${x.term||""} ${x.definition||""} ${x.category||""} ${x.merksatz||""} ${x.praxis||""} ${x.fehler||""}`.toLowerCase();
+        return hay.includes(q);
+      });
     }
 
+    // sort alphabetisch
     list.sort((a,b) => String(a.term||"").localeCompare(String(b.term||""), "de"));
 
-    // Counter (Pill)
-    if (glossarCount) {
-      glossarCount.textContent = `${list.length} Begriffe`;
-    }
+    // count label
+    const yearLabel = yearSel === "all" ? "Alle Lehrjahre" : `Lehrjahr ${yearSel}`;
+    glossarCount.textContent = `${list.length} Begriffe · ${yearLabel}`;
 
-    if (!glossarList) return;
-
+    // render Inhaltsverzeichnis: Lehrjahr → Buchstabe → Begriffe (Details)
     if (list.length === 0) {
-      glossarList.innerHTML = `<div class="muted">Keine Treffer.</div>`;
+      glossarIndex.innerHTML = `<div class="muted">Keine Treffer.</div>`;
       return;
     }
 
-    glossarList.innerHTML = list.map(x => {
-      const term = escapeHtml(x.term || "");
-      const def = escapeHtml(x.definition || "");
-      const praxis = escapeHtml(x.praxis || "");
-      const fehler = escapeHtml(x.fehler || "");
-      const merksatz = escapeHtml(x.merksatz || "");
-      const cat = escapeHtml(x.category || "");
-      const years = Array.isArray(x.years) ? x.years.join(", ") : "";
+    const yearBlocks = yearSel === "all" ? [1,2,3] : [parseInt(yearSel,10)];
+    const byYear = new Map(yearBlocks.map(y => [y, []]));
+    list.forEach(it => {
+      const ys = Array.isArray(it.years) ? it.years : yearBlocks;
+      // Wenn "all": ein Begriff kann in mehreren Jahren sein → in jedes passende Jahr einsortieren
+      if (yearSel === "all") {
+        [1,2,3].forEach(y => {
+          if (!Array.isArray(it.years) || ys.includes(y)) byYear.get(y).push(it);
+        });
+      } else {
+        byYear.get(yearBlocks[0]).push(it);
+      }
+    });
+
+    const htmlYear = yearBlocks.map(y => {
+      const yItems = (byYear.get(y) || []).slice().sort((a,b)=>String(a.term||"").localeCompare(String(b.term||""),"de"));
+      if (!yItems.length) return ``;
+
+      // group by first letter
+      const groups = new Map();
+      yItems.forEach(it => {
+        const t = String(it.term||"").trim();
+        const letter = (t[0] || "#").toUpperCase();
+        const key = /[A-ZÄÖÜ]/.test(letter) ? letter : "#";
+        if (!groups.has(key)) groups.set(key, []);
+        groups.get(key).push(it);
+      });
+
+      const letters = Array.from(groups.keys()).sort((a,b)=>a.localeCompare(b,"de"));
+      const letterBlocks = letters.map(L => {
+        const arr = groups.get(L).slice().sort((a,b)=>String(a.term||"").localeCompare(String(b.term||""),"de"));
+        const itemsHtml = arr.map(it => {
+          const term = escapeHtml(it.term || "");
+          const def = escapeHtml(it.definition || "");
+          const praxis = escapeHtml(it.praxis || "");
+          const fehler = escapeHtml(it.fehler || "");
+          const merksatz = escapeHtml(it.merksatz || "");
+          const cat = escapeHtml(it.category || "");
+          const years = Array.isArray(it.years) ? it.years.join(", ") : "";
+          const tags = `
+            ${cat ? `<span class="tag">${cat}</span>` : ``}
+            ${years ? `<span class="tag">Lehrjahr: ${years}</span>` : ``}
+          `.trim();
+
+          return `
+            <div class="termItem">
+              <details>
+                <summary>
+                  <div>
+                    <div class="termName">${term}</div>
+                    <div class="termMeta">${cat ? `Kategorie: ${cat}` : `Kategorie: —`}</div>
+                  </div>
+                  <div class="pill">+</div>
+                </summary>
+                <div class="termBody">
+                  <div>${tags}</div>
+                  <div class="kv">
+                    <div>
+                      <div class="k">Definition</div>
+                      <div class="v">${def || "—"}</div>
+                    </div>
+                    ${praxis ? `<div><div class="k">Praxis</div><div class="v">${praxis}</div></div>` : ``}
+                    ${merksatz ? `<div><div class="k">Merksatz</div><div class="v">${merksatz}</div></div>` : ``}
+                    ${fehler ? `<div><div class="k">Häufiger Fehler</div><div class="v">${fehler}</div></div>` : ``}
+                  </div>
+                </div>
+              </details>
+            </div>
+          `;
+        }).join("");
+
+        return `
+          <div class="letterBlock">
+            <div class="letterHead">
+              <div class="letter">${escapeHtml(L)}</div>
+              <div class="count">${arr.length} Begriff${arr.length===1?"":"e"}</div>
+            </div>
+            <div class="termList">${itemsHtml}</div>
+          </div>
+        `;
+      }).join("");
+
       return `
-        <div class="entry">
-          <div class="entry__top">
-            <div>
-              <div class="entry__title">${term}</div>
-              <div class="entry__meta">Kategorie: ${cat || "—"} · Lehrjahr: ${years || "—"}</div>
-            </div>
+        <div class="glossarYearBlock">
+          <div class="glossarYearTitle">
+            <h2 class="h2">Lehrjahr ${y}</h2>
+            <div class="pill">${yItems.length} Begriffe</div>
           </div>
-          <div class="entry__body">
-            <div class="kv">
-              <div><strong>Definition</strong></div><div>${def}</div>
-              <div><strong>Praxis</strong></div><div>${praxis}</div>
-              <div><strong>Typischer Fehler</strong></div><div>${fehler}</div>
-              <div><strong>Merksatz</strong></div><div>${merksatz}</div>
-            </div>
-          </div>
+          ${letterBlocks}
         </div>
       `;
     }).join("");
+
+    glossarIndex.innerHTML = htmlYear || `<div class="muted">Keine Treffer.</div>`;
   }
 
-  // initial render
-  renderGlossar();
-function exportJSON() {
+
+
+
+
+  /* ===== Glossar Quiz (robust++) ===== */
+  function startGlossarQuiz() {
+    const pack = window.AZUBI_GLOSSARY_PRO || window.AZUBI_GLOSSARY || null;
+    const items = pack && Array.isArray(pack.items) ? pack.items : (pack && Array.isArray(pack) ? pack : []);
+    const q = (glossarSearch.value || "").trim().toLowerCase();
+    const yearSel = String(glossarYearFilter.value || "all");
+
+    let pool = items.slice();
+    if (yearSel !== "all") {
+      const y = parseInt(yearSel, 10);
+      pool = pool.filter(x => Array.isArray(x.years) ? x.years.includes(y) : true);
+    }
+    if (q) {
+      pool = pool.filter(x => {
+        const hay = `${x.term||""} ${x.definition||""} ${x.category||""}`.toLowerCase();
+        return hay.includes(q);
+      });
+    }
+    pool.sort((a,b)=>String(a.term||"").localeCompare(String(b.term||""),"de"));
+
+    const take = Math.min(10, pool.length);
+    const picked = pickRandom(pool, take);
+
+    quizState = {
+      items: picked.map(it => buildQuizQuestion(it, items, yearSel)),
+      idx: 0,
+      correct: 0,
+      total: 0,
+      locked: false,
+    };
+
+    setGlossarMode("quiz");
+    renderQuizQuestion();
+    updateQuizStats();
+  }
+
+  function buildQuizQuestion(it, allItems, yearSel) {
+    // Frage: Definition → welcher Begriff?
+    const correctTerm = String(it.term || "").trim();
+    const def = String(it.definition || "").trim() || "—";
+    const year = bestYearForItem(it, yearSel);
+    const cat = String(it.category || "").trim();
+
+    const distractors = pickDistractors(it, allItems, year, cat, 3)
+      .map(x => String(x.term || "").trim())
+      .filter(t => t && t !== correctTerm);
+
+    // ensure 3 unique
+    const unique = [];
+    for (const t of distractors) if (!unique.includes(t)) unique.push(t);
+
+    // fallback if still short
+    if (unique.length < 3) {
+      const extra = allItems
+        .filter(x => x && String(x.term||"").trim() && String(x.term||"").trim() !== correctTerm)
+        .map(x => String(x.term||"").trim());
+      const add = pickRandom(extra, 20);
+      for (const t of add) {
+        if (unique.length >= 3) break;
+        if (!unique.includes(t)) unique.push(t);
+      }
+    }
+
+    const options = shuffle([correctTerm, ...unique.slice(0,3)]);
+
+    return { it, year, cat, def, correctTerm, options };
+  }
+
+  function bestYearForItem(it, yearSel) {
+    if (yearSel !== "all") return parseInt(yearSel, 10);
+    const ys = Array.isArray(it.years) ? it.years : [];
+    return ys.length ? ys[0] : (activeYear || 1);
+  }
+
+  function pickDistractors(it, allItems, year, cat, n) {
+    const ys = (x) => Array.isArray(x.years) ? x.years : [];
+    const sameCatSameYear = allItems.filter(x =>
+      x !== it &&
+      String(x.category||"").trim() &&
+      String(x.category||"").trim() === String(cat||"").trim() &&
+      ys(x).includes(year)
+    );
+
+    const sameCat = allItems.filter(x =>
+      x !== it &&
+      String(x.category||"").trim() &&
+      String(x.category||"").trim() === String(cat||"").trim()
+    );
+
+    const sameYear = allItems.filter(x => x !== it && ys(x).includes(year));
+
+    // priority: sameCat+sameYear → sameCat → sameYear → fallback
+    const out = [];
+    const pushFrom = (arr) => {
+      const shuffled = pickRandom(arr, arr.length);
+      for (const x of shuffled) {
+        if (out.length >= n) break;
+        if (!out.includes(x) && String(x.term||"").trim()) out.push(x);
+      }
+    };
+
+    if (cat) pushFrom(sameCatSameYear);
+    if (out.length < n && cat) pushFrom(sameCat);
+    if (out.length < n) pushFrom(sameYear);
+    if (out.length < n) pushFrom(allItems.filter(x => x !== it));
+
+    return out.slice(0, n);
+  }
+
+  function renderQuizQuestion() {
+    const total = quizState.items.length;
+    if (!total) {
+      quizQuestion.textContent = "Keine Quizfragen verfügbar (Filter zu eng?).";
+      quizChoices.innerHTML = "";
+      quizFeedback.style.display = "none";
+      btnQuizNext.disabled = true;
+      return;
+    }
+
+    const q = quizState.items[quizState.idx];
+    quizState.locked = false;
+    btnQuizNext.disabled = true;
+
+    quizQIndex.textContent = `Frage ${quizState.idx + 1}/${total}`;
+    quizQYear.textContent = `Lehrjahr ${q.year}`;
+    quizQCat.textContent = q.cat ? `Kategorie ${q.cat}` : "Kategorie —";
+
+    quizQuestion.textContent = `Welche Bezeichnung passt zu dieser Definition?\n${q.def}`;
+
+    quizChoices.innerHTML = q.options.map(opt => `
+      <button class="quizChoice" type="button" data-opt="${escapeHtml(opt)}">${escapeHtml(opt)}</button>
+    `).join("");
+
+    quizFeedback.style.display = "none";
+    quizFeedback.className = "quizFeedback";
+
+    [...quizChoices.querySelectorAll(".quizChoice")].forEach(btn => {
+      btn.addEventListener("click", () => chooseQuizAnswer(btn, q.correctTerm));
+    });
+  }
+
+  function chooseQuizAnswer(btn, correctTerm) {
+    if (quizState.locked) return;
+    quizState.locked = true;
+
+    const chosen = (btn.getAttribute("data-opt") || "").trim();
+    const ok = chosen === correctTerm;
+
+    quizState.total++;
+    if (ok) quizState.correct++;
+
+    [...quizChoices.querySelectorAll(".quizChoice")].forEach(b => {
+      const opt = (b.getAttribute("data-opt") || "").trim();
+      if (opt === correctTerm) b.classList.add("is-correct");
+      if (b === btn && !ok) b.classList.add("is-wrong");
+      b.disabled = true;
+    });
+
+    quizFeedback.style.display = "";
+    quizFeedback.classList.add(ok ? "ok" : "no");
+    quizFeedback.textContent = ok ? `Richtig. Begriff: ${correctTerm}` : `Falsch. Richtig ist: ${correctTerm}`;
+
+    updateQuizStats();
+    btnQuizNext.disabled = false;
+  }
+
+  function nextQuizQuestion() {
+    const total = quizState.items.length;
+    if (!total) return;
+
+    if (quizState.idx >= total - 1) {
+      quizQuestion.textContent = "Quiz abgeschlossen.";
+      quizChoices.innerHTML = "";
+      btnQuizNext.disabled = true;
+
+      quizFeedback.style.display = "";
+      quizFeedback.className = "quizFeedback ok";
+      quizFeedback.textContent = `Ergebnis: ${quizState.correct}/${quizState.total} (${pct(quizState.correct, quizState.total)}%)`;
+      updateQuizStats();
+      return;
+    }
+
+    quizState.idx++;
+    renderQuizQuestion();
+  }
+
+  function updateQuizStats() {
+    quizStats.textContent = `${quizState.correct}/${quizState.total} · ${pct(quizState.correct, quizState.total)}%`;
+  }
+
+  /* ===== PDF Export (Zeilenumbruch) ===== */
+  function exportGlossarPDF() {
+    const { jsPDF } = window.jspdf || {};
+    if (!jsPDF) {
+      alert("PDF Export nicht verfügbar (jsPDF fehlt).");
+      return;
+    }
+
+    const pack = window.AZUBI_GLOSSARY_PRO || window.AZUBI_GLOSSARY || null;
+    const items = pack && Array.isArray(pack.items) ? pack.items : (pack && Array.isArray(pack) ? pack : []);
+    const q = (glossarSearch.value || "").trim().toLowerCase();
+    const yearSel = String(glossarYearFilter.value || "all");
+
+    let list = items.slice();
+    if (yearSel !== "all") {
+      const y = parseInt(yearSel, 10);
+      list = list.filter(x => Array.isArray(x.years) ? x.years.includes(y) : true);
+    }
+    if (q) {
+      list = list.filter(x => {
+        const hay = `${x.term||""} ${x.definition||""} ${x.category||""} ${x.merksatz||""} ${x.praxis||""} ${x.fehler||""}`.toLowerCase();
+        return hay.includes(q);
+      });
+    }
+    list.sort((a,b)=>String(a.term||"").localeCompare(String(b.term||""),"de"));
+
+    const doc = new jsPDF({ unit: "pt", format: "a4" });
+    const left = 44;
+    const top = 54;
+    const maxW = 520;
+    const lineH = 14;
+
+    doc.setFont("helvetica","bold");
+    doc.setFontSize(16);
+    doc.text("Azubi Tagebuch Küche – Glossar", left, top);
+
+    doc.setFont("helvetica","normal");
+    doc.setFontSize(10);
+    doc.text(`Filter: ${yearSel === "all" ? "Alle" : "Lehrjahr " + yearSel} · Begriffe: ${list.length}`, left, top+18);
+
+    let y = top + 44;
+
+    list.forEach(it => {
+      const term = String(it.term||"").trim();
+      const years = Array.isArray(it.years) ? it.years.join(", ") : "—";
+      const cat = String(it.category||"").trim() || "—";
+      const def = String(it.definition||"").trim() || "—";
+      const merksatz = String(it.merksatz||"").trim();
+      const praxis = String(it.praxis||"").trim();
+      const fehler = String(it.fehler||"").trim();
+
+      const header = `${term} (Lehrjahr: ${years} · Kategorie: ${cat})`;
+
+      doc.setFont("helvetica","bold");
+      doc.setFontSize(11);
+      doc.splitTextToSize(header, maxW).forEach(ln => {
+        if (y > 780) { doc.addPage(); y = 60; }
+        doc.text(ln, left, y); y += lineH;
+      });
+
+      doc.setFont("helvetica","normal");
+      doc.setFontSize(11);
+      doc.splitTextToSize(def, maxW).forEach(ln => {
+        if (y > 780) { doc.addPage(); y = 60; }
+        doc.text(ln, left, y); y += lineH;
+      });
+
+      const extraBlocks = [
+        merksatz ? `Merksatz: ${merksatz}` : "",
+        praxis ? `Praxis: ${praxis}` : "",
+        fehler ? `Häufiger Fehler: ${fehler}` : ""
+      ].filter(Boolean);
+
+      extraBlocks.forEach(block => {
+        doc.setFontSize(10);
+        doc.splitTextToSize(block, maxW).forEach(ln => {
+          if (y > 780) { doc.addPage(); y = 60; }
+          doc.text(ln, left, y); y += lineH;
+        });
+      });
+
+      y += 10;
+    });
+
+    doc.setFontSize(9);
+    doc.text("🖤RE:BELLE™ Media · The Art of Feeling. Amplified. · newwomanintheshop.com · rebellemedia.de", left, 820);
+
+    doc.save(`glossar-azubi-koch-${yearSel === "all" ? "alle" : "lj"+yearSel}.pdf`);
+  }
+
+  function exportFlashcardsPDF() {
+    const { jsPDF } = window.jspdf || {};
+    if (!jsPDF) {
+      alert("PDF Export nicht verfügbar (jsPDF fehlt).");
+      return;
+    }
+
+    const pack = window.AZUBI_GLOSSARY_PRO || window.AZUBI_GLOSSARY || null;
+    const items = pack && Array.isArray(pack.items) ? pack.items : (pack && Array.isArray(pack) ? pack : []);
+    const q = (glossarSearch.value || "").trim().toLowerCase();
+    const yearSel = String(glossarYearFilter.value || "all");
+
+    let list = items.slice();
+    if (yearSel !== "all") {
+      const y = parseInt(yearSel, 10);
+      list = list.filter(x => Array.isArray(x.years) ? x.years.includes(y) : true);
+    }
+    if (q) {
+      list = list.filter(x => {
+        const hay = `${x.term||""} ${x.definition||""} ${x.category||""}`.toLowerCase();
+        return hay.includes(q);
+      });
+    }
+    list.sort((a,b)=>String(a.term||"").localeCompare(String(b.term||""),"de"));
+
+    const pick = pickRandom(list, Math.min(24, list.length));
+
+    const doc = new jsPDF({ orientation: "landscape", unit: "pt", format: "a4" });
+    const margin = 34;
+    const pageW = doc.internal.pageSize.getWidth();
+    const pageH = doc.internal.pageSize.getHeight();
+
+    doc.setFont("helvetica","bold");
+    doc.setFontSize(14);
+    doc.text("Flashcards – Glossar (Azubi Küche)", margin, 28);
+
+    const cols = 3, rows = 2, gap = 14;
+    const cardW = (pageW - margin*2 - gap*(cols-1)) / cols;
+    const cardH = (pageH - margin*2 - gap*(rows-1)) / rows;
+
+    let i = 0;
+    while (i < pick.length) {
+      for (let r=0; r<rows; r++) {
+        for (let c=0; c<cols; c++) {
+          if (i >= pick.length) break;
+          const x = margin + c*(cardW+gap);
+          const y = margin + r*(cardH+gap);
+
+          const it = pick[i];
+          const term = String(it.term||"").trim();
+          const def = String(it.definition||"").trim() || "—";
+          const years = Array.isArray(it.years) ? it.years.join(", ") : "—";
+          const cat = String(it.category||"").trim() || "—";
+
+          doc.setDrawColor(196,154,108);
+          doc.setLineWidth(1);
+          doc.roundedRect(x, y, cardW, cardH, 10, 10);
+
+          doc.setFont("helvetica","bold");
+          doc.setFontSize(13);
+          doc.text(term, x+12, y+26, { maxWidth: cardW-24 });
+
+          doc.setFont("helvetica","normal");
+          doc.setFontSize(10);
+          doc.text(`LJ: ${years} · ${cat}`, x+12, y+44, { maxWidth: cardW-24 });
+
+          doc.setFontSize(11);
+          const lines = doc.splitTextToSize(def, cardW-24);
+          let yy = y + 66;
+          lines.forEach(ln => {
+            if (yy > y + cardH - 18) return;
+            doc.text(ln, x+12, yy);
+            yy += 14;
+          });
+
+          i++;
+        }
+      }
+      if (i < pick.length) doc.addPage();
+    }
+
+    doc.save(`flashcards-azubi-koch-${yearSel === "all" ? "alle" : "lj"+yearSel}.pdf`);
+  }
+
+  function pickRandom(arr, n) {
+    const a = arr.slice();
+    for (let i=a.length-1; i>0; i--) {
+      const j = Math.floor(Math.random()*(i+1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a.slice(0, n);
+  }
+
+  function shuffle(arr) {
+    const a = arr.slice();
+    for (let i=a.length-1; i>0; i--) {
+      const j = Math.floor(Math.random()*(i+1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function pct(a,b){ return b ? Math.round((a/b)*100) : 0; }
+
+
+
+;
+
+  function exportJSON() {
     const bundle = {
       version: APP_VERSION,
       exportedAt: new Date().toISOString(),
