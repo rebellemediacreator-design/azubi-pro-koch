@@ -1,770 +1,1217 @@
-/* RE:BELLE™ Koch-Glossar Quiz EFZ (CH)
-   ✅ fröhliches UI (CSS)
-   ✅ Header hide-on-scroll
-   ✅ Glossar Filter/Suche/Reset
-   ✅ Quiz (MC) mit Feedback
-   ✅ Prüfungen (Führerschein-Style): Timer, kein Zurück, kein Feedback
-   ✅ Ergebnis: Prozent, Bestanden/Nicht, Fehlerliste, Nur Fehler wiederholen
-   ✅ PDF Export (Wrap)
-*/
-
-/* ========= HEADER HIDE ON SCROLL ========= */
 (() => {
-  const header = document.getElementById("appHeader");
-  if (!header) return;
-
-  let lastY = window.scrollY;
-  let ticking = false;
-
-  function onScroll() {
-    const y = window.scrollY;
-    const delta = y - lastY;
-    if (Math.abs(delta) < 8) return;
-
-    if (delta > 0 && y > 80) header.classList.add("is-hidden");
-    else header.classList.remove("is-hidden");
-
-    lastY = y;
-  }
-
-  window.addEventListener("scroll", () => {
-    if (ticking) return;
-    ticking = true;
-    requestAnimationFrame(() => {
-      onScroll();
-      ticking = false;
-    });
-  }, { passive: true });
-})();
-
-/* ========= DATA ========= */
-const DATA =
-  (typeof window !== "undefined" && (
-    window.AZUBI_GLOSSARY ||
-    window.GLOSSARY ||
-    window.glossary ||
-    window.AZUBI_GLOSSAR
-  )) || null;
-
-const glossary = Array.isArray(DATA) && DATA.length ? normalizeGlossary(DATA) : [
-  { term: "Al dente", def: "Bissfest gegart; meist bei Pasta oder Gemüse.", jahr: "1" },
-  { term: "Blanchieren", def: "Kurz in kochendem Wasser garen, dann eiskalt abschrecken.", jahr: "1" },
-  { term: "Emulsion", def: "Stabile Verbindung zweier nicht mischbarer Flüssigkeiten.", jahr: "2" },
-  { term: "Consommé", def: "Klare Brühe, durch Klären besonders rein.", jahr: "3" },
-];
-
-/* ========= DOM ========= */
-const el = {
-  lehrjahr: document.getElementById("lehrjahrFilter"),
-  search: document.getElementById("searchInput"),
-  mode: document.getElementById("modeSelect"),
-  list: document.getElementById("glossaryList"),
-  empty: document.getElementById("emptyState"),
-  glossarView: document.getElementById("glossarView"),
-  quizView: document.getElementById("quizView"),
-  pruefungView: document.getElementById("pruefungView"),
-
-  progressLabel: document.getElementById("progressLabel"),
-  countLabel: document.getElementById("countLabel"),
-  progressBar: document.getElementById("progressBar"),
-
-  btnReset: document.getElementById("btnReset"),
-  btnFlashcards: document.getElementById("btnFlashcards"),
-  btnExport: document.getElementById("btnExport"),
-  btnStartQuiz: document.getElementById("btnStartQuiz"),
-
-  statCorrect: document.getElementById("statCorrect"),
-  statTotal: document.getElementById("statTotal"),
-  statPercent: document.getElementById("statPercent"),
-
-  qIndex: document.getElementById("qIndex"),
-  qJahr: document.getElementById("qJahr"),
-  qText: document.getElementById("qText"),
-  choices: document.getElementById("choices"),
-  feedback: document.getElementById("feedback"),
-  btnNext: document.getElementById("btnNext"),
-  btnQuit: document.getElementById("btnQuit"),
-
-  // Prüfungen
-  examHome: document.getElementById("examHome"),
-  examRun: document.getElementById("examRun"),
-  examResult: document.getElementById("examResult"),
-
-  btnExam1: document.getElementById("btnExam1"),
-  btnExam2: document.getElementById("btnExam2"),
-  btnExam3: document.getElementById("btnExam3"),
-
-  examName: document.getElementById("examName"),
-  examProgress: document.getElementById("examProgress"),
-  examTimer: document.getElementById("examTimer"),
-  btnExamAbort: document.getElementById("btnExamAbort"),
-
-  examQIdx: document.getElementById("examQIdx"),
-  examQJahr: document.getElementById("examQJahr"),
-  examQText: document.getElementById("examQText"),
-  examChoices: document.getElementById("examChoices"),
-  btnExamNext: document.getElementById("btnExamNext"),
-
-  resultTitle: document.getElementById("resultTitle"),
-  resultMeta: document.getElementById("resultMeta"),
-  wrongList: document.getElementById("wrongList"),
-  btnRetryWrong: document.getElementById("btnRetryWrong"),
-  btnBackExamHome: document.getElementById("btnBackExamHome"),
-};
-
-let filtered = [...glossary];
-
-/* ========= QUIZ STATE ========= */
-let quiz = { items: [], idx: 0, correct: 0, total: 0, locked: false };
-
-/* ========= EXAM STATE ========= */
-let exam = {
-  active: false,
-  name: "",
-  year: "1",
-  totalQ: 0,
-  passPct: 70,
-  secondsLeft: 0,
-  timerId: null,
-  idx: 0,
-  items: [], // {q, options[], correctTerm, chosenTerm}
-  wrongOnlyMode: false,
-};
-
-init();
-
-function init() {
-  el.lehrjahr.addEventListener("change", onFilterChange);
-  el.search.addEventListener("input", onFilterChange);
-  el.mode.addEventListener("change", onModeChange);
-
-  el.btnReset.addEventListener("click", resetAll);
-  el.btnFlashcards.addEventListener("click", exportFlashcardsPDF);
-  el.btnExport.addEventListener("click", exportGlossaryPDF);
-  el.btnStartQuiz.addEventListener("click", startQuiz);
-
-  el.btnNext.addEventListener("click", nextQuestion);
-  el.btnQuit.addEventListener("click", () => { el.mode.value = "glossar"; onModeChange(); });
-
-  // Prüfungen
-  el.btnExam1.addEventListener("click", () => startExam({ year: "1", totalQ: 30, minutes: 45, passPct: 70, name: "Lehrjahr 1 Prüfung" }));
-  el.btnExam2.addEventListener("click", () => startExam({ year: "2", totalQ: 40, minutes: 60, passPct: 70, name: "Lehrjahr 2 Prüfung" }));
-  el.btnExam3.addEventListener("click", () => startExam({ year: "3", totalQ: 50, minutes: 75, passPct: 70, name: "Lehrjahr 3 Prüfung" }));
-
-  el.btnExamAbort.addEventListener("click", abortExam);
-  el.btnExamNext.addEventListener("click", examNext);
-
-  el.btnBackExamHome.addEventListener("click", () => showExamHome());
-  el.btnRetryWrong.addEventListener("click", retryWrong);
-
-  renderGlossary();
-  updateCounts();
-  updateProgress();
-}
-
-/* ========= MODE / FILTER ========= */
-function onFilterChange() {
-  applyFilters();
-  renderGlossary();
-  updateCounts();
-  updateProgress();
-}
-
-function onModeChange() {
-  const mode = el.mode.value;
-
-  el.glossarView.style.display = mode === "glossar" ? "block" : "none";
-  el.quizView.style.display = mode === "quiz" ? "block" : "none";
-  el.pruefungView.style.display = mode === "pruefung" ? "block" : "none";
-
-  if (mode === "pruefung" && !exam.active) {
-    showExamHome();
-  }
-
-  updateProgress();
-}
-
-function resetAll() {
-  el.lehrjahr.value = "all";
-  el.search.value = "";
-  el.mode.value = "glossar";
-
-  quiz = { items: [], idx: 0, correct: 0, total: 0, locked: false };
-  el.feedback.style.display = "none";
-  el.btnNext.disabled = true;
-
-  stopExamTimer();
-  exam = {
-    active: false, name: "", year: "1", totalQ: 0, passPct: 70,
-    secondsLeft: 0, timerId: null, idx: 0, items: [], wrongOnlyMode: false
-  };
-
-  applyFilters();
-  renderGlossary();
-  updateCounts();
-  updateStats();
-  onModeChange();
-}
-
-function applyFilters() {
-  const year = el.lehrjahr.value;
-  const q = (el.search.value || "").trim().toLowerCase();
-
-  filtered = glossary.filter((it) => {
-    const y = String(it.jahr || "");
-    const yearOk = (year === "all") || (y === year);
-    if (!yearOk) return false;
-    if (!q) return true;
-    return String(it.term).toLowerCase().includes(q) || String(it.def).toLowerCase().includes(q);
-  });
-}
-
-/* ========= GLOSSARY ========= */
-function renderGlossary() {
-  applyFilters();
-
-  if (filtered.length === 0) {
-    el.list.innerHTML = "";
-    el.empty.style.display = "block";
-    return;
-  }
-  el.empty.style.display = "none";
-
-  const html = filtered
-    .slice()
-    .sort((a, b) => (String(a.jahr).localeCompare(String(b.jahr)) || String(a.term).localeCompare(String(b.term))))
-    .map((it) => `
-      <div class="item">
-        <button class="itemBtn" type="button" data-term="${escapeHtml(it.term)}">
-          <div class="itemTop">
-            <div class="term">${escapeHtml(it.term)}</div>
-            <div class="pill">Lehrjahr ${escapeHtml(String(it.jahr))}</div>
-          </div>
-          <div class="def">${escapeHtml(it.def)}</div>
-        </button>
-      </div>
-    `).join("");
-
-  el.list.innerHTML = html;
-
-  el.list.querySelectorAll(".itemBtn").forEach((btn) => {
-    btn.addEventListener("click", () => toast(`Gemerkter Begriff: ${btn.dataset.term}`));
-  });
-}
-
-function updateCounts() {
-  applyFilters();
-  el.countLabel.textContent = `${filtered.length} Begriffe`;
-}
-
-function updateProgress() {
-  const glossarPart = glossary.length ? Math.round((filtered.length / glossary.length) * 50) : 0;
-  const quizPart = quiz.total ? Math.round((quiz.correct / quiz.total) * 25) : 0;
-
-  // Prüfungsanteil: letzte Prüfung, falls vorhanden
-  const examPart = examLastPercent() ? Math.round((examLastPercent() / 100) * 25) : 0;
-
-  const p = clamp(glossarPart + quizPart + examPart, 0, 100);
-  el.progressBar.style.width = `${p}%`;
-  el.progressLabel.textContent = `Fortschritt: ${p}%`;
-}
-
-let lastExamPercentValue = 0;
-function examLastPercent() { return lastExamPercentValue || 0; }
-
-/* ========= QUIZ (mit Feedback) ========= */
-function startQuiz() {
-  applyFilters();
-  const pool = filtered.length ? filtered : glossary;
-
-  const picked = pickRandom(pool, Math.min(10, pool.length));
-  quiz.items = picked.map((q) => ({
-    q,
-    options: buildOptionsDefinitionToTerm(q, glossary, 4),
-    answer: q.term,
-  }));
-
-  quiz.idx = 0;
-  quiz.correct = 0;
-  quiz.total = 0;
-  quiz.locked = false;
-
-  el.mode.value = "quiz";
-  onModeChange();
-  updateStats();
-  showQuestion();
-}
-
-function showQuestion() {
-  const total = quiz.items.length;
-  if (!total) {
-    el.qText.textContent = "Keine Daten fürs Quiz. Filter lockern.";
-    el.choices.innerHTML = "";
-    el.btnNext.disabled = true;
-    return;
-  }
-
-  quiz.locked = false;
-  el.btnNext.disabled = true;
-
-  el.feedback.style.display = "none";
-  el.feedback.className = "feedback";
-
-  const item = quiz.items[quiz.idx];
-  el.qIndex.textContent = `Frage ${quiz.idx + 1}/${total}`;
-  el.qJahr.textContent = `Lehrjahr ${item.q.jahr}`;
-  el.qText.textContent = `Welcher Begriff passt zu: „${item.q.def}“?`;
-
-  el.choices.innerHTML = item.options
-    .map((opt) => `<button class="choice" type="button" data-opt="${escapeHtml(opt)}">${escapeHtml(opt)}</button>`)
-    .join("");
-
-  el.choices.querySelectorAll(".choice").forEach((b) => {
-    b.addEventListener("click", () => chooseAnswer(b, item.answer));
-  });
-}
-
-function chooseAnswer(btn, correctTerm) {
-  if (quiz.locked) return;
-  quiz.locked = true;
-
-  const chosen = (btn.getAttribute("data-opt") || "").trim();
-  const isCorrect = chosen === correctTerm;
-
-  el.choices.querySelectorAll(".choice").forEach((b) => {
-    const opt = (b.getAttribute("data-opt") || "").trim();
-    if (opt === correctTerm) b.classList.add("correct");
-    if (b === btn && !isCorrect) b.classList.add("wrong");
-    b.disabled = true;
-  });
-
-  quiz.total++;
-  if (isCorrect) quiz.correct++;
-
-  el.feedback.style.display = "block";
-  el.feedback.classList.add(isCorrect ? "ok" : "no");
-  el.feedback.textContent = isCorrect ? `Richtig. Begriff: ${correctTerm}` : `Falsch. Richtig ist: ${correctTerm}`;
-
-  updateStats();
-  el.btnNext.disabled = false;
-  updateProgress();
-}
-
-function nextQuestion() {
-  if (!quiz.items.length) return;
-
-  if (quiz.idx >= quiz.items.length - 1) {
-    el.qText.textContent = "Quiz abgeschlossen.";
-    el.choices.innerHTML = "";
-    el.btnNext.disabled = true;
-
-    el.feedback.style.display = "block";
-    el.feedback.className = "feedback ok";
-    el.feedback.textContent = `Ergebnis: ${quiz.correct}/${quiz.total} (${percent(quiz.correct, quiz.total)}%)`;
-
-    updateProgress();
-    return;
-  }
-
-  quiz.idx++;
-  showQuestion();
-}
-
-function updateStats() {
-  el.statCorrect.textContent = String(quiz.correct);
-  el.statTotal.textContent = String(quiz.total);
-  el.statPercent.textContent = `${percent(quiz.correct, quiz.total)}%`;
-}
-
-/* ========= PRÜFUNGEN (ohne Feedback) ========= */
-function showExamHome() {
-  stopExamTimer();
-  exam.active = false;
-
-  el.examHome.style.display = "block";
-  el.examRun.style.display = "none";
-  el.examResult.style.display = "none";
-}
-
-function startExam(cfg) {
-  const yearPool = glossary.filter(x => String(x.jahr) === String(cfg.year));
-  if (yearPool.length < Math.min(cfg.totalQ, 10)) {
-    toast("Zu wenige Begriffe für diese Prüfung. Mehr Daten im Glossar nötig.");
-    return;
-  }
-
-  stopExamTimer();
-  exam.active = true;
-  exam.wrongOnlyMode = false;
-
-  exam.name = cfg.name;
-  exam.year = String(cfg.year);
-  exam.totalQ = cfg.totalQ;
-  exam.passPct = cfg.passPct;
-  exam.secondsLeft = cfg.minutes * 60;
-  exam.idx = 0;
-
-  const picked = pickRandom(yearPool, Math.min(cfg.totalQ, yearPool.length));
-
-  // Prüfung fragt wie Quiz: Definition -> Begriff (MC)
-  exam.items = picked.map(q => ({
-    q,
-    options: buildOptionsDefinitionToTerm(q, glossary, 4),
-    correctTerm: q.term,
-    chosenTerm: "",
-  }));
-
-  // UI
-  el.examName.textContent = exam.name;
-  el.examHome.style.display = "none";
-  el.examRun.style.display = "block";
-  el.examResult.style.display = "none";
-
-  renderExamQuestion();
-  startExamTimer();
-}
-
-function renderExamQuestion() {
-  const total = exam.items.length;
-  const item = exam.items[exam.idx];
-
-  el.examProgress.textContent = `${exam.idx + 1}/${total}`;
-  el.examQIdx.textContent = `Frage ${exam.idx + 1}/${total}`;
-  el.examQJahr.textContent = `Lehrjahr ${item.q.jahr}`;
-  el.examQText.textContent = `Welcher Begriff passt zu: „${item.q.def}“?`;
-
-  el.btnExamNext.disabled = true;
-
-  el.examChoices.innerHTML = item.options
-    .map(opt => `<button class="choice" type="button" data-opt="${escapeHtml(opt)}">${escapeHtml(opt)}</button>`)
-    .join("");
-
-  el.examChoices.querySelectorAll(".choice").forEach(btn => {
-    btn.addEventListener("click", () => {
-      // nur 1 Antwort, dann sperren
-      el.examChoices.querySelectorAll(".choice").forEach(b => b.disabled = true);
-
-      const chosen = (btn.getAttribute("data-opt") || "").trim();
-      item.chosenTerm = chosen;
-
-      // visuelles "selected" ohne Feedback (kein richtig/falsch)
-      btn.style.outline = "3px solid rgba(124,77,255,.35)";
-      btn.style.transform = "translateY(-1px)";
-
-      el.btnExamNext.disabled = false;
-    });
-  });
-}
-
-function examNext() {
-  const total = exam.items.length;
-
-  if (exam.idx >= total - 1) {
-    finishExam();
-    return;
-  }
-
-  exam.idx++;
-  renderExamQuestion();
-}
-
-function finishExam() {
-  stopExamTimer();
-
-  const total = exam.items.length;
-  const correct = exam.items.filter(it => it.chosenTerm && it.chosenTerm === it.correctTerm).length;
-  const pct = percent(correct, total);
-  lastExamPercentValue = pct;
-
-  const passed = pct >= exam.passPct;
-
-  const wrong = exam.items.filter(it => it.chosenTerm !== it.correctTerm);
-
-  el.resultTitle.textContent = passed ? "Bestanden" : "Nicht bestanden";
-  el.resultMeta.textContent = `${exam.name} · ${correct}/${total} · ${pct}% · Bestehen ab ${exam.passPct}%`;
-
-  el.wrongList.innerHTML = wrong.length
-    ? wrong.map(it => `
-        <div class="wrongItem">
-          <div class="wTerm">${escapeHtml(it.correctTerm)}</div>
-          <div class="wLine"><strong>Definition:</strong> ${escapeHtml(it.q.def)}</div>
-          <div class="wLine"><strong>Deine Antwort:</strong> ${escapeHtml(it.chosenTerm || "—")}</div>
-          <div class="wMuted">Richtig wäre: ${escapeHtml(it.correctTerm)}</div>
-        </div>
-      `).join("")
-    : `<div class="wrongItem"><div class="wTerm">Keine Fehler.</div><div class="wLine">Sauber.</div></div>`;
-
-  // “Nur Fehler wiederholen” nur aktiv, wenn es Fehler gibt
-  el.btnRetryWrong.disabled = wrong.length === 0;
-
-  // UI switch
-  el.examHome.style.display = "none";
-  el.examRun.style.display = "none";
-  el.examResult.style.display = "block";
-
-  updateProgress();
-}
-
-function retryWrong() {
-  const wrong = exam.items.filter(it => it.chosenTerm !== it.correctTerm);
-  if (!wrong.length) return;
-
-  // neue Runde nur mit Fehlern
-  exam.active = true;
-  exam.wrongOnlyMode = true;
-  exam.idx = 0;
-
-  // Reset chosenTerm
-  exam.items = wrong.map(it => ({
-    q: it.q,
-    options: buildOptionsDefinitionToTerm(it.q, glossary, 4),
-    correctTerm: it.correctTerm,
-    chosenTerm: "",
-  }));
-
-  // Timer kürzer: 1 Minute pro Frage, min 10 Minuten
-  const minutes = Math.max(10, exam.items.length * 1);
-  exam.secondsLeft = minutes * 60;
-
-  el.examName.textContent = `${exam.name} · Fehlertraining`;
-  el.examHome.style.display = "none";
-  el.examRun.style.display = "block";
-  el.examResult.style.display = "none";
-
-  renderExamQuestion();
-  startExamTimer();
-}
-
-function abortExam() {
-  stopExamTimer();
-  showExamHome();
-}
-
-function startExamTimer() {
-  stopExamTimer();
-  updateExamTimerLabel();
-
-  exam.timerId = setInterval(() => {
-    exam.secondsLeft--;
-    updateExamTimerLabel();
-
-    if (exam.secondsLeft <= 0) {
-      exam.secondsLeft = 0;
-      stopExamTimer();
-      finishExam();
+  const APP_VERSION = 3;
+  const APP_KEY = "azubi_kueche_complete_v3";
+  const SETTINGS_KEY = "azubi_kueche_complete_settings_v3";
+
+  const CONTENT = window.AZUBI_CONTENT;
+
+  const $ = (sel) => document.querySelector(sel);
+  const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+
+
+  // Header/Tabs: beim Scrollen ausblenden (mobile-first)
+  (function headerAutoHide(){
+    const topbar = document.querySelector(".topbar");
+    const tabs = document.querySelector(".tabs");
+    if (!topbar || !tabs) return;
+
+    let lastY = window.scrollY || 0;
+    let ticking = false;
+
+    function run(){
+      const y = window.scrollY || 0;
+      const delta = y - lastY;
+      if (Math.abs(delta) < 8) return;
+
+      if (delta > 0 && y > 80){
+        topbar.classList.add("is-hide");
+        tabs.classList.add("is-hide");
+      } else {
+        topbar.classList.remove("is-hide");
+        tabs.classList.remove("is-hide");
+      }
+      lastY = y;
     }
-  }, 1000);
-}
 
-function stopExamTimer() {
-  if (exam.timerId) {
-    clearInterval(exam.timerId);
-    exam.timerId = null;
+    window.addEventListener("scroll", () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        run();
+        ticking = false;
+      });
+    }, { passive: true });
+  })();
+
+
+  const toastEl = $("#toast");
+  let toastTimer = null;
+  function toast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add("is-show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove("is-show"), 1600);
   }
-}
 
-function updateExamTimerLabel() {
-  const m = Math.floor(exam.secondsLeft / 60);
-  const s = exam.secondsLeft % 60;
-  el.examTimer.textContent = `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
-}
+  function safeJsonParse(str, fallback) {
+    try { return JSON.parse(str); } catch { return fallback; }
+  }
 
-/* ========= PDF EXPORTS (Wrap) ========= */
-function exportGlossaryPDF() {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ unit: "pt", format: "a4" });
+  function uid() {
+    return `${Date.now()}_${Math.random().toString(16).slice(2)}`;
+  }
 
-  const items = filtered.length ? filtered : glossary;
+  function todayISO() {
+    const d = new Date();
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    const dd = String(d.getDate()).padStart(2, "0");
+    return `${yyyy}-${mm}-${dd}`;
+  }
 
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(16);
-  doc.text("Koch-Glossar EFZ (CH) – RE:BELLE™", 40, 50);
+  function currentYear() {
+    return new Date().getFullYear();
+  }
 
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(10);
-  doc.text(`Export: ${new Date().toLocaleString("de-CH")}`, 40, 68);
-  doc.text(`Begriffe: ${items.length}`, 40, 82);
+  function weekNumberISO(date = new Date()) {
+    const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    const dayNum = d.getUTCDay() || 7;
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+    return { week: weekNo, year: d.getUTCFullYear() };
+  }
 
-  let y = 110;
-  const lineH = 14;
-  const maxW = 515;
-  const left = 40;
+  function parseISO(s) {
+    const [y,m,d] = String(s).split("-").map(Number);
+    return new Date(y, (m || 1) - 1, d || 1);
+  }
 
-  items
-    .slice()
-    .sort((a, b) => (String(a.jahr).localeCompare(String(b.jahr)) || String(a.term).localeCompare(String(b.term))))
-    .forEach((it) => {
-      const head = `${it.term} (Lehrjahr ${it.jahr})`;
-      const body = it.def;
+  function toISO(d) {
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    const dd = String(d.getDate()).padStart(2, "0");
+    return `${yyyy}-${mm}-${dd}`;
+  }
+  function startOfISOWeek(d){
+    const x = new Date(d);
+    const day = (x.getDay() + 6) % 7; // Mon=0
+    x.setDate(x.getDate() - day);
+    x.setHours(0,0,0,0);
+    return x;
+  }
+  function endOfISOWeek(d){
+    const s = startOfISOWeek(d);
+    const e = new Date(s);
+    e.setDate(e.getDate()+6);
+    e.setHours(23,59,59,999);
+    return e;
+  }
+  function diffDays(a,b){
+    const aa = new Date(a); aa.setHours(0,0,0,0);
+    const bb = new Date(b); bb.setHours(0,0,0,0);
+    return Math.floor((bb-aa)/86400000);
+  }
+  function trainingContextFor(dateISO){
+    const startISO = settings.startDate || "";
+    if (!startISO) return { year: activeYear, dayInTraining: null, weekInTraining: null, rangeStartISO: null, rangeEndISO: null };
+    const start = parseISO(startISO);
+    const d = parseISO(dateISO);
+    const dayIdx = diffDays(start, d) + 1;
+    const year = dayIdx <= 365 ? 1 : (dayIdx <= 730 ? 2 : 3);
+    const weekInTraining = Math.max(1, Math.ceil(dayIdx / 7));
+    const ws = startOfISOWeek(d);
+    const we = endOfISOWeek(d);
+    return { year, dayInTraining: dayIdx, weekInTraining, rangeStartISO: toISO(ws), rangeEndISO: toISO(we) };
+  }
 
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(11);
-      doc.splitTextToSize(head, maxW).forEach((ln) => {
-        if (y > 800) { doc.addPage(); y = 50; }
-        doc.text(ln, left, y);
-        y += lineH;
-      });
 
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(11);
-      doc.splitTextToSize(body, maxW).forEach((ln) => {
-        if (y > 800) { doc.addPage(); y = 50; }
-        doc.text(ln, left, y);
-        y += lineH;
-      });
+  function escapeHtml(s) {
+    return String(s ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
 
-      y += 10;
-    });
+  function humanShift(v) {
+    if (v === "frueh") return "Früh";
+    if (v === "spaet") return "Spät";
+    if (v === "split") return "Split";
+    if (v === "frei") return "Frei";
+    return v || "";
+  }
 
-  doc.setFontSize(9);
-  doc.text("🖤RE:BELLE™ Media · The Art of Feeling. Amplified. · newwomanintheshop.com · rebellemedia.de", 40, 830);
+  function monthLabel(n) {
+    const m = ["", "Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"];
+    return m[n] || String(n);
+  }
 
-  doc.save("koch-glossar-efz-ch.pdf");
-}
+  function defaultState() {
+    return {
+      version: APP_VERSION,
+      entries: {
+        1: { dayEntries: [], weekEntries: [], monthEntries: [] },
+        2: { dayEntries: [], weekEntries: [], monthEntries: [] },
+        3: { dayEntries: [], weekEntries: [], monthEntries: [] }
+      },
+      notebook: {
+        questions: "",
+        vocabulary: "",
+        recipes: "",
+        serviceLessons: ""
+      }
+    };
+  }
 
-function exportFlashcardsPDF() {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ orientation: "landscape", unit: "pt", format: "a4" });
+  function normalizeState(s) {
+    if (!s || typeof s !== "object") return defaultState();
+    const out = defaultState();
 
-  const items = (filtered.length ? filtered : glossary).slice();
-  const cards = pickRandom(items, Math.min(24, items.length));
-
-  const margin = 36;
-  const pageW = doc.internal.pageSize.getWidth();
-  const pageH = doc.internal.pageSize.getHeight();
-
-  const cols = 3;
-  const rows = 2;
-  const gap = 14;
-
-  const cardW = (pageW - margin * 2 - gap * (cols - 1)) / cols;
-  const cardH = (pageH - margin * 2 - gap * (rows - 1)) / rows;
-
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(14);
-  doc.text("Flashcards – Koch-Glossar EFZ (CH) – RE:BELLE™", margin, 28);
-
-  let i = 0;
-  while (i < cards.length) {
-    for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < cols; c++) {
-        if (i >= cards.length) break;
-
-        const x = margin + c * (cardW + gap);
-        const y = margin + r * (cardH + gap);
-        const it = cards[i];
-
-        doc.setDrawColor(47, 210, 255);
-        doc.setLineWidth(1);
-        doc.roundedRect(x, y, cardW, cardH, 10, 10);
-
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(13);
-        doc.text(String(it.term), x + 14, y + 28, { maxWidth: cardW - 28 });
-
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(10);
-        doc.text(`Lehrjahr ${it.jahr}`, x + 14, y + 46);
-
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(11);
-        const defLines = doc.splitTextToSize(String(it.def), cardW - 28);
-        let yy = y + 68;
-
-        defLines.forEach((ln) => {
-          if (yy > y + cardH - 18) return;
-          doc.text(ln, x + 14, yy);
-          yy += 14;
-        });
-
-        i++;
+    if (s.entries && typeof s.entries === "object") {
+      for (const y of [1,2,3]) {
+        const src = s.entries[y] || {};
+        out.entries[y].dayEntries = Array.isArray(src.dayEntries) ? src.dayEntries : [];
+        out.entries[y].weekEntries = Array.isArray(src.weekEntries) ? src.weekEntries : [];
+        out.entries[y].monthEntries = Array.isArray(src.monthEntries) ? src.monthEntries : [];
       }
     }
-    if (i < cards.length) doc.addPage();
+
+    if (s.notebook && typeof s.notebook === "object") {
+      out.notebook.questions = String(s.notebook.questions ?? "");
+      out.notebook.vocabulary = String(s.notebook.vocabulary ?? "");
+      out.notebook.recipes = String(s.notebook.recipes ?? "");
+      out.notebook.serviceLessons = String(s.notebook.serviceLessons ?? "");
+    }
+
+    out.version = APP_VERSION;
+    return out;
   }
 
-  doc.save("koch-flashcards-efz-ch.pdf");
-}
-
-/* ========= HELPERS ========= */
-function normalizeGlossary(arr) {
-  return arr
-    .map((x) => {
-      const term = x.term ?? x.title ?? x.begriff ?? "";
-      const def  = x.def ?? x.definition ?? x.bedeutung ?? x.desc ?? "";
-      const jahr = x.jahr ?? x.year ?? x.lehrjahr ?? "";
-      return { term: String(term).trim(), def: String(def).trim(), jahr: String(jahr).trim() };
-    })
-    .filter((x) => x.term && x.def && x.jahr);
-}
-
-function pickRandom(arr, n) {
-  const a = arr.slice();
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
+  function loadState() {
+    const raw = localStorage.getItem(APP_KEY);
+    return normalizeState(safeJsonParse(raw, null));
   }
-  return a.slice(0, n);
-}
 
-function buildOptionsDefinitionToTerm(questionItem, pool, n) {
-  const correct = String(questionItem.term);
-  const others = pool
-    .filter((it) => String(it.term) !== correct)
-    .map((it) => String(it.term));
-
-  const picked = pickRandom(others, Math.max(0, n - 1));
-  const opts = [correct, ...picked];
-
-  for (let i = opts.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [opts[i], opts[j]] = [opts[j], opts[i]];
+  function saveState(state) {
+    localStorage.setItem(APP_KEY, JSON.stringify(state));
   }
-  return opts;
-}
 
-function percent(a, b) {
-  if (!b) return 0;
-  return Math.round((a / b) * 100);
-}
-
-function clamp(v, min, max) {
-  return Math.max(min, Math.min(max, v));
-}
-
-function escapeHtml(str) {
-  return String(str)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
-
-/* Mini Toast */
-let toastTimer = null;
-function toast(msg) {
-  let t = document.getElementById("toast");
-  if (!t) {
-    t = document.createElement("div");
-    t.id = "toast";
-    t.style.position = "fixed";
-    t.style.left = "50%";
-    t.style.bottom = "18px";
-    t.style.transform = "translateX(-50%)";
-    t.style.padding = "10px 12px";
-    t.style.borderRadius = "16px";
-    t.style.background = "rgba(11,18,32,.92)";
-    t.style.color = "#fff";
-    t.style.fontWeight = "950";
-    t.style.fontSize = "13px";
-    t.style.zIndex = "9999";
-    t.style.maxWidth = "92vw";
-    t.style.textAlign = "center";
-    document.body.appendChild(t);
+  function loadSettings() {
+    const raw = localStorage.getItem(SETTINGS_KEY);
+    const s = safeJsonParse(raw, null);
+    const okYear = s && [1,2,3].includes(Number(s.activeYear)) ? Number(s.activeYear) : 1;
+    const okCal = s && typeof s.calMonth === "number" ? s.calMonth : new Date().getMonth();
+    const okCalY = s && typeof s.calYear === "number" ? s.calYear : new Date().getFullYear();
+    const okWissenModule = s && typeof s.activeWissenModule === "string" ? s.activeWissenModule : "";
+    return { 
+      activeYear: okYear, 
+      calMonth: okCal, 
+      calYear: okCalY, 
+      activeWissenModule: okWissenModule,
+      startDate: (s && typeof s.startDate === "string") ? s.startDate : "",
+      azubiName: (s && typeof s.azubiName === "string") ? s.azubiName : "",
+      jobTitle: (s && typeof s.jobTitle === "string") ? s.jobTitle : "Koch/Köchin",
+      company: (s && typeof s.company === "string") ? s.company : "",
+      trainer: (s && typeof s.trainer === "string") ? s.trainer : "",
+      reportMode: (s && (s.reportMode === "daily" || s.reportMode === "weekly")) ? s.reportMode : "weekly",
+      autoYear: (s && typeof s.autoYear === "boolean") ? s.autoYear : true
+    };
   }
-  t.textContent = msg;
-  t.style.opacity = "1";
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => { t.style.opacity = "0"; }, 1100);
-}
+
+  function saveSettings(settings) {
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+  }
+
+  let state = loadState();
+  let settings = loadSettings();
+  let activeYear = settings.activeYear;
+
+  // === PRO: Onboarding + Auto-Lehrjahr ===
+  const onboardingEl = document.getElementById("onboarding");
+  const obName = document.getElementById("obName");
+  const obJob = document.getElementById("obJob");
+  const obCompany = document.getElementById("obCompany");
+  const obTrainer = document.getElementById("obTrainer");
+  const obStart = document.getElementById("obStart");
+  const obMode = document.getElementById("obMode");
+  const obSave = document.getElementById("obSave");
+
+  function showOnboarding(){
+    if (!onboardingEl) return;
+    onboardingEl.classList.add("is-show");
+    onboardingEl.setAttribute("aria-hidden","false");
+    obName.value = settings.azubiName || "";
+    obJob.value = settings.jobTitle || "Koch/Köchin";
+    obCompany.value = settings.company || "";
+    obTrainer.value = settings.trainer || "";
+    obStart.value = settings.startDate || todayISO();
+    obMode.value = settings.reportMode || "weekly";
+  }
+  function hideOnboarding(){
+    if (!onboardingEl) return;
+    onboardingEl.classList.remove("is-show");
+    onboardingEl.setAttribute("aria-hidden","true");
+  }
+
+  if (!settings.startDate){
+    settings.startDate = "";
+    saveSettings(settings);
+    setActiveTab("start");
+    setTimeout(showOnboarding, 50);
+  }
+
+  if (obSave){
+    obSave.addEventListener("click", () => {
+      const s = (obStart.value || "").trim();
+      if (!s){ toast("Bitte Ausbildungsstart setzen."); return; }
+      settings.azubiName = (obName.value || "").trim();
+      settings.jobTitle = (obJob.value || "Koch/Köchin").trim();
+      settings.company = (obCompany.value || "").trim();
+      settings.trainer = (obTrainer.value || "").trim();
+      settings.startDate = s;
+      settings.reportMode = obMode.value === "daily" ? "daily" : "weekly";
+      settings.autoYear = true;
+      saveSettings(settings);
+      hideOnboarding();
+      const ctx = trainingContextFor(todayISO());
+      setActiveYear(ctx.year);
+      toast("Setup gespeichert");
+      updateStartScreen();
+    });
+  }
+
+  // Start screen elements
+  const trainingPill = document.getElementById("trainingPill");
+  const trainingMeta = document.getElementById("trainingMeta");
+  const kvYear = document.getElementById("kvYear");
+  const kvDay = document.getElementById("kvDay");
+  const kvWeek = document.getElementById("kvWeek");
+  const kvRange = document.getElementById("kvRange");
+  const quickDate = document.getElementById("quickDate");
+  const quickNotes = document.getElementById("quickNotes");
+  const quickGlossaryNotes = document.getElementById("quickGlossaryNotes");
+  const quickTerms = document.getElementById("quickTerms");
+  const btnSaveQuick = document.getElementById("btnSaveQuick");
+  const btnExportReport = document.getElementById("btnExportReport");
+  const btnOpenGlossar = document.getElementById("btnOpenGlossar");
+
+  function updateStartScreen(){
+    if (!quickDate) return;
+    if (!quickDate.value) quickDate.value = todayISO();
+    const ctx = trainingContextFor(quickDate.value);
+    if (ctx.dayInTraining == null){
+      if (trainingPill) trainingPill.textContent = "Setup fehlt";
+      if (trainingMeta) trainingMeta.textContent = "Setze deinen Ausbildungsstart, damit Lehrjahre automatisch laufen.";
+      if (kvYear) kvYear.textContent = "—";
+      if (kvDay) kvDay.textContent = "—";
+      if (kvWeek) kvWeek.textContent = "—";
+      if (kvRange) kvRange.textContent = "—";
+      return;
+    }
+    if (trainingPill) trainingPill.textContent = `Lehrjahr ${ctx.year}`;
+    if (trainingMeta) trainingMeta.textContent = `Ausbildungsstart: ${settings.startDate} · Modus: ${settings.reportMode === "daily" ? "täglich" : "wöchentlich"}`;
+    if (kvYear) kvYear.textContent = `Lehrjahr ${ctx.year}`;
+    if (kvDay) kvDay.textContent = String(ctx.dayInTraining);
+    if (kvWeek) kvWeek.textContent = String(ctx.weekInTraining);
+    if (kvRange) kvRange.textContent = `${ctx.rangeStartISO} – ${ctx.rangeEndISO}`;
+
+    if (settings.autoYear && ctx.year !== activeYear){
+      setActiveYear(ctx.year);
+    }
+  }
+
+  if (quickDate){
+    quickDate.addEventListener("change", updateStartScreen);
+    quickDate.value = todayISO();
+  }
+  if (btnOpenGlossar){
+    btnOpenGlossar.addEventListener("click", () => setActiveTab("glossar"));
+  }
+
+  function saveQuick(){
+    if (!quickDate || !quickNotes) return;
+    const dateISO = quickDate.value || todayISO();
+    const ctx = trainingContextFor(dateISO);
+    if (ctx.dayInTraining == null){ showOnboarding(); return; }
+
+    const p = {
+      id: uid(),
+      kind: "day",
+      trainingYear: ctx.year,
+      createdAt: Date.now(),
+      date: dateISO,
+      shift: "frueh",
+      station: "",
+      task: "",
+      learningGoal: "",
+      learned: "",
+      standard: "",
+      stress: 5,
+      wentWell: "",
+      toImprove: "",
+      freeNotes: (quickNotes.value || "").trim(),
+      glossaryNotes: (quickGlossaryNotes?.value || "").trim(),
+      terms: (quickTerms?.value || "").split(",").map(x => x.trim()).filter(Boolean),
+      basics: { water1:false, water2:false, water3:false, pause:false, food:false }
+    };
+
+    if (!p.freeNotes && !p.glossaryNotes && (!p.terms || p.terms.length===0)){
+      toast("Bitte Notizen oder Glossar-Notizen oder Fachbegriffe eintragen.");
+      return;
+    }
+
+    state.entries[ctx.year].dayEntries.push(p);
+    saveState(state);
+    updateStats();
+    renderCalendar();
+    renderEntries();
+    toast("Gespeichert");
+  }
+
+  if (btnSaveQuick){ btnSaveQuick.addEventListener("click", saveQuick); }
+
+  function buildReportForWeek(dateISO){
+    const ctx = trainingContextFor(dateISO);
+    if (ctx.dayInTraining == null) return null;
+    const y = ctx.year;
+    const ws = parseISO(ctx.rangeStartISO);
+    const we = parseISO(ctx.rangeEndISO);
+    const all = state.entries[y].dayEntries || [];
+    const inRange = all.filter(e => e.date && parseISO(e.date) >= ws && parseISO(e.date) <= we)
+                       .sort((a,b)=> (a.date||"").localeCompare(b.date||""));
+
+    const combinedNotes = inRange.map(e => {
+      const head = `${e.date}`;
+      const body = (e.freeNotes || "").trim();
+      return body ? `• ${head}:\n${body}` : `• ${head}`;
+    }).join("\n\n");
+
+    const combinedGloss = inRange.map(e => {
+      const head = `${e.date}`;
+      const body = (e.glossaryNotes || "").trim();
+      return body ? `• ${head}:\n${body}` : "";
+    }).filter(Boolean).join("\n\n");
+
+    const terms = Array.from(new Set(inRange.flatMap(e => Array.isArray(e.terms)? e.terms : []).map(t=>String(t).trim()).filter(Boolean)));
+
+    return {
+      year: y,
+      rangeStartISO: ctx.rangeStartISO,
+      rangeEndISO: ctx.rangeEndISO,
+      weekInTraining: ctx.weekInTraining,
+      notes: combinedNotes || "",
+      glossaryNotes: combinedGloss || "",
+      terms
+    };
+  }
+
+  function openReportPDF(){
+    if (!quickDate) return;
+    const dateISO = quickDate.value || todayISO();
+    const rep = buildReportForWeek(dateISO);
+    if (!rep){ showOnboarding(); return; }
+
+    const name = escapeHtml(settings.azubiName || "");
+    const job = escapeHtml(settings.jobTitle || "Koch/Köchin");
+    const company = escapeHtml(settings.company || "");
+    const trainer = escapeHtml(settings.trainer || "");
+
+    const title = `Ausbildungsnachweis · ${rep.rangeStartISO} – ${rep.rangeEndISO}`;
+    const html = `<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>${title}</title>
+<link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+  <div class="print-page">
+    <div class="print-head">
+      <div>
+        <div class="print-title">Ausbildungsnachweis (Küche)</div>
+        <div class="print-meta">
+          <div><strong>Name:</strong> ${name}</div>
+          <div><strong>Beruf:</strong> ${job}</div>
+          <div><strong>Betrieb:</strong> ${company}</div>
+          <div><strong>Ausbilder:in:</strong> ${trainer}</div>
+        </div>
+      </div>
+      <div class="print-meta">
+        <div><strong>Lehrjahr:</strong> ${rep.year}</div>
+        <div><strong>Ausbildungswoche:</strong> ${rep.weekInTraining}</div>
+        <div><strong>Zeitraum:</strong> ${rep.rangeStartISO} – ${rep.rangeEndISO}</div>
+        <div><strong>Erstellt am:</strong> ${todayISO()}</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="print-grid">
+      <div class="print-box">
+        <h3>Tätigkeiten / Inhalte (Betrieb)</h3>
+        <p>${escapeHtml(rep.notes || "")}</p>
+      </div>
+      <div class="print-box">
+        <h3>Fachbegriffe & Praxis-Notizen</h3>
+        <p>${escapeHtml((rep.terms && rep.terms.length) ? rep.terms.join(", ") : "")}${rep.glossaryNotes ? "\n\n" + escapeHtml(rep.glossaryNotes) : ""}</p>
+      </div>
+      <div class="print-box">
+        <h3>Unterweisungen / Hygiene / Sicherheit</h3>
+        <p>${escapeHtml("")}</p>
+      </div>
+      <div class="print-box">
+        <h3>Berufsschule (Themen / Lernfelder)</h3>
+        <p>${escapeHtml("")}</p>
+      </div>
+    </div>
+
+    <div class="sign">
+      <div class="sigline">Unterschrift Azubi (Datum)</div>
+      <div class="sigline">Unterschrift Ausbilder:in (Datum)</div>
+    </div>
+
+    <div class="help" style="margin-top:10px;">
+      Hinweis: Speichere als PDF über „Drucken“ → „Als PDF speichern“. Einige Betriebe/Kammern haben eigene Vorgaben – dieses Layout ist berichtsheft-nah.
+    </div>
+  </div>
+
+  <script>
+    window.onload = () => { window.print(); };
+  </script>
+</body>
+</html>`;
+    const w = window.open("", "_blank");
+    if (!w){ toast("Pop-up blockiert. Bitte Pop-ups erlauben."); return; }
+    w.document.open();
+    w.document.write(html);
+    w.document.close();
+  }
+
+  if (btnExportReport){ btnExportReport.addEventListener("click", openReportPDF); }
+
+
+
+  // Tabs
+  function setActiveTab(tab) {
+    $$(".tab").forEach(b => b.classList.toggle("is-active", b.dataset.tab === tab));
+    $$(".panel").forEach(p => p.classList.toggle("is-active", p.id === `panel-${tab}`));
+
+    if (tab === "calendar") renderCalendar();
+    if (tab === "entries") renderEntries();
+    if (tab === "wissen") renderWissen();
+    if (tab === "glossar") renderGlossar();
+  }
+  $$(".tab").forEach(btn => btn.addEventListener("click", () => setActiveTab(btn.dataset.tab)));
+
+  // Year switch
+  function setActiveYear(year) {
+    activeYear = year;
+    $$(".yearBtn").forEach(b => b.classList.toggle("is-active", Number(b.dataset.year) === year));
+    settings.activeYear = year;
+    saveSettings(settings);
+    updateStats();
+    renderCalendar();
+    renderEntries();
+    renderWissen();
+    renderGlossar();
+    $("#wissenYearPill").textContent = `Lehrjahr ${activeYear}`;
+    toast(`Lehrjahr ${year} aktiv`);
+  }
+  $$(".yearBtn").forEach(btn => btn.addEventListener("click", () => setActiveYear(Number(btn.dataset.year))));
+
+  // Stats
+  const statDays = $("#statDays");
+  const statWeeks = $("#statWeeks");
+  const statMonths = $("#statMonths");
+  function bucket() {
+    return state.entries[activeYear];
+  }
+  function updateStats() {
+    const b = bucket();
+    statDays.textContent = String(b.dayEntries.length);
+    statWeeks.textContent = String(b.weekEntries.length);
+    statMonths.textContent = String(b.monthEntries.length);
+  }
+
+  // Day form
+  const dayDate = $("#dayDate");
+  const dayShift = $("#dayShift");
+  const dayStation = $("#dayStation");
+  const dayTask = $("#dayTask");
+  const dayLearningGoal = $("#dayLearningGoal");
+  const dayLearned = $("#dayLearned");
+  const dayStandard = $("#dayStandard");
+  const dayStress = $("#dayStress");
+  const stressPill = $("#stressPill");
+  const dayWentWell = $("#dayWentWell");
+  const dayToImprove = $("#dayToImprove");
+  const dayFreeNotes = $("#dayFreeNotes");
+  const dayWater1 = $("#dayWater1");
+  const dayWater2 = $("#dayWater2");
+  const dayWater3 = $("#dayWater3");
+  const dayPause = $("#dayPause");
+  const dayFood = $("#dayFood");
+
+  dayStress.addEventListener("input", () => stressPill.textContent = String(dayStress.value));
+
+  $("#btnSaveDay").addEventListener("click", saveDay);
+  $("#btnClearDay").addEventListener("click", clearDay);
+
+  function clearDay() {
+    dayDate.value = todayISO();
+    dayShift.value = "frueh";
+    dayStation.value = "";
+    dayTask.value = "";
+    dayLearningGoal.value = "";
+    dayLearned.value = "";
+    dayStandard.value = "";
+    dayStress.value = "5";
+    stressPill.textContent = "5";
+    dayWentWell.value = "";
+    dayToImprove.value = "";
+    dayFreeNotes.value = "";
+    dayWater1.checked = false;
+    dayWater2.checked = false;
+    dayWater3.checked = false;
+    dayPause.checked = false;
+    dayFood.checked = false;
+    toast("Tagesseite geleert");
+  }
+
+  function validateDay(p) {
+    if (!p.date) return "Bitte Datum wählen.";
+    if (!p.learningGoal.trim() && !p.learned.trim() && !p.freeNotes.trim()) return "Bitte mindestens Lernziel/Lerninhalt/Notizen eintragen.";
+    return null;
+  }
+
+  function saveDay() {
+    const p = {
+      id: uid(),
+      kind: "day",
+      trainingYear: activeYear,
+      createdAt: Date.now(),
+      date: dayDate.value,
+      shift: dayShift.value,
+      station: dayStation.value.trim(),
+      task: dayTask.value.trim(),
+      learningGoal: dayLearningGoal.value.trim(),
+      learned: dayLearned.value.trim(),
+      standard: dayStandard.value.trim(),
+      stress: Number(dayStress.value),
+      wentWell: dayWentWell.value.trim(),
+      toImprove: dayToImprove.value.trim(),
+      freeNotes: dayFreeNotes.value.trim(),
+      basics: {
+        water1: !!dayWater1.checked,
+        water2: !!dayWater2.checked,
+        water3: !!dayWater3.checked,
+        pause: !!dayPause.checked,
+        food: !!dayFood.checked
+      }
+    };
+
+    const err = validateDay(p);
+    if (err) { toast(err); return; }
+
+    bucket().dayEntries.push(p);
+    saveState(state);
+    updateStats();
+    renderCalendar();
+    renderEntries();
+    toast("Tages-Eintrag gespeichert");
+  }
+
+  // Week form
+  const weekNumber = $("#weekNumber");
+  const weekYear = $("#weekYear");
+  const weekSkills = $("#weekSkills");
+  const weekMistake = $("#weekMistake");
+  const weekFocus = $("#weekFocus");
+  const weekNotes = $("#weekNotes");
+
+  $("#btnSaveWeek").addEventListener("click", saveWeek);
+  $("#btnClearWeek").addEventListener("click", clearWeek);
+
+  function clearWeek() {
+    const wn = weekNumberISO(new Date());
+    weekNumber.value = wn.week;
+    weekYear.value = wn.year;
+    weekSkills.value = "";
+    weekMistake.value = "";
+    weekFocus.value = "";
+    weekNotes.value = "";
+    toast("Wochenseite geleert");
+  }
+
+  function validateWeek(p) {
+    if (!p.week || p.week < 1 || p.week > 53) return "Bitte gültige Woche (1–53) eintragen.";
+    if (!p.year) return "Bitte Jahr eintragen.";
+    return null;
+  }
+
+  function saveWeek() {
+    const p = {
+      id: uid(),
+      kind: "week",
+      trainingYear: activeYear,
+      createdAt: Date.now(),
+      week: Number(weekNumber.value),
+      year: Number(weekYear.value),
+      skills: weekSkills.value.trim(),
+      mistake: weekMistake.value.trim(),
+      focus: weekFocus.value.trim(),
+      notes: weekNotes.value.trim()
+    };
+
+    const err = validateWeek(p);
+    if (err) { toast(err); return; }
+
+    bucket().weekEntries.push(p);
+    saveState(state);
+    updateStats();
+    renderEntries();
+    toast("Wochen-Check gespeichert");
+  }
+
+  // Month form
+  const monthName = $("#monthName");
+  const monthYear = $("#monthYear");
+  const monthProgress = $("#monthProgress");
+  const monthGap = $("#monthGap");
+  const monthSchool = $("#monthSchool");
+  const monthNotes = $("#monthNotes");
+
+  $("#btnSaveMonth").addEventListener("click", saveMonth);
+  $("#btnClearMonth").addEventListener("click", clearMonth);
+
+  function clearMonth() {
+    monthName.value = String(new Date().getMonth() + 1);
+    monthYear.value = currentYear();
+    monthProgress.value = "";
+    monthGap.value = "";
+    monthSchool.value = "";
+    monthNotes.value = "";
+    toast("Monatsseite geleert");
+  }
+
+  function validateMonth(p) {
+    if (!p.month || p.month < 1 || p.month > 12) return "Bitte Monat wählen.";
+    if (!p.year) return "Bitte Jahr eintragen.";
+    return null;
+  }
+
+  function saveMonth() {
+    const p = {
+      id: uid(),
+      kind: "month",
+      trainingYear: activeYear,
+      createdAt: Date.now(),
+      month: Number(monthName.value),
+      year: Number(monthYear.value),
+      progress: monthProgress.value.trim(),
+      gap: monthGap.value.trim(),
+      school: monthSchool.value.trim(),
+      notes: monthNotes.value.trim()
+    };
+
+    const err = validateMonth(p);
+    if (err) { toast(err); return; }
+
+    bucket().monthEntries.push(p);
+    saveState(state);
+    updateStats();
+    renderEntries();
+    toast("Monats-Check gespeichert");
+  }
+
+  // Notebook
+  const nbQuestions = $("#nbQuestions");
+  const nbVocabulary = $("#nbVocabulary");
+  const nbRecipes = $("#nbRecipes");
+  const nbServiceLessons = $("#nbServiceLessons");
+  $("#btnSaveNotebook").addEventListener("click", () => {
+    state.notebook.questions = nbQuestions.value;
+    state.notebook.vocabulary = nbVocabulary.value;
+    state.notebook.recipes = nbRecipes.value;
+    state.notebook.serviceLessons = nbServiceLessons.value;
+    saveState(state);
+    toast("Notizbuch gespeichert");
+  });
+
+  function loadNotebookIntoUI() {
+    nbQuestions.value = state.notebook.questions || "";
+    nbVocabulary.value = state.notebook.vocabulary || "";
+    nbRecipes.value = state.notebook.recipes || "";
+    nbServiceLessons.value = state.notebook.serviceLessons || "";
+  }
+
+  // Entries
+  const entriesEl = $("#entries");
+  const searchEl = $("#search");
+  const sortByEl = $("#sortBy");
+  const countInfo = $("#countInfo");
+
+  searchEl.addEventListener("input", renderEntries);
+  sortByEl.addEventListener("change", renderEntries);
+
+  $("#btnDeleteYear").addEventListener("click", () => {
+    if (!confirm(`Wirklich alle Einträge löschen für Lehrjahr ${activeYear}?`)) return;
+    state.entries[activeYear] = { dayEntries: [], weekEntries: [], monthEntries: [] };
+    saveState(state);
+    updateStats();
+    renderCalendar();
+    renderEntries();
+    toast("Lehrjahr gelöscht");
+  });
+
+  $("#btnDeleteAll").addEventListener("click", () => {
+    if (!confirm("Wirklich ALLES löschen (Lehrjahr 1–3 + Notizbuch)?")) return;
+    state = defaultState();
+    saveState(state);
+    updateStats();
+    renderCalendar();
+    renderEntries();
+    loadNotebookIntoUI();
+    toast("Alles gelöscht");
+  });
+
+  function allEntriesForCurrent() {
+    const b = bucket();
+    const day = b.dayEntries.map(e => ({...e, _sortDate: e.date ? parseISO(e.date).getTime() : e.createdAt}));
+    const week = b.weekEntries.map(e => ({...e, _sortDate: e.createdAt}));
+    const month = b.monthEntries.map(e => ({...e, _sortDate: e.createdAt}));
+    return [...day, ...week, ...month];
+  }
+
+  function deleteEntryById(id) {
+    const b = bucket();
+    const before = b.dayEntries.length + b.weekEntries.length + b.monthEntries.length;
+
+    b.dayEntries = b.dayEntries.filter(e => e.id !== id);
+    b.weekEntries = b.weekEntries.filter(e => e.id !== id);
+    b.monthEntries = b.monthEntries.filter(e => e.id !== id);
+
+    const after = b.dayEntries.length + b.weekEntries.length + b.monthEntries.length;
+    if (after === before) return;
+
+    saveState(state);
+    updateStats();
+    renderCalendar();
+    renderEntries();
+    toast("Eintrag gelöscht");
+  }
+
+  function renderEntries() {
+    let list = allEntriesForCurrent();
+    const q = (searchEl.value || "").trim().toLowerCase();
+    if (q) list = list.filter(e => JSON.stringify(e).toLowerCase().includes(q));
+
+    const sortBy = sortByEl.value;
+    list.sort((a,b) => sortBy === "oldest" ? (a._sortDate - b._sortDate) : (b._sortDate - a._sortDate));
+
+    countInfo.textContent = `${list.length} Einträge · Lehrjahr ${activeYear}`;
+    entriesEl.innerHTML = "";
+
+    if (list.length === 0) {
+      entriesEl.innerHTML = `<div class="muted">Noch keine Einträge in Lehrjahr ${activeYear}.</div>`;
+      return;
+    }
+
+    for (const e of list) {
+      const card = document.createElement("div");
+      card.className = "entry";
+
+      const title = e.kind === "day"
+        ? `${e.date || "—"} · ${humanShift(e.shift)}`
+        : e.kind === "week"
+          ? `Woche ${e.week}/${e.year}`
+          : `${monthLabel(e.month)} ${e.year}`;
+
+      const meta = e.kind === "day"
+        ? (e.station ? `Station: ${e.station}` : "Tages-Eintrag")
+        : (e.kind === "week" ? "Wochen-Check" : "Monats-Check");
+
+      const body = e.kind === "day"
+        ? `<div class="entry__body">
+             ${e.learningGoal ? `<div><strong>Lernziel:</strong> ${escapeHtml(e.learningGoal)}</div>` : ""}
+             ${e.standard ? `<div style="margin-top:6px;"><strong>Standard:</strong> ${escapeHtml(e.standard)}</div>` : ""}
+             ${e.freeNotes ? `<div style="margin-top:6px;"><strong>Notizen:</strong> ${escapeHtml(e.freeNotes).slice(0, 260)}${e.freeNotes.length>260?"…":""}</div>` : ""}
+           </div>`
+        : e.kind === "week"
+          ? (e.focus ? `<div class="entry__body"><strong>Fokus:</strong> ${escapeHtml(e.focus)}</div>` : "")
+          : (e.progress ? `<div class="entry__body"><strong>Fortschritt:</strong> ${escapeHtml(e.progress)}</div>` : "");
+
+      card.innerHTML = `
+        <div class="entry__top">
+          <div>
+            <div class="entry__title">${escapeHtml(title)}</div>
+            <div class="entry__meta">${escapeHtml(meta)}</div>
+          </div>
+          <div class="entry__actions">
+            <button class="iconbtn" type="button" title="Löschen" data-del="${e.id}">✕</button>
+          </div>
+        </div>
+        ${body}
+        <div class="kv">
+          <div>Aufgabe</div><div><strong>${e.task ? escapeHtml(e.task) : "—"}</strong></div>
+          <div>Verbessern</div><div><strong>${e.toImprove ? escapeHtml(e.toImprove) : (e.focus ? escapeHtml(e.focus) : "—")}</strong></div>
+        </div>
+      `;
+
+      card.querySelector("[data-del]")?.addEventListener("click", () => deleteEntryById(e.id));
+      entriesEl.appendChild(card);
+    }
+  }
+
+  // Calendar
+  const calendarGrid = $("#calendarGrid");
+  const calLabel = $("#calLabel");
+  $("#btnCalPrev").addEventListener("click", () => shiftCalendar(-1));
+  $("#btnCalNext").addEventListener("click", () => shiftCalendar(1));
+  $("#btnCalToday").addEventListener("click", () => {
+    const d = new Date();
+    settings.calMonth = d.getMonth();
+    settings.calYear = d.getFullYear();
+    saveSettings(settings);
+    renderCalendar();
+  });
+
+  function shiftCalendar(deltaMonths) {
+    let m = settings.calMonth + deltaMonths;
+    let y = settings.calYear;
+    while (m < 0) { m += 12; y -= 1; }
+    while (m > 11) { m -= 12; y += 1; }
+    settings.calMonth = m;
+    settings.calYear = y;
+    saveSettings(settings);
+    renderCalendar();
+  }
+
+  function dayEntryMapForMonth(year, monthIndex) {
+    const m = new Map();
+    const b = bucket().dayEntries;
+    for (const e of b) {
+      if (!e.date) continue;
+      const d = parseISO(e.date);
+      if (d.getFullYear() === year && d.getMonth() === monthIndex) {
+        m.set(e.date, true);
+      }
+    }
+    return m;
+  }
+
+  function renderCalendar() {
+    const year = settings.calYear;
+    const monthIndex = settings.calMonth;
+    calLabel.textContent = `${monthLabel(monthIndex + 1)} ${year}`;
+
+    const first = new Date(year, monthIndex, 1);
+    const last = new Date(year, monthIndex + 1, 0);
+    const daysInMonth = last.getDate();
+
+    const jsDay = first.getDay();
+    const mondayIndex = (jsDay + 6) % 7;
+
+    const totalCells = Math.ceil((mondayIndex + daysInMonth) / 7) * 7;
+
+    const today = new Date();
+    const todayIso = toISO(today);
+    const hasEntry = dayEntryMapForMonth(year, monthIndex);
+
+    calendarGrid.innerHTML = "";
+
+    for (let cell = 0; cell < totalCells; cell++) {
+      const dayNum = cell - mondayIndex + 1;
+      const isInMonth = dayNum >= 1 && dayNum <= daysInMonth;
+
+      const cellEl = document.createElement("div");
+      cellEl.className = "calCell";
+
+      if (!isInMonth) {
+        cellEl.classList.add("is-muted");
+        cellEl.innerHTML = `<div class="calDayNum"> </div>`;
+        calendarGrid.appendChild(cellEl);
+        continue;
+      }
+
+      const d = new Date(year, monthIndex, dayNum);
+      const iso = toISO(d);
+
+      if (iso === todayIso) cellEl.classList.add("is-today");
+      if (hasEntry.get(iso)) cellEl.classList.add("has-entry");
+
+      cellEl.innerHTML = `
+        <div class="calDayNum">${dayNum}</div>
+        <div class="calSmall">${hasEntry.get(iso) ? "Eintrag vorhanden" : "—"}</div>
+      `;
+
+      cellEl.addEventListener("click", () => {
+        dayDate.value = iso;
+        setActiveTab("day");
+        toast(`Datum gesetzt: ${iso}`);
+      });
+
+      calendarGrid.appendChild(cellEl);
+    }
+  }
+
+  // Wissen
+  const wissenSearch = $("#wissenSearch");
+  const wissenNavItems = $("#wissenNavItems");
+  const wissenContent = $("#wissenContent");
+  const wissenYearPill = $("#wissenYearPill");
+
+  $("#btnWissenTop").addEventListener("click", () => {
+    const panel = $("#panel-wissen");
+    panel?.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  wissenSearch.addEventListener("input", () => renderWissen());
+
+  function getYearWissen() {
+    return CONTENT?.wissen?.years?.[activeYear] || null;
+  }
+
+  function renderWissen() {
+    const y = getYearWissen();
+    if (!y) {
+      wissenNavItems.innerHTML = `<div class="muted">Keine Inhalte gefunden.</div>`;
+      wissenContent.innerHTML = `<div class="muted">Keine Inhalte gefunden.</div>`;
+      return;
+    }
+
+    wissenYearPill.textContent = `Lehrjahr ${activeYear}`;
+
+    const query = (wissenSearch.value || "").trim().toLowerCase();
+
+    let modules = y.modules || [];
+    if (query) {
+      modules = modules.filter(m => {
+        const blob = JSON.stringify(m).toLowerCase();
+        return blob.includes(query);
+      });
+    }
+
+    // Nav
+    wissenNavItems.innerHTML = "";
+    if (modules.length === 0) {
+      wissenNavItems.innerHTML = `<div class="muted">Keine Treffer im Lehrjahr ${activeYear}.</div>`;
+      wissenContent.innerHTML = `
+        <div class="wiModule">
+          <h2>${escapeHtml(y.title)}</h2>
+          <p class="lead">${escapeHtml(y.intro)}</p>
+          <div class="wiCallout"><strong>Keine Treffer</strong>Suchbegriff anpassen oder Suche leeren.</div>
+        </div>
+      `;
+      return;
+    }
+
+    const activeId = settings.activeWissenModule && modules.some(m => m.id === settings.activeWissenModule)
+      ? settings.activeWissenModule
+      : modules[0].id;
+
+    for (const m of modules) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "wissenNav__btn" + (m.id === activeId ? " is-active" : "");
+      btn.textContent = m.title;
+      btn.addEventListener("click", () => {
+        settings.activeWissenModule = m.id;
+        saveSettings(settings);
+        renderWissen();
+      });
+      wissenNavItems.appendChild(btn);
+    }
+
+    const mod = modules.find(m => m.id === activeId) || modules[0];
+    wissenContent.innerHTML = renderModuleHTML(y, mod);
+  }
+
+  function renderModuleHTML(yearObj, mod) {
+    const sections = (mod.sections || []).map(sec => {
+      const pHtml = (sec.p || []).map(t => `<p>${escapeHtml(t)}</p>`).join("");
+      const ulHtml = (sec.ul || []).length
+        ? `<ul class="wiList">${sec.ul.map(li => `<li>${escapeHtml(li)}</li>`).join("")}</ul>`
+        : "";
+      return `
+        <div class="wiSection">
+          <h3>${escapeHtml(sec.h || "")}</h3>
+          ${pHtml}
+          ${ulHtml}
+        </div>
+      `;
+    }).join("");
+
+    const callout = mod.callout
+      ? `<div class="wiCallout"><strong>${escapeHtml(mod.callout.title)}</strong>${escapeHtml(mod.callout.text)}</div>`
+      : "";
+
+    return `
+      <div class="wiModule">
+        <h2>${escapeHtml(mod.title)}</h2>
+        <p class="lead">${escapeHtml(mod.lead || "")}</p>
+        ${sections}
+        ${callout}
+        <div class="divider"></div>
+        <p class="lead"><strong>${escapeHtml(yearObj.title)}:</strong> ${escapeHtml(yearObj.intro)}</p>
+      </div>
+    `;
+  }
+
+  // Glossar
+  const glossarSearch = $("#glossarSearch");
+  const glossarYearFilter = $("#glossarYearFilter");
+  const glossarList = $("#glossarList");
+  const glossarCount = $("#glossarCount");
+
+  glossarSearch.addEventListener("input", renderGlossar);
+  glossarYearFilter.addEventListener("change", renderGlossar);
+
+  
+  function renderGlossar() {
+    const pack = window.AZUBI_GLOSSARY_PRO || window.AZUBI_GLOSSARY || null;
+    const items = pack && Array.isArray(pack.items) ? pack.items : (pack && Array.isArray(pack) ? pack : []);
+    const q = (glossarSearch.value || "").trim().toLowerCase();
+
+    let list = items;
+
+    // filter by year
+    list = list.filter(x => Array.isArray(x.years) ? x.years.includes(activeYear) : true);
+
+    if (q) {
+      list = list.filter(x => JSON.stringify(x).toLowerCase().includes(q));
+    }
+
+    list.sort((a,b) => String(a.term||"").localeCompare(String(b.term||""), "de"));
+
+    glossarInfo.textContent = `${list.length} Begriffe · Lehrjahr ${activeYear}`;
+
+    if (list.length === 0) {
+      glossarList.innerHTML = `<div class="muted">Keine Treffer.</div>`;
+      return;
+    }
+
+    glossarList.innerHTML = list.map(x => {
+      const term = escapeHtml(x.term || "");
+      const def = escapeHtml(x.definition || "");
+      const praxis = escapeHtml(x.praxis || "");
+      const fehler = escapeHtml(x.fehler || "");
+      const merksatz = escapeHtml(x.merksatz || "");
+      const cat = escapeHtml(x.category || "");
+      const years = Array.isArray(x.years) ? x.years.join(", ") : "";
+      return `
+        <div class="entry">
+          <div class="entry__top">
+            <div>
+              <div class="entry__title">${term}</div>
+              <div class="entry__meta">Kategorie: ${cat || "—"} · Lehrjahr: ${years || "—"}</div>
+            </div>
+          </div>
+          <div class="entry__body">
+            <div class="kv">
+              <div><strong>Definition</strong></div><div>${def || "—"}</div>
+              <div><strong>Praxis</strong></div><div>${praxis || "—"}</div>
+              <div><strong>Typischer Fehler</strong></div><div>${fehler || "—"}</div>
+              <div><strong>Merksatz</strong></div><div>${merksatz || "—"}</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join("");
+  }
+
+
+;
+
+  function exportJSON() {
+    const bundle = {
+      version: APP_VERSION,
+      exportedAt: new Date().toISOString(),
+      data: state,
+      settings: settings
+    };
+    const blob = new Blob([JSON.stringify(bundle, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "azubi-kueche-export.json";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    toast("Export erstellt");
+  }
+
+  function importJSON(ev) {
+    const file = ev.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const imported = safeJsonParse(String(reader.result || ""), null);
+      if (!imported || typeof imported !== "object") {
+        toast("Import fehlgeschlagen (JSON ungültig)");
+        ev.target.value = "";
+        return;
+      }
+
+      const next = imported.data ? imported.data : imported;
+      state = normalizeState(next);
+      saveState(state);
+
+      if (imported.settings && typeof imported.settings === "object") {
+        settings = {
+          activeYear: [1,2,3].includes(Number(imported.settings.activeYear)) ? Number(imported.settings.activeYear) : settings.activeYear,
+          calMonth: typeof imported.settings.calMonth === "number" ? imported.settings.calMonth : settings.calMonth,
+          calYear: typeof imported.settings.calYear === "number" ? imported.settings.calYear : settings.calYear,
+          activeWissenModule: typeof imported.settings.activeWissenModule === "string" ? imported.settings.activeWissenModule : settings.activeWissenModule
+        };
+        saveSettings(settings);
+      }
+
+      activeYear = settings.activeYear;
+      $$(".yearBtn").forEach(b => b.classList.toggle("is-active", Number(b.dataset.year) === activeYear));
+
+      updateStats();
+      renderCalendar();
+      renderEntries();
+      renderWissen();
+      renderGlossar();
+      loadNotebookIntoUI();
+      toast("Import abgeschlossen");
+      ev.target.value = "";
+    };
+    reader.readAsText(file);
+  }
+
+  // Boot defaults
+  function initDefaults() {
+    dayDate.value = todayISO();
+    dayStress.value = "5";
+    stressPill.textContent = "5";
+
+    const wn = weekNumberISO(new Date());
+    weekNumber.value = wn.week;
+    weekYear.value = wn.year;
+
+    monthYear.value = currentYear();
+    monthName.value = String(new Date().getMonth() + 1);
+  }
+
+  function boot() {
+    initDefaults();
+    loadNotebookIntoUI();
+    setActiveYear(activeYear);
+    setActiveTab("start");
+    updateStats();
+    renderCalendar();
+    renderEntries();
+    renderWissen();
+    renderGlossar();
+  }
+
+  boot();
+})();
