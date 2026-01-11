@@ -1,550 +1,228 @@
-<!DOCTYPE html>
-
+<!doctype html>
 <html lang="de">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
-<meta content="#1E1E1E" name="theme-color"/>
-<meta content="Azubi-Tagebuch Küche: Kalender, Tages-/Wochen-/Monats-Checks, Notizen, Wissen &amp; Glossar nach 3 Lehrjahren. Offline nutzbar." name="description"/>
-<title>Azubi Tagebuch Küche · 3 Lehrjahre</title>
-<link href="styles.css" rel="stylesheet"/>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>RE:BELLE™ Koch-Glossar Quiz EFZ (Schweiz)</title>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <link rel="stylesheet" href="styles.css" />
 </head>
+
 <body>
-<div class="app">
-<header class="topbar">
-<div class="brand">
-<div class="brand__title">Azubi Tagebuch Küche</div>
-<div class="brand__subtitle">Kalender · Notizen · Wissen · Glossar · 3 Lehrjahre</div>
-</div>
-<div class="topbar__row">
-<div aria-label="Lehrjahr wählen" class="yearSwitch" role="group">
-<button class="yearBtn is-active" data-year="1" type="button">Lehrjahr 1</button>
-<button class="yearBtn" data-year="2" type="button">Lehrjahr 2</button>
-<button class="yearBtn" data-year="3" type="button">Lehrjahr 3</button>
-</div>
-<div class="stats">
-<div class="stat">
-<div class="stat__num" id="statDays">0</div>
-<div class="stat__label">Tage</div>
-</div>
-<div class="stat">
-<div class="stat__num" id="statWeeks">0</div>
-<div class="stat__label">Wochen</div>
-</div>
-<div class="stat">
-<div class="stat__num" id="statMonths">0</div>
-<div class="stat__label">Monate</div>
-</div>
-</div>
-</div>
-<div class="topbar__actions">
-<button class="btn btn--ghost" id="btnExport" type="button">Export</button>
-<label class="btn btn--ghost filebtn">
-          Import
-          <input accept="application/json" id="fileImport" type="file"/>
-</label>
-</div>
-</header>
-<nav aria-label="Bereiche" class="tabs"><button class="tab is-active" data-tab="start" type="button">Start</button>
-<button class="tab" data-tab="calendar" type="button">Kalender</button>
-<button class="tab" data-tab="day" type="button">Tag</button>
-<button class="tab" data-tab="week" type="button">Woche</button>
-<button class="tab" data-tab="month" type="button">Monat</button>
-<button class="tab" data-tab="notes" type="button">Notizen</button>
-<button class="tab" data-tab="wissen" type="button">Wissen</button>
-<button class="tab" data-tab="glossar" type="button">Glossar</button>
-<button class="tab" data-tab="entries" type="button">Einträge</button>
-<button class="tab" data-tab="info" type="button">Info</button>
-</nav>
-<main class="main">
-<section class="panel is-active" id="panel-start">
-<div class="panel__header">
-<h1 class="h1">Start</h1>
-<div class="panel__meta">
-<div class="pill" id="trainingPill">—</div>
-<button class="btn btn--primary" id="btnSaveQuick" type="button">Speichern</button>
-<button class="btn" id="btnExportReport" type="button">Berichtsheft-PDF</button>
-</div>
-</div>
-<div class="card">
-<div class="grid">
-<div class="field">
-<label for="quickDate">Datum</label>
-<input id="quickDate" type="date"/>
-<div class="help" id="trainingMeta">—</div>
-</div>
-<div class="field">
-<label>Heute</label>
-<div class="kv">
-<div><strong>Lehrjahr</strong></div><div id="kvYear">—</div>
-<div><strong>Ausbildungstag</strong></div><div id="kvDay">—</div>
-<div><strong>Ausbildungswoche</strong></div><div id="kvWeek">—</div>
-<div><strong>Zeitraum</strong></div><div id="kvRange">—</div>
-</div>
-</div>
-</div>
-<div class="divider"></div>
-<div class="field">
-<label for="quickNotes">Notizen (Betrieb / Berufsschule / Unterweisung)</label>
-<textarea id="quickNotes" placeholder="Stichpunkte: Was hast du gemacht? Was gelernt? Welche Unterweisung? Welche Themen in der Schule?" rows="10"></textarea>
-<div class="help">Tipp: Schreibe stichpunktartig. Das lässt sich später sauber als Berichtsheft exportieren.</div>
-</div>
-<div class="field">
-<label for="quickGlossaryNotes">Glossar-Notizen (Begriff → mein Beispiel)</label>
-<textarea id="quickGlossaryNotes" placeholder="Begriff(e) + eigene Erklärung + ein Beispiel aus deinem Tag." rows="7"></textarea>
-</div>
-<div class="divider"></div>
-<div class="grid">
-<div class="field">
-<label for="quickTerms">Fachbegriffe dieser Woche (optional)</label>
-<input id="quickTerms" placeholder="z. B. FIFO, Mise en Place, Pochieren…" type="text"/>
-<div class="help">Die Begriffe werden im Berichtsheft-PDF als Lernnachweis aufgeführt.</div>
-</div>
-<div class="field">
-<label>Glossar schnell öffnen</label>
-<button class="btn" id="btnOpenGlossar" type="button">Zum Glossar</button>
-<div class="help">Suche im Glossar nach Begriffen und notiere dir dein Praxis-Beispiel.</div>
-</div>
-</div>
-</div>
-</section>
+  <header id="appHeader" class="hero" role="banner">
+    <div class="wrap heroInner">
+      <div class="brandRow">
+        <div class="mark">🖤</div>
+        <div class="brandText">
+          <div class="kicker">KOCH-GLOSSAR · QUIZ · PRÜFUNGEN · EFZ (CH)</div>
+          <h1>Bestehen statt raten.</h1>
+          <p class="sub">Mobile-first · Lehrjahr 1/2/3 · PDF · Prüfungsmodus wie Führerschein</p>
+        </div>
+      </div>
 
-<!-- CALENDAR -->
-<section class="panel" id="panel-calendar">
-<div class="panel__header">
-<h1 class="h1">Kalender</h1>
-<div class="panel__meta">
-<button class="btn" id="btnCalPrev" type="button">‹</button>
-<div class="pill" id="calLabel">—</div>
-<button class="btn" id="btnCalNext" type="button">›</button>
-<button class="btn btn--primary" id="btnCalToday" type="button">Heute</button>
-</div>
-</div>
-<div class="card">
-<div class="muted">
-            Tipp: Tippe einen Tag an → Datum wird gesetzt → trage deinen Tag ein → speichern. Markierte Tage = Eintrag vorhanden.
+      <div class="progressWrap" aria-label="Fortschritt">
+        <div class="progressMeta">
+          <span id="progressLabel">Fortschritt: 0%</span>
+          <span id="countLabel">0 Begriffe</span>
+        </div>
+        <div class="progress">
+          <div id="progressBar" class="progressBar" style="width:0%"></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap" role="main">
+    <section class="panel controls" aria-label="Steuerung">
+      <div class="row">
+        <label class="field">
+          <span class="label">Lehrjahr</span>
+          <select id="lehrjahrFilter" aria-label="Lehrjahr Filter">
+            <option value="all">Alle</option>
+            <option value="1">1. Lehrjahr</option>
+            <option value="2">2. Lehrjahr</option>
+            <option value="3">3. Lehrjahr</option>
+          </select>
+        </label>
+
+        <label class="field grow">
+          <span class="label">Suche</span>
+          <input id="searchInput" type="search" placeholder="Begriff oder Bedeutung…" autocomplete="off" />
+        </label>
+
+        <label class="field">
+          <span class="label">Modus</span>
+          <select id="modeSelect" aria-label="Modus wählen">
+            <option value="glossar">Glossar</option>
+            <option value="quiz">Quiz</option>
+            <option value="pruefung">Prüfungen</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="btnRow">
+        <button class="btn" id="btnReset" type="button">Reset</button>
+        <button class="btn" id="btnFlashcards" type="button">Flashcards PDF</button>
+        <button class="btn" id="btnExport" type="button">Glossar PDF</button>
+        <button class="btn primary" id="btnStartQuiz" type="button">Quiz starten (10)</button>
+      </div>
+
+      <div class="hint">Prüfungen sind ohne Feedback währenddessen: wie Führerschein. Ergebnisse + Fehlerliste am Ende.</div>
+    </section>
+
+    <!-- GLOSSAR -->
+    <section id="glossarView" class="panel" aria-label="Glossar">
+      <div class="panelHead">
+        <h2>Glossar</h2>
+        <p class="muted">Filter, Suche, Reset. Klick auf einen Begriff → „gemerkt“.</p>
+      </div>
+      <div id="glossaryList" class="list" aria-live="polite"></div>
+      <div id="emptyState" class="empty" style="display:none;">Keine Treffer. Filter lockern oder Suche löschen.</div>
+    </section>
+
+    <!-- QUIZ -->
+    <section id="quizView" class="panel quiz" aria-label="Quiz" style="display:none;">
+      <div class="panelHead">
+        <h2>Quiz</h2>
+        <p class="muted">10 Fragen · 4 Optionen · Feedback sofort.</p>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><div class="statNum" id="statCorrect">0</div><div class="statLbl">Richtig</div></div>
+        <div class="stat"><div class="statNum" id="statTotal">0</div><div class="statLbl">Beantwortet</div></div>
+        <div class="stat"><div class="statNum" id="statPercent">0%</div><div class="statLbl">Quote</div></div>
+      </div>
+
+      <div class="qCard">
+        <div class="qMeta">
+          <span id="qIndex">Frage 1/10</span>
+          <span id="qJahr" class="pill">Lehrjahr 1</span>
+        </div>
+
+        <div id="qText" class="qText">—</div>
+        <div id="choices" class="choices" role="group" aria-label="Antworten"></div>
+        <div id="feedback" class="feedback" aria-live="polite"></div>
+
+        <div class="qActions">
+          <button class="btn" id="btnQuit" type="button">Zurück zum Glossar</button>
+          <button class="btn primary" id="btnNext" type="button" disabled>Nächste Frage</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRÜFUNGEN -->
+    <section id="pruefungView" class="panel exam" aria-label="Prüfungen" style="display:none;">
+      <div class="panelHead">
+        <h2>Prüfungen</h2>
+        <p class="muted">Führerschein-Style: Timer, kein Zurück, kein Feedback. Am Ende Ergebnis + Fehlerliste.</p>
+      </div>
+
+      <!-- Auswahl -->
+      <div id="examHome" class="examHome">
+        <div class="examGrid">
+          <div class="examCard">
+            <div class="examTitle">Lehrjahr 1 Prüfung</div>
+            <div class="examMeta">30 Fragen · 45 Min · Bestehen ab 70%</div>
+            <button class="btn primary" id="btnExam1" type="button">Starten</button>
           </div>
-<div class="divider"></div>
-<div aria-hidden="true" class="calWeekdays">
-<div>Mo</div><div>Di</div><div>Mi</div><div>Do</div><div>Fr</div><div>Sa</div><div>So</div>
-</div>
-<div class="calendarGrid" id="calendarGrid"></div>
-</div>
-</section>
-<!-- DAY -->
-<section class="panel" id="panel-day">
-<div class="panel__header">
-<h1 class="h1">Tages-Eintrag</h1>
-<div class="panel__meta">
-<button class="btn btn--primary" id="btnSaveDay" type="button">Speichern</button>
-<button class="btn" id="btnClearDay" type="button">Leeren</button>
-</div>
-</div>
-<div class="card">
-<div class="grid">
-<div class="field">
-<label for="dayDate">Datum</label>
-<input id="dayDate" type="date"/>
-</div>
-<div class="field">
-<label for="dayShift">Schicht</label>
-<select id="dayShift">
-<option value="frueh">Früh</option>
-<option value="spaet">Spät</option>
-<option value="split">Split</option>
-<option value="frei">Frei</option>
-</select>
-</div>
-</div>
-<div class="divider"></div>
-<div class="grid">
-<div class="field">
-<label for="dayStation">Station / Bereich</label>
-<input id="dayStation" placeholder="z. B. Gardemanger, Saucier, Pass, Dessert…" type="text"/>
-</div>
-<div class="field">
-<label for="dayTask">Hauptaufgabe</label>
-<input id="dayTask" placeholder="z. B. Mise, Fonds, Anrichten, Bestellungen…" type="text"/>
-</div>
-</div>
-<div class="field">
-<label for="dayLearningGoal">Lernziel heute (1 Satz)</label>
-<input id="dayLearningGoal" maxlength="140" placeholder="konkret, messbar" type="text"/>
-<div class="help">Beispiel: „Julienne gleichmäßig: 3 mm, sauberer Schnitt, ohne Hetze.“</div>
-</div>
-<div class="field">
-<label for="dayLearned">Was habe ich gelernt / geübt?</label>
-<textarea id="dayLearned" placeholder="Was genau? Wie gemacht? Woran gemerkt?" rows="7"></textarea>
-</div>
-<div class="field">
-<label for="dayStandard">Standard/Regel, die ich heute verstanden habe</label>
-<textarea id="dayStandard" placeholder="z. B. Hygiene-Standard, Pass-Regel, Mise-Logik…" rows="5"></textarea>
-</div>
-<div class="divider"></div>
-<div class="field">
-<div class="row">
-<label for="dayStress">Belastung (0–10)</label>
-<div class="pill" id="stressPill">5</div>
-</div>
-<input id="dayStress" max="10" min="0" step="1" type="range" value="5"/>
-<div class="range-hints">
-<span>0 ruhig</span>
-<span>10 am Limit</span>
-</div>
-</div>
-<div class="grid">
-<div class="field">
-<label for="dayWentWell">Was lief gut?</label>
-<textarea id="dayWentWell" placeholder="1–5 Punkte" rows="6"></textarea>
-</div>
-<div class="field">
-<label for="dayToImprove">Was muss ich verbessern?</label>
-<textarea id="dayToImprove" placeholder="1–3 Punkte, konkret" rows="6"></textarea>
-</div>
-</div>
-<div class="field">
-<label for="dayFreeNotes">Freie Notizen (Platz ohne Ende)</label>
-<textarea id="dayFreeNotes" placeholder="Alles, was raus muss: Situationen, Fragen, Aha-Momente, Notizen aus dem Service…" rows="10"></textarea>
-</div>
-<div class="divider"></div>
-<div class="field">
-<label>Basics</label>
-<div class="checks">
-<label class="check"><input id="dayWater1" type="checkbox"/><span>Wasser 1</span></label>
-<label class="check"><input id="dayWater2" type="checkbox"/><span>Wasser 2</span></label>
-<label class="check"><input id="dayWater3" type="checkbox"/><span>Wasser 3</span></label>
-<label class="check"><input id="dayPause" type="checkbox"/><span>Pause</span></label>
-<label class="check"><input id="dayFood" type="checkbox"/><span>Essen</span></label>
-</div>
-</div>
-</div>
-</section>
-<!-- WEEK -->
-<section class="panel" id="panel-week">
-<div class="panel__header">
-<h1 class="h1">Wochen-Check</h1>
-<div class="panel__meta">
-<button class="btn btn--primary" id="btnSaveWeek" type="button">Speichern</button>
-<button class="btn" id="btnClearWeek" type="button">Leeren</button>
-</div>
-</div>
-<div class="card">
-<div class="grid">
-<div class="field">
-<label for="weekNumber">Woche (Nr.)</label>
-<input id="weekNumber" max="53" min="1" placeholder="z. B. 12" type="number"/>
-</div>
-<div class="field">
-<label for="weekYear">Jahr</label>
-<input id="weekYear" max="2100" min="2000" type="number"/>
-</div>
-</div>
-<div class="field">
-<label for="weekSkills">Welche Skills habe ich geübt?</label>
-<textarea id="weekSkills" rows="8"></textarea>
-</div>
-<div class="field">
-<label for="weekMistake">Ein Fehler, den ich verstanden habe (und wie ich ihn vermeide)</label>
-<textarea id="weekMistake" rows="6"></textarea>
-</div>
-<div class="field">
-<label for="weekFocus">Fokus nächste Woche</label>
-<input id="weekFocus" maxlength="80" placeholder="z. B. Ordnung, Timing, Kommunikation…" type="text"/>
-</div>
-<div class="field">
-<label for="weekNotes">Notizen</label>
-<textarea id="weekNotes" rows="8"></textarea>
-</div>
-</div>
-</section>
-<!-- MONTH -->
-<section class="panel" id="panel-month">
-<div class="panel__header">
-<h1 class="h1">Monats-Check</h1>
-<div class="panel__meta">
-<button class="btn btn--primary" id="btnSaveMonth" type="button">Speichern</button>
-<button class="btn" id="btnClearMonth" type="button">Leeren</button>
-</div>
-</div>
-<div class="card">
-<div class="grid">
-<div class="field">
-<label for="monthName">Monat</label>
-<select id="monthName">
-<option value="1">Januar</option><option value="2">Februar</option><option value="3">März</option>
-<option value="4">April</option><option value="5">Mai</option><option value="6">Juni</option>
-<option value="7">Juli</option><option value="8">August</option><option value="9">September</option>
-<option value="10">Oktober</option><option value="11">November</option><option value="12">Dezember</option>
-</select>
-</div>
-<div class="field">
-<label for="monthYear">Jahr</label>
-<input id="monthYear" max="2100" min="2000" type="number"/>
-</div>
-</div>
-<div class="field">
-<label for="monthProgress">Fortschritt (3–7 Punkte)</label>
-<textarea id="monthProgress" rows="8"></textarea>
-</div>
-<div class="field">
-<label for="monthGap">Lücken / Lernbedarf</label>
-<textarea id="monthGap" rows="7"></textarea>
-</div>
-<div class="field">
-<label for="monthSchool">Berufsschule / Prüfung (Notizen)</label>
-<textarea id="monthSchool" rows="7"></textarea>
-</div>
-<div class="field">
-<label for="monthNotes">Freie Monatsnotizen</label>
-<textarea id="monthNotes" rows="9"></textarea>
-</div>
-</div>
-</section>
-<!-- NOTES -->
-<section class="panel" id="panel-notes">
-<div class="panel__header">
-<h1 class="h1">Notizbuch</h1>
-<div class="panel__meta">
-<button class="btn btn--primary" id="btnSaveNotebook" type="button">Speichern</button>
-</div>
-</div>
-<div class="card">
-<div class="field">
-<label for="nbQuestions">Fragen an Chef/Ausbilder</label>
-<textarea id="nbQuestions" placeholder="Alles sammeln, nichts vergessen." rows="9"></textarea>
-</div>
-<div class="field">
-<label for="nbVocabulary">Fachbegriffe &amp; Übersetzungen (mein Wörterbuch)</label>
-<textarea id="nbVocabulary" placeholder="Begriff – Erklärung in meinen Worten – Beispiel" rows="10"></textarea>
-</div>
-<div class="field">
-<label for="nbRecipes">Rezepte/Grundansätze (Notizen)</label>
-<textarea id="nbRecipes" placeholder="Grundlogik, Verhältnis, Merksätze" rows="10"></textarea>
-</div>
-<div class="field">
-<label for="nbServiceLessons">Service-Learnings (Was hat wirklich gezählt?)</label>
-<textarea id="nbServiceLessons" rows="10"></textarea>
-</div>
-</div>
-</section>
-<!-- WISSEN -->
-<section class="panel" id="panel-wissen">
-<div class="panel__header">
-<h1 class="h1">Wissen (nach Lehrjahr)</h1>
-<div class="panel__meta">
-<div class="pill" id="wissenYearPill">Lehrjahr 1</div>
-<button class="btn" id="btnWissenTop" type="button">Nach oben</button>
-</div>
-</div>
-<div class="card">
-<div class="field">
-<label for="wissenSearch">Suche im Wissen</label>
-<input id="wissenSearch" placeholder="z. B. HACCP, Pass, blanchieren, Kühlkette…" type="search"/>
-</div>
-<div class="divider"></div>
-<div class="wissenWrap">
-<aside class="wissenNav">
-<div class="wissenNav__title">Themen</div>
-<div class="wissenNav__items" id="wissenNavItems"></div>
-</aside>
-<article class="wissenContent">
-<div id="wissenContent"></div>
-</article>
-</div>
-</div>
-</section>
-<!-- GLOSSAR -->
-<section class="panel" id="panel-glossar">
-<div class="panel__header">
-<h1 class="h1">Glossar</h1>
-<div class="panel__meta">
-<div class="pill" id="glossarCount">0 Begriffe</div>
-</div>
-</div>
-<div class="card">
-<div class="grid">
-<div class="field">
-<label for="glossarSearch">Suche</label>
-<input id="glossarSearch" placeholder="Begriff oder Erklärung…" type="search"/>
-</div>
-<div class="field">
-<label for="glossarYearFilter">Filter Lehrjahr</label>
-<select id="glossarYearFilter">
-<option value="all">Alle</option>
-<option value="1">Lehrjahr 1</option>
-<option value="2">Lehrjahr 2</option>
-<option value="3">Lehrjahr 3</option>
-</select>
-</div>
-</div>
-<div class="divider"></div>
 
-<div class="glossarActions">
-  <div class="seg" role="group" aria-label="Glossar Modus">
-    <button class="seg__btn is-active" id="glossarModeIndex" type="button">Verzeichnis</button>
-    <button class="seg__btn" id="glossarModeQuiz" type="button">Quiz</button>
-  </div>
-  <div class="actions">
-    <button class="btn" id="btnGlossarReset" type="button">Reset</button>
-    <button class="btn" id="btnGlossarFlashcards" type="button">Flashcards PDF</button>
-    <button class="btn btn--primary" id="btnGlossarExport" type="button">Glossar PDF</button>
-    <button class="btn btn--primary" id="btnGlossarStartQuiz" type="button">Quiz starten (10)</button>
-  </div>
-</div>
+          <div class="examCard">
+            <div class="examTitle">Lehrjahr 2 Prüfung</div>
+            <div class="examMeta">40 Fragen · 60 Min · Bestehen ab 70%</div>
+            <button class="btn primary" id="btnExam2" type="button">Starten</button>
+          </div>
 
-<div class="divider"></div>
+          <div class="examCard">
+            <div class="examTitle">Lehrjahr 3 Prüfung</div>
+            <div class="examMeta">50 Fragen · 75 Min · Bestehen ab 70%</div>
+            <button class="btn primary" id="btnExam3" type="button">Starten</button>
+          </div>
 
-<div class="glossarIndex" id="glossarIndex"></div>
+          <div class="examCard disabled">
+            <div class="examTitle">Gesamt-EFZ (später)</div>
+            <div class="examMeta">Mix aus allen · Prüfungssimulation</div>
+            <button class="btn" type="button" disabled>Kommt</button>
+          </div>
+        </div>
+      </div>
 
-<div class="glossarQuiz" id="glossarQuiz" style="display:none;">
-  <div class="quizTop">
-    <div class="pill" id="quizStats">0/0 · 0%</div>
-    <div class="muted" id="quizHint">Multiple Choice · faire Distraktoren</div>
-  </div>
-  <div class="quizCard">
-    <div class="quizMeta">
-      <div class="pill" id="quizQIndex">Frage 1/10</div>
-      <div class="pill" id="quizQYear">Lehrjahr 1</div>
-      <div class="pill" id="quizQCat">Kategorie —</div>
+      <!-- Laufende Prüfung -->
+      <div id="examRun" class="examRun" style="display:none;">
+        <div class="examTopbar">
+          <div class="examLeft">
+            <span id="examName" class="pill">Lehrjahr 1</span>
+            <span id="examProgress" class="pill">1/30</span>
+          </div>
+          <div class="examRight">
+            <span id="examTimer" class="pill">45:00</span>
+            <button class="btn" id="btnExamAbort" type="button">Abbrechen</button>
+          </div>
+        </div>
+
+        <div class="qCard">
+          <div class="qMeta">
+            <span id="examQIdx">Frage 1/30</span>
+            <span id="examQJahr" class="pill">Lehrjahr 1</span>
+          </div>
+
+          <div id="examQText" class="qText">—</div>
+          <div id="examChoices" class="choices" role="group" aria-label="Antworten"></div>
+
+          <div class="qActions">
+            <button class="btn primary" id="btnExamNext" type="button" disabled>Nächste</button>
+          </div>
+
+          <div class="examNote">
+            Kein Feedback während der Prüfung. Am Ende bekommst du Ergebnis + Fehlerliste.
+          </div>
+        </div>
+      </div>
+
+      <!-- Ergebnis -->
+      <div id="examResult" class="examResult" style="display:none;">
+        <div class="resultHero">
+          <div class="resultTitle" id="resultTitle">Ergebnis</div>
+          <div class="resultMeta" id="resultMeta">—</div>
+        </div>
+
+        <div class="resultActions">
+          <button class="btn primary" id="btnRetryWrong" type="button">Nur Fehler wiederholen</button>
+          <button class="btn" id="btnBackExamHome" type="button">Zurück zu Prüfungen</button>
+        </div>
+
+        <div class="panelHead" style="padding-top:0;">
+          <h3 style="margin:0 0 6px;">Fehlerliste</h3>
+          <p class="muted" style="margin:0;">Hier siehst du genau, was du falsch hattest.</p>
+        </div>
+
+        <div id="wrongList" class="wrongList"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer" role="contentinfo">
+    <div class="wrap footerInner">
+      <div class="footerTop">
+        <div class="footerBrand">
+          <div class="mark small">🖤</div>
+          <div>
+            <div class="footerTitle">🖤RE:BELLE™ Media</div>
+            <div class="footerSub">The Art of Feeling. Amplified.</div>
+          </div>
+        </div>
+
+        <div class="footerLinks">
+          <a href="https://newwomanintheshop.com" target="_blank" rel="noopener">newwomanintheshop.com</a>
+          <a href="https://rebellemedia.de" target="_blank" rel="noopener">rebellemedia.de</a>
+          <a href="mailto:rebelle.media.creator@gmail.com">rebelle.media.creator@gmail.com</a>
+        </div>
+      </div>
+
+      <div class="footerFine">Offline-fähig · Kein Login · Keine Cloud · Lernwerkzeug EFZ (CH)</div>
     </div>
-    <div class="quizQuestion" id="quizQuestion">—</div>
-    <div class="quizChoices" id="quizChoices"></div>
-    <div class="quizFeedback" id="quizFeedback" style="display:none;"></div>
-    <div class="quizActions">
-      <button class="btn" id="btnQuizBackToIndex" type="button">Zurück</button>
-      <button class="btn btn--primary" id="btnQuizNext" type="button" disabled>Nächste Frage</button>
-    </div>
-  </div>
-</div>
+  </footer>
 
-</div>
-</section>
-<!-- ENTRIES -->
-<section class="panel" id="panel-entries">
-<div class="panel__header">
-<h1 class="h1">Einträge</h1>
-<div class="panel__meta">
-<button class="btn" id="btnDeleteYear" type="button">Lehrjahr löschen</button>
-<button class="btn" id="btnDeleteAll" type="button">Alles löschen</button>
-</div>
-</div>
-<div class="card">
-<div class="field">
-<label for="search">Suche</label>
-<input id="search" placeholder="Datum, Station, Lernziel, Notizen…" type="search"/>
-</div>
-<div class="list-head">
-<div class="muted" id="countInfo">0 Einträge</div>
-<div class="sort">
-<label class="muted" for="sortBy">Sortieren</label>
-<select id="sortBy">
-<option value="newest">Neueste zuerst</option>
-<option value="oldest">Älteste zuerst</option>
-</select>
-</div>
-</div>
-<div class="entries" id="entries"></div>
-</div>
-</section>
-<!-- INFO -->
-<section class="panel" id="panel-info">
-<div class="panel__header">
-<h1 class="h1">Info</h1>
-</div>
-<div class="card">
-<p class="p">
-            Dieses Produkt ist eine praktische Lern- und Reflexionshilfe für Koch-Azubis: Kalender, Tagebuch, Wochen/Monats-Checks, Notizen, Wissen &amp; Glossar.
-          </p>
-<ul class="ul">
-<li><strong>Offline nutzbar:</strong> Inhalte und Einträge werden lokal im Browser gespeichert.</li>
-<li><strong>Backup:</strong> Export/Import nutzen (z. B. Gerätewechsel).</li>
-<li><strong>Wichtig:</strong> Ergänzung – ersetzt kein offizielles Berichtsheft/keine betriebliche Unterweisung.</li>
-</ul>
-<div class="divider"></div>
-<p class="p">
-<strong>Autor &amp; Idee:</strong> Kevin Schlesier<br/>
-<strong>Anbieter:</strong> 🖤RE:BELLE™ Media · The Art of Feeling. Amplified.<br/>
-<strong>Web:</strong> newwomanintheshop.com · rebellemedia.de<br/>
-<strong>Kontakt:</strong> rebelle.media.creator@gmail.com
-          </p>
-<div class="divider"></div>
-<div class="legalLinks">
-<a class="legalLink" href="impressum.html">Impressum</a>
-<a class="legalLink" href="datenschutz.html">Datenschutz</a>
-<a class="legalLink" href="agb.html">AGB</a>
-</div>
-</div>
-</section>
-</main>
-<footer class="footer">
-<div class="footer__wrap">
-<div class="footer__note">🖤RE:BELLE™ Media · The Art of Feeling. Amplified.</div>
-<div class="footer__sub">
-<span>Idee/Autor: Kevin Schlesier</span>
-<span class="dot">·</span>
-<a href="impressum.html">Impressum</a>
-<span class="dot">·</span>
-<a href="datenschutz.html">Datenschutz</a>
-<span class="dot">·</span>
-<a href="agb.html">AGB</a>
-</div>
-</div>
-</footer>
-<div aria-live="polite" class="toast" id="toast" role="status"></div>
-</div>
-<script src="content.js"></script>
-<script src="glossary.js"></script><script src="app.js"></script>
-
-<div aria-hidden="true" class="modal" id="onboarding">
-<div class="modal__backdrop"></div>
-<div aria-labelledby="obTitle" aria-modal="true" class="modal__card" role="dialog">
-<div class="modal__top">
-<div>
-<div class="modal__title" id="obTitle">Pro-Azubi Setup</div>
-<div class="modal__sub">Ausbildungsstart setzen → Lehrjahre, Wochen und Berichtsheft-Export laufen automatisch.</div>
-</div>
-</div>
-<div class="divider"></div>
-<div class="grid">
-<div class="field">
-<label for="obName">Name Azubi</label>
-<input id="obName" type="text"/>
-</div>
-<div class="field">
-<label for="obJob">Ausbildungsberuf</label>
-<input id="obJob" type="text" value="Koch/Köchin"/>
-</div>
-</div>
-<div class="grid">
-<div class="field">
-<label for="obCompany">Betrieb</label>
-<input id="obCompany" type="text"/>
-</div>
-<div class="field">
-<label for="obTrainer">Ausbilder:in</label>
-<input id="obTrainer" type="text"/>
-</div>
-</div>
-<div class="grid">
-<div class="field">
-<label for="obStart">Ausbildungsstart</label>
-<input id="obStart" type="date"/>
-</div>
-<div class="field">
-<label for="obMode">Berichtsheft-Standard</label>
-<select id="obMode">
-<option value="weekly">Wöchentlich</option>
-<option value="daily">Täglich</option>
-</select>
-<div class="help">Viele Betriebe verlangen wöchentlich. Du kannst später jederzeit wechseln.</div>
-</div>
-</div>
-<div class="divider"></div>
-<div class="modal__actions">
-<button class="btn btn--primary" id="obSave" type="button">Setup speichern</button>
-</div>
-</div>
-</div>
+  <script src="app.js"></script>
 </body>
 </html>
