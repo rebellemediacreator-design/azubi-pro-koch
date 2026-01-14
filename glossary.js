@@ -1,11 +1,9 @@
 /* glossary.js */
 window.AZUBI_GLOSSARY_PRO = {
   "meta": {
-    "title": "Azubi Pro Koch – Glossar (Master)",
+    "title": "Glossar PRO · Koch/Köchin",
     "version": 1,
-    "updatedAt": "2026-01-09",
-    "count": 272,
-    "source": "Merged: existing glossary.js + glossar-koch-lehrlinge.md + curated additions"
+    "updatedAt": "2026-01-06T06:34:58.709204"
   },
   "items": [
     {
@@ -86,19 +84,6 @@ window.AZUBI_GLOSSARY_PRO = {
       "category": "hygiene"
     },
     {
-      "term": "Allergenkennzeichnung",
-      "definition": "Kennzeichnung von Allergenen in Speisen; Kreuzkontakt vermeiden.",
-      "praxis": "So setzt du es um: Kennzeichnung von Allergenen in Speisen; Kreuzkontakt vermeiden.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2,
-        3
-      ],
-      "category": "hygiene"
-    },
-    {
       "term": "Allergien und Unverträglichkeiten",
       "definition": "Lebensmittelunverträglichkeiten berücksichtigen",
       "praxis": "Im Alltag ist das ein Standard-Begriff: du nutzt ihn, um Abläufe klar zu machen, Verantwortung zu definieren und Qualität wiederholbar zu halten.",
@@ -106,19 +91,6 @@ window.AZUBI_GLOSSARY_PRO = {
       "merksatz": "Standard schlägt Stimmung.",
       "years": [
         1
-      ],
-      "category": "allgemein"
-    },
-    {
-      "term": "Anrichten",
-      "definition": "Speisen optisch sauber und funktional auf dem Teller platzieren.",
-      "praxis": "So setzt du es um: Speisen optisch sauber und funktional auf dem Teller platzieren.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2,
-        3
       ],
       "category": "allgemein"
     },
@@ -134,41 +106,6 @@ window.AZUBI_GLOSSARY_PRO = {
       "category": "sicherheit"
     },
     {
-      "term": "Arbeitsschutzgesetz (ArbSchG)",
-      "definition": "Rechtsgrundlage für sichere Arbeitsbedingungen",
-      "praxis": "So setzt du es um: Rechtsgrundlage für sichere Arbeitsbedingungen",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        2,
-        3
-      ],
-      "category": "hygiene"
-    },
-    {
-      "term": "Auditfähigkeit",
-      "definition": "Prozesse und Dokumente so führen, dass Kontrollen nachvollziehbar und vollständig sind.",
-      "praxis": "So setzt du es um: Prozesse und Dokumente so führen, dass Kontrollen nachvollziehbar und vollständig sind.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        3
-      ],
-      "category": "allgemein"
-    },
-    {
-      "term": "Ausbeinmesser",
-      "definition": "Schmales Messer zum Auslösen von Knochen, Sehnen und Häuten.",
-      "praxis": "So setzt du es um: Schmales Messer zum Auslösen von Knochen, Sehnen und Häuten.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2
-      ],
-      "category": "werkzeug"
-    },
-    {
       "term": "Backwaren",
       "definition": "Brote, Brötchen, Croissants",
       "praxis": "Im Alltag ist das ein Standard-Begriff: du nutzt ihn, um Abläufe klar zu machen, Verantwortung zu definieren und Qualität wiederholbar zu halten.",
@@ -178,31 +115,6 @@ window.AZUBI_GLOSSARY_PRO = {
         3
       ],
       "category": "allgemein"
-    },
-    {
-      "term": "Bain-marie",
-      "definition": "Wasserbad zum schonenden Warmhalten/Schmelzen ohne direkte Hitze.",
-      "praxis": "So setzt du es um: Wasserbad zum schonenden Warmhalten/Schmelzen ohne direkte Hitze.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2,
-        3
-      ],
-      "category": "allgemein"
-    },
-    {
-      "term": "Bauch",
-      "definition": "Fetter Zuschnitt; knusprig braten oder langsam garen, gut für Glasuren.",
-      "praxis": "So setzt du es um: Fetter Zuschnitt; knusprig braten oder langsam garen, gut für Glasuren.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2
-      ],
-      "category": "technik"
     },
     {
       "term": "Bavaroise",
@@ -223,45 +135,6 @@ window.AZUBI_GLOSSARY_PRO = {
       "merksatz": "Standard schlägt Stimmung.",
       "years": [
         1
-      ],
-      "category": "allgemein"
-    },
-    {
-      "term": "Beurre blanc",
-      "definition": "Emulgierte Buttersauce auf Wein/Schalotten-Basis; warm, aber nicht kochend halten.",
-      "praxis": "So setzt du es um: Emulgierte Buttersauce auf Wein/Schalotten-Basis; warm, aber nicht kochend halten.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2,
-        3
-      ],
-      "category": "allgemein"
-    },
-    {
-      "term": "Beurre manié",
-      "definition": "Kaltes Butter-Mehl-Gemisch zum Nachbinden von Saucen.",
-      "praxis": "So setzt du es um: Kaltes Butter-Mehl-Gemisch zum Nachbinden von Saucen.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2,
-        3
-      ],
-      "category": "allgemein"
-    },
-    {
-      "term": "Beurre noisette",
-      "definition": "Nussbutter; Butter bräunen bis nussig, dann einsetzen (nicht verbrennen).",
-      "praxis": "So setzt du es um: Nussbutter; Butter bräunen bis nussig, dann einsetzen (nicht verbrennen).",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2,
-        3
       ],
       "category": "allgemein"
     },
@@ -299,17 +172,6 @@ window.AZUBI_GLOSSARY_PRO = {
       "category": "allgemein"
     },
     {
-      "term": "Biskuit",
-      "definition": "Luftiger Teig durch Aufschlagen von Eiern/Zucker; vorsichtig unterheben.",
-      "praxis": "So setzt du es um: Luftiger Teig durch Aufschlagen von Eiern/Zucker; vorsichtig unterheben.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        2
-      ],
-      "category": "patisserie"
-    },
-    {
       "term": "Blanchieren",
       "definition": "Kurz in kochendem Wasser garen",
       "praxis": "In der Praxis ist das ein Gar-/Zubereitungshebel: Temperatur, Zeit und Produktgröße bestimmen Ergebnis und Wiederholbarkeit – nicht Bauchgefühl.",
@@ -330,17 +192,6 @@ window.AZUBI_GLOSSARY_PRO = {
         2
       ],
       "category": "allgemein"
-    },
-    {
-      "term": "Blindbacken",
-      "definition": "Teigboden ohne Füllung vorbacken; verhindert Durchweichen.",
-      "praxis": "So setzt du es um: Teigboden ohne Füllung vorbacken; verhindert Durchweichen.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        2
-      ],
-      "category": "patisserie"
     },
     {
       "term": "Blätterteig",
@@ -365,46 +216,12 @@ window.AZUBI_GLOSSARY_PRO = {
       "category": "allgemein"
     },
     {
-      "term": "Bonzeiten",
-      "definition": "Zeit vom Bon bis Ausgabe; Kennzahl für Tempo und Prozessqualität.",
-      "praxis": "So setzt du es um: Zeit vom Bon bis Ausgabe; Kennzahl für Tempo und Prozessqualität.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        3
-      ],
-      "category": "organisation"
-    },
-    {
-      "term": "Brandteig",
-      "definition": "Teig, der durch ‚Abbrennen‘ im Topf vorbereitet wird; Basis für Windbeutel/Eclairs.",
-      "praxis": "So setzt du es um: Teig, der durch ‚Abbrennen‘ im Topf vorbereitet wird; Basis für Windbeutel/Eclairs.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        2
-      ],
-      "category": "patisserie"
-    },
-    {
       "term": "Braten",
       "definition": "Mit hoher Temperatur",
       "praxis": "In der Praxis ist das ein Gar-/Zubereitungshebel: Temperatur, Zeit und Produktgröße bestimmen Ergebnis und Wiederholbarkeit – nicht Bauchgefühl.",
       "fehler": "Typischer Fehler: falsche Temperatur oder zu volle Pfanne/Topf. Lösung: Hitze stabilisieren, Menge reduzieren, Garzustand aktiv prüfen.",
       "merksatz": "Ergebnis kommt von Temperatur, Zeit und Schnitt – nicht von Hoffnung.",
       "years": [
-        2
-      ],
-      "category": "technik"
-    },
-    {
-      "term": "Bratensatz",
-      "definition": "Röststoffe am Pfannenboden nach dem Anbraten; Basis für Saucen durch Ablöschen.",
-      "praxis": "So setzt du es um: Röststoffe am Pfannenboden nach dem Anbraten; Basis für Saucen durch Ablöschen.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
         2
       ],
       "category": "technik"
@@ -430,31 +247,6 @@ window.AZUBI_GLOSSARY_PRO = {
         1
       ],
       "category": "schnitt"
-    },
-    {
-      "term": "Bräter",
-      "definition": "Schwerer Topf/Form zum Braten und Schmoren im Ofen; hält Hitze stabil.",
-      "praxis": "So setzt du es um: Schwerer Topf/Form zum Braten und Schmoren im Ofen; hält Hitze stabil.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2
-      ],
-      "category": "werkzeug"
-    },
-    {
-      "term": "Brühe",
-      "definition": "Klare Flüssigkeit aus Auskochen von Zutaten; Basis für Suppen und Saucen.",
-      "praxis": "So setzt du es um: Klare Flüssigkeit aus Auskochen von Zutaten; Basis für Suppen und Saucen.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2,
-        3
-      ],
-      "category": "allgemein"
     },
     {
       "term": "Buffet",
@@ -490,31 +282,6 @@ window.AZUBI_GLOSSARY_PRO = {
       "category": "schnitt"
     },
     {
-      "term": "Chinois",
-      "definition": "Feines Spitzsieb zum sehr feinen Passieren von Fonds und Saucen.",
-      "praxis": "So setzt du es um: Feines Spitzsieb zum sehr feinen Passieren von Fonds und Saucen.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2
-      ],
-      "category": "werkzeug"
-    },
-    {
-      "term": "Coulis",
-      "definition": "Pürierte und passierte Sauce aus Früchten oder Gemüse.",
-      "praxis": "So setzt du es um: Pürierte und passierte Sauce aus Früchten oder Gemüse.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2,
-        3
-      ],
-      "category": "allgemein"
-    },
-    {
       "term": "Cross-Contamination",
       "definition": "Kreuzkontamination: Übertragung von Keimen/Allergenen z. B. durch Brett/Messer/Handschuhe.",
       "praxis": "Im Alltag ist das ein Standard-Begriff: du nutzt ihn, um Abläufe klar zu machen, Verantwortung zu definieren und Qualität wiederholbar zu halten.",
@@ -524,17 +291,6 @@ window.AZUBI_GLOSSARY_PRO = {
         3
       ],
       "category": "allgemein"
-    },
-    {
-      "term": "Crème anglaise",
-      "definition": "Vanillesauce auf Eigelb-Milch-Basis; nicht kochen lassen, sonst stockt sie.",
-      "praxis": "So setzt du es um: Vanillesauce auf Eigelb-Milch-Basis; nicht kochen lassen, sonst stockt sie.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        2
-      ],
-      "category": "patisserie"
     },
     {
       "term": "Crème Brûlée",
@@ -559,18 +315,6 @@ window.AZUBI_GLOSSARY_PRO = {
       "category": "wirtschaft"
     },
     {
-      "term": "Deglacieren",
-      "definition": "Bratensatz mit Flüssigkeit (Wein/Fond) lösen; Grundlage für Sauce.",
-      "praxis": "So setzt du es um: Bratensatz mit Flüssigkeit (Wein/Fond) lösen; Grundlage für Sauce.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2
-      ],
-      "category": "technik"
-    },
-    {
       "term": "Degustation",
       "definition": "Mehrgang-Menü mit kleinen Portionen",
       "praxis": "Im Alltag ist das ein Standard-Begriff: du nutzt ihn, um Abläufe klar zu machen, Verantwortung zu definieren und Qualität wiederholbar zu halten.",
@@ -591,17 +335,6 @@ window.AZUBI_GLOSSARY_PRO = {
         2
       ],
       "category": "allgemein"
-    },
-    {
-      "term": "Demi-glace",
-      "definition": "Stark reduzierte braune Grundsauce; Intensität durch lange Reduktion.",
-      "praxis": "So setzt du es um: Stark reduzierte braune Grundsauce; Intensität durch lange Reduktion.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        2
-      ],
-      "category": "technik"
     },
     {
       "term": "Desinfektionsmittel",
@@ -626,17 +359,6 @@ window.AZUBI_GLOSSARY_PRO = {
       "category": "allgemein"
     },
     {
-      "term": "Digitale Waage",
-      "definition": "Waage zum exakten Abwiegen; wichtig für Standardrezepturen und Kalkulation.",
-      "praxis": "So setzt du es um: Waage zum exakten Abwiegen; wichtig für Standardrezepturen und Kalkulation.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        3
-      ],
-      "category": "organisation"
-    },
-    {
       "term": "Dunkelroux",
       "definition": "Länger angeröstet (für dunkle Saucen)",
       "praxis": "Im Alltag ist das ein Standard-Begriff: du nutzt ihn, um Abläufe klar zu machen, Verantwortung zu definieren und Qualität wiederholbar zu halten.",
@@ -646,18 +368,6 @@ window.AZUBI_GLOSSARY_PRO = {
         2
       ],
       "category": "allgemein"
-    },
-    {
-      "term": "Dämpfen",
-      "definition": "Garen im Dampf; schonend für Vitamine und Textur.",
-      "praxis": "So setzt du es um: Garen im Dampf; schonend für Vitamine und Textur.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2
-      ],
-      "category": "technik"
     },
     {
       "term": "Dünsten",
@@ -679,19 +389,6 @@ window.AZUBI_GLOSSARY_PRO = {
       "merksatz": "Standard schlägt Stimmung.",
       "years": [
         2
-      ],
-      "category": "allgemein"
-    },
-    {
-      "term": "Emulgieren",
-      "definition": "Fett- und Wasserphase durch Rühren/Mixen stabil verbinden (z. B. Sauce, Dressing).",
-      "praxis": "So setzt du es um: Fett- und Wasserphase durch Rühren/Mixen stabil verbinden (z. B. Sauce, Dressing).",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2,
-        3
       ],
       "category": "allgemein"
     },
@@ -738,19 +435,6 @@ window.AZUBI_GLOSSARY_PRO = {
         2
       ],
       "category": "allgemein"
-    },
-    {
-      "term": "Etikettierung",
-      "definition": "Behälter beschriften (Inhalt, Datum, Allergene); Verwechslungen vermeiden.",
-      "praxis": "So setzt du es um: Behälter beschriften (Inhalt, Datum, Allergene); Verwechslungen vermeiden.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2,
-        3
-      ],
-      "category": "hygiene"
     },
     {
       "term": "Exotisches Obst",
@@ -830,19 +514,6 @@ window.AZUBI_GLOSSARY_PRO = {
       "category": "schnitt"
     },
     {
-      "term": "Flambieren",
-      "definition": "Mit hochprozentigem Alkohol entzünden; Aroma und Show, aber sicher arbeiten.",
-      "praxis": "So setzt du es um: Mit hochprozentigem Alkohol entzünden; Aroma und Show, aber sicher arbeiten.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2,
-        3
-      ],
-      "category": "allgemein"
-    },
-    {
       "term": "Flan",
       "definition": "Mit Gelatine gebundenes Creme-Dessert",
       "praxis": "Im Alltag ist das ein Standard-Begriff: du nutzt ihn, um Abläufe klar zu machen, Verantwortung zu definieren und Qualität wiederholbar zu halten.",
@@ -861,32 +532,6 @@ window.AZUBI_GLOSSARY_PRO = {
       "merksatz": "Standard schlägt Stimmung.",
       "years": [
         2
-      ],
-      "category": "allgemein"
-    },
-    {
-      "term": "Fleischthermometer",
-      "definition": "Messgerät zur Bestimmung der Kerntemperatur für Gargrad und Sicherheit.",
-      "praxis": "So setzt du es um: Messgerät zur Bestimmung der Kerntemperatur für Gargrad und Sicherheit.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2,
-        3
-      ],
-      "category": "hygiene"
-    },
-    {
-      "term": "Fond",
-      "definition": "Grundflüssigkeit aus Knochen/Gräten/Gemüse; intensiver als Brühe.",
-      "praxis": "So setzt du es um: Grundflüssigkeit aus Knochen/Gräten/Gemüse; intensiver als Brühe.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2,
-        3
       ],
       "category": "allgemein"
     },
@@ -913,19 +558,6 @@ window.AZUBI_GLOSSARY_PRO = {
       "category": "allgemein"
     },
     {
-      "term": "Frittieren",
-      "definition": "Garen in heißem Fett; Temperatur halten für knuspriges Ergebnis.",
-      "praxis": "So setzt du es um: Garen in heißem Fett; Temperatur halten für knuspriges Ergebnis.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2,
-        3
-      ],
-      "category": "hygiene"
-    },
-    {
       "term": "Fruchteis",
       "definition": "Aus Früchten oder Säften",
       "praxis": "Im Alltag ist das ein Standard-Begriff: du nutzt ihn, um Abläufe klar zu machen, Verantwortung zu definieren und Qualität wiederholbar zu halten.",
@@ -948,30 +580,6 @@ window.AZUBI_GLOSSARY_PRO = {
       "category": "allgemein"
     },
     {
-      "term": "Fumet",
-      "definition": "Konzentrierter (Fisch-)Fond als Grundlage für feine Saucen.",
-      "praxis": "So setzt du es um: Konzentrierter (Fisch-)Fond als Grundlage für feine Saucen.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        2
-      ],
-      "category": "allgemein"
-    },
-    {
-      "term": "Ganache",
-      "definition": "Mischung aus Schokolade und Sahne; Füllung/Glasur, Temperatur entscheidet über Konsistenz.",
-      "praxis": "So setzt du es um: Mischung aus Schokolade und Sahne; Füllung/Glasur, Temperatur entscheidet über Konsistenz.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2,
-        3
-      ],
-      "category": "hygiene"
-    },
-    {
       "term": "Ganzer Fisch",
       "definition": "Mit Kopf und Flossen",
       "praxis": "Im Alltag ist das ein Standard-Begriff: du nutzt ihn, um Abläufe klar zu machen, Verantwortung zu definieren und Qualität wiederholbar zu halten.",
@@ -981,32 +589,6 @@ window.AZUBI_GLOSSARY_PRO = {
         2
       ],
       "category": "allgemein"
-    },
-    {
-      "term": "Ganzer Fisch – Frischemerkmale",
-      "definition": "Klarer Geruch, feste Haut, rote Kiemen; wichtig bei Wareneingang.",
-      "praxis": "So setzt du es um: Klarer Geruch, feste Haut, rote Kiemen; wichtig bei Wareneingang.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2,
-        3
-      ],
-      "category": "allgemein"
-    },
-    {
-      "term": "Gargrad",
-      "definition": "Zustand des Durchgarens (z. B. rare/medium/well) – über Kerntemperatur steuerbar.",
-      "praxis": "So setzt du es um: Zustand des Durchgarens (z. B. rare/medium/well) – über Kerntemperatur steuerbar.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2,
-        3
-      ],
-      "category": "hygiene"
     },
     {
       "term": "Garnituren",
@@ -1049,19 +631,6 @@ window.AZUBI_GLOSSARY_PRO = {
       "merksatz": "Standard schlägt Stimmung.",
       "years": [
         2
-      ],
-      "category": "allgemein"
-    },
-    {
-      "term": "Gelatine",
-      "definition": "Geliermittel; richtig quellen, auflösen und nicht kochen.",
-      "praxis": "So setzt du es um: Geliermittel; richtig quellen, auflösen und nicht kochen.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2,
-        3
       ],
       "category": "allgemein"
     },
@@ -1143,63 +712,6 @@ window.AZUBI_GLOSSARY_PRO = {
       "category": "allgemein"
     },
     {
-      "term": "Glasieren",
-      "definition": "Glänzende Oberfläche durch Reduktion/Butter/Zucker; auch für Gemüse.",
-      "praxis": "So setzt du es um: Glänzende Oberfläche durch Reduktion/Butter/Zucker; auch für Gemüse.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2
-      ],
-      "category": "technik"
-    },
-    {
-      "term": "Gluten",
-      "definition": "Klebereiweiß in Weizen; beeinflusst Teigstruktur und Elastizität.",
-      "praxis": "So setzt du es um: Klebereiweiß in Weizen; beeinflusst Teigstruktur und Elastizität.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        2
-      ],
-      "category": "patisserie"
-    },
-    {
-      "term": "GN-Behälter",
-      "definition": "Gastronorm-Behälter nach Standardmaßen für Lagerung, Mise en place und Ausgabe.",
-      "praxis": "So setzt du es um: Gastronorm-Behälter nach Standardmaßen für Lagerung, Mise en place und Ausgabe.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        3
-      ],
-      "category": "organisation"
-    },
-    {
-      "term": "Gn/Pass",
-      "definition": "Pass (Ausgabe) als Schnittstelle Küche/Service; hier werden Teller final kontrolliert.",
-      "praxis": "So setzt du es um: Pass (Ausgabe) als Schnittstelle Küche/Service; hier werden Teller final kontrolliert.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2
-      ],
-      "category": "werkzeug"
-    },
-    {
-      "term": "Gnocchi",
-      "definition": "Kartoffelteig-Nocken; Teig nicht überarbeiten, sonst werden sie zäh.",
-      "praxis": "So setzt du es um: Kartoffelteig-Nocken; Teig nicht überarbeiten, sonst werden sie zäh.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        2
-      ],
-      "category": "patisserie"
-    },
-    {
       "term": "Granitée",
       "definition": "Halbgefrorenes Frucht-Dessert",
       "praxis": "Im Alltag ist das ein Standard-Begriff: du nutzt ihn, um Abläufe klar zu machen, Verantwortung zu definieren und Qualität wiederholbar zu halten.",
@@ -1209,18 +721,6 @@ window.AZUBI_GLOSSARY_PRO = {
         2
       ],
       "category": "allgemein"
-    },
-    {
-      "term": "Gratinieren",
-      "definition": "Überbacken unter Oberhitze, um eine Kruste zu erzeugen.",
-      "praxis": "So setzt du es um: Überbacken unter Oberhitze, um eine Kruste zu erzeugen.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2
-      ],
-      "category": "technik"
     },
     {
       "term": "Grillen",
@@ -1279,18 +779,6 @@ window.AZUBI_GLOSSARY_PRO = {
       "category": "hygiene"
     },
     {
-      "term": "HACCP (Hazard Analysis Critical Control Points)",
-      "definition": "System zur Lebensmittelsicherheit",
-      "praxis": "So setzt du es um: System zur Lebensmittelsicherheit",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        2,
-        3
-      ],
-      "category": "hygiene"
-    },
-    {
       "term": "Halal",
       "definition": "Islamische Speisegesetze",
       "praxis": "Im Alltag ist das ein Standard-Begriff: du nutzt ihn, um Abläufe klar zu machen, Verantwortung zu definieren und Qualität wiederholbar zu halten.",
@@ -1311,18 +799,6 @@ window.AZUBI_GLOSSARY_PRO = {
         3
       ],
       "category": "allgemein"
-    },
-    {
-      "term": "Haxe",
-      "definition": "Bindegewebe-reich; wird durch lange Garzeit zart (Schmoren/Ofen).",
-      "praxis": "So setzt du es um: Bindegewebe-reich; wird durch lange Garzeit zart (Schmoren/Ofen).",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2
-      ],
-      "category": "werkzeug"
     },
     {
       "term": "Hefeteig",
@@ -1398,19 +874,6 @@ window.AZUBI_GLOSSARY_PRO = {
       "merksatz": "Hygiene ist Risikokontrolle, nicht Deko.",
       "years": [
         1
-      ],
-      "category": "hygiene"
-    },
-    {
-      "term": "Händehygiene",
-      "definition": "Richtig waschen/desinfizieren; besonders nach Rohware, Abfall, Toilettengang.",
-      "praxis": "So setzt du es um: Richtig waschen/desinfizieren; besonders nach Rohware, Abfall, Toilettengang.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2,
-        3
       ],
       "category": "hygiene"
     },
@@ -1503,19 +966,6 @@ window.AZUBI_GLOSSARY_PRO = {
       "category": "allgemein"
     },
     {
-      "term": "Karamellisieren",
-      "definition": "Zucker bräunen; Bitterkeit vermeiden, Hitze kontrollieren.",
-      "praxis": "So setzt du es um: Zucker bräunen; Bitterkeit vermeiden, Hitze kontrollieren.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2,
-        3
-      ],
-      "category": "allgemein"
-    },
-    {
       "term": "Kartoffeln",
       "definition": "Kartoffelsalat, Kartoffelpüree, Frites",
       "praxis": "Im Alltag ist das ein Standard-Begriff: du nutzt ihn, um Abläufe klar zu machen, Verantwortung zu definieren und Qualität wiederholbar zu halten.",
@@ -1527,19 +977,6 @@ window.AZUBI_GLOSSARY_PRO = {
       "category": "allgemein"
     },
     {
-      "term": "Kerntemperatur",
-      "definition": "Temperatur im Inneren; entscheidend für Gargrad und hygienische Sicherheit.",
-      "praxis": "So setzt du es um: Temperatur im Inneren; entscheidend für Gargrad und hygienische Sicherheit.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2,
-        3
-      ],
-      "category": "hygiene"
-    },
-    {
       "term": "Klare Suppe",
       "definition": "Bouillon oder Consommé (transparent, aromatisch)",
       "praxis": "Im Alltag ist das ein Standard-Begriff: du nutzt ihn, um Abläufe klar zu machen, Verantwortung zu definieren und Qualität wiederholbar zu halten.",
@@ -1549,28 +986,6 @@ window.AZUBI_GLOSSARY_PRO = {
         2
       ],
       "category": "allgemein"
-    },
-    {
-      "term": "Kompott",
-      "definition": "Früchte in wenig Flüssigkeit/Zucker kurz gegart; Dessert- oder Beilagenkomponente.",
-      "praxis": "So setzt du es um: Früchte in wenig Flüssigkeit/Zucker kurz gegart; Dessert- oder Beilagenkomponente.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        2
-      ],
-      "category": "patisserie"
-    },
-    {
-      "term": "Konfieren",
-      "definition": "Garen in Fett/Öl bei niedriger Temperatur; Ergebnis wird zart und aromatisch.",
-      "praxis": "So setzt du es um: Garen in Fett/Öl bei niedriger Temperatur; Ergebnis wird zart und aromatisch.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        2
-      ],
-      "category": "hygiene"
     },
     {
       "term": "Konservierung",
@@ -1628,19 +1043,6 @@ window.AZUBI_GLOSSARY_PRO = {
       "category": "allgemein"
     },
     {
-      "term": "Kräuteröl",
-      "definition": "Aromatisiertes Öl; Kräuter/Temperatur so wählen, dass Farbe und Aroma stabil bleiben.",
-      "praxis": "So setzt du es um: Aromatisiertes Öl; Kräuter/Temperatur so wählen, dass Farbe und Aroma stabil bleiben.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2,
-        3
-      ],
-      "category": "hygiene"
-    },
-    {
       "term": "Käsesorten",
       "definition": "Hartkäse, Weichkäse, Schimmelkäse, Blauschimmelkäse",
       "praxis": "Im Alltag ist das ein Standard-Begriff: du nutzt ihn, um Abläufe klar zu machen, Verantwortung zu definieren und Qualität wiederholbar zu halten.",
@@ -1652,19 +1054,6 @@ window.AZUBI_GLOSSARY_PRO = {
       "category": "allgemein"
     },
     {
-      "term": "Kühlkette",
-      "definition": "Ununterbrochene Kühlung leicht verderblicher Ware; Temperaturgrenzen einhalten.",
-      "praxis": "So setzt du es um: Ununterbrochene Kühlung leicht verderblicher Ware; Temperaturgrenzen einhalten.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2,
-        3
-      ],
-      "category": "hygiene"
-    },
-    {
       "term": "Lagerfähigkeit",
       "definition": "Wie lange ein Produkt haltbar ist",
       "praxis": "Im Alltag ist das ein Standard-Begriff: du nutzt ihn, um Abläufe klar zu machen, Verantwortung zu definieren und Qualität wiederholbar zu halten.",
@@ -1674,17 +1063,6 @@ window.AZUBI_GLOSSARY_PRO = {
         1
       ],
       "category": "allgemein"
-    },
-    {
-      "term": "Legieren",
-      "definition": "Binden mit Eigelb/Sahne; Temperatur niedrig halten, damit es nicht gerinnt.",
-      "praxis": "So setzt du es um: Binden mit Eigelb/Sahne; Temperatur niedrig halten, damit es nicht gerinnt.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        2
-      ],
-      "category": "hygiene"
     },
     {
       "term": "Leitbild, Betriebsphilosophie",
@@ -1707,18 +1085,6 @@ window.AZUBI_GLOSSARY_PRO = {
         3
       ],
       "category": "allgemein"
-    },
-    {
-      "term": "LFGB (Lebensmittel- und Futtermittelgesetzbuch)",
-      "definition": "Deutsche Lebensmittelgesetzgebung",
-      "praxis": "So setzt du es um: Deutsche Lebensmittelgesetzgebung",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        2,
-        3
-      ],
-      "category": "hygiene"
     },
     {
       "term": "Liaison",
@@ -1787,17 +1153,6 @@ window.AZUBI_GLOSSARY_PRO = {
       "category": "wirtschaft"
     },
     {
-      "term": "Menu Engineering",
-      "definition": "Analyse von Gerichten nach Marge und Beliebtheit; Karte gezielt optimieren.",
-      "praxis": "So setzt du es um: Analyse von Gerichten nach Marge und Beliebtheit; Karte gezielt optimieren.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        3
-      ],
-      "category": "organisation"
-    },
-    {
       "term": "Mindestbestand/Höchstbestand",
       "definition": "Untere und obere Lagergrenzen",
       "praxis": "Im Alltag ist das dein Kompass für Entscheidungen: Einkauf, Portionierung, Preise und Abweichungen. Wenn du es nicht messen kannst, kannst du es nicht führen.",
@@ -1832,17 +1187,6 @@ window.AZUBI_GLOSSARY_PRO = {
       "category": "technik"
     },
     {
-      "term": "Montieren",
-      "definition": "Kurz vor dem Servieren kalte Butter einarbeiten; Sauce wird glänzend und rund.",
-      "praxis": "So setzt du es um: Kurz vor dem Servieren kalte Butter einarbeiten; Sauce wird glänzend und rund.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        2
-      ],
-      "category": "technik"
-    },
-    {
       "term": "Mousse",
       "definition": "Luftiges Schaum-Dessert (Sahne, Eischnee)",
       "praxis": "Im Alltag ist das ein Standard-Begriff: du nutzt ihn, um Abläufe klar zu machen, Verantwortung zu definieren und Qualität wiederholbar zu halten.",
@@ -1873,32 +1217,6 @@ window.AZUBI_GLOSSARY_PRO = {
       "years": [
         1,
         2
-      ],
-      "category": "allgemein"
-    },
-    {
-      "term": "Nacken",
-      "definition": "Saftiger, etwas fetter Zuschnitt; gut für langsame Garung und Grillen.",
-      "praxis": "So setzt du es um: Saftiger, etwas fetter Zuschnitt; gut für langsame Garung und Grillen.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2,
-        3
-      ],
-      "category": "allgemein"
-    },
-    {
-      "term": "Nappieren",
-      "definition": "Speise mit Sauce überziehen, sodass sie dünn bedeckt ist.",
-      "praxis": "So setzt du es um: Speise mit Sauce überziehen, sodass sie dünn bedeckt ist.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2,
-        3
       ],
       "category": "allgemein"
     },
@@ -1980,31 +1298,6 @@ window.AZUBI_GLOSSARY_PRO = {
       "category": "allgemein"
     },
     {
-      "term": "Passieren",
-      "definition": "Durch Sieb/Tuch streichen, um eine glatte Konsistenz zu bekommen.",
-      "praxis": "So setzt du es um: Durch Sieb/Tuch streichen, um eine glatte Konsistenz zu bekommen.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2,
-        3
-      ],
-      "category": "allgemein"
-    },
-    {
-      "term": "Passiertuch",
-      "definition": "Feines Tuch zum Filtern/Klären (z. B. Brühe, Öl, Joghurt).",
-      "praxis": "So setzt du es um: Feines Tuch zum Filtern/Klären (z. B. Brühe, Öl, Joghurt).",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2
-      ],
-      "category": "werkzeug"
-    },
-    {
       "term": "Personaleinsatz",
       "definition": "Schichtplanung, Aufgabenvergabe",
       "praxis": "Im Alltag ist das ein Standard-Begriff: du nutzt ihn, um Abläufe klar zu machen, Verantwortung zu definieren und Qualität wiederholbar zu halten.",
@@ -2014,19 +1307,6 @@ window.AZUBI_GLOSSARY_PRO = {
         3
       ],
       "category": "allgemein"
-    },
-    {
-      "term": "Personalhygiene",
-      "definition": "Saubere Kleidung, Haare schützen, Wunden abdecken; Schmuck vermeiden.",
-      "praxis": "So setzt du es um: Saubere Kleidung, Haare schützen, Wunden abdecken; Schmuck vermeiden.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2,
-        3
-      ],
-      "category": "hygiene"
     },
     {
       "term": "Personalkosten",
@@ -2074,17 +1354,6 @@ window.AZUBI_GLOSSARY_PRO = {
       "category": "allgemein"
     },
     {
-      "term": "Portionieren",
-      "definition": "Gleichmäßige Mengen abteilen; wichtig für Qualität und Kalkulation.",
-      "praxis": "So setzt du es um: Gleichmäßige Mengen abteilen; wichtig für Qualität und Kalkulation.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        3
-      ],
-      "category": "organisation"
-    },
-    {
       "term": "PSA",
       "definition": "Kochjacke, Hose, Schuhe, Mütze",
       "praxis": "Im Betrieb schützt dich das vor vermeidbaren Unfällen und Fehlerketten: sichere Routine, klare Zuständigkeit, saubere Übergaben.",
@@ -2094,19 +1363,6 @@ window.AZUBI_GLOSSARY_PRO = {
         3
       ],
       "category": "sicherheit"
-    },
-    {
-      "term": "PSA (Persönliche Schutzausrüstung)",
-      "definition": "Kochjacke, Hose, Schuhe, Mütze",
-      "praxis": "So setzt du es um: Kochjacke, Hose, Schuhe, Mütze",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2,
-        3
-      ],
-      "category": "allgemein"
     },
     {
       "term": "Pudding",
@@ -2131,54 +1387,6 @@ window.AZUBI_GLOSSARY_PRO = {
       "category": "allgemein"
     },
     {
-      "term": "Qualitätssicherung",
-      "definition": "Standards prüfen, Feedback, Korrektur; gleichbleibende Ergebnisse sichern.",
-      "praxis": "So setzt du es um: Standards prüfen, Feedback, Korrektur; gleichbleibende Ergebnisse sichern.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        3
-      ],
-      "category": "allgemein"
-    },
-    {
-      "term": "Quenelle",
-      "definition": "Ovale Nocke, mit zwei Löffeln geformt (z. B. aus Mousse/Püree).",
-      "praxis": "So setzt du es um: Ovale Nocke, mit zwei Löffeln geformt (z. B. aus Mousse/Püree).",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        2
-      ],
-      "category": "patisserie"
-    },
-    {
-      "term": "Quick Pickles",
-      "definition": "Schnell eingelegtes Gemüse; Essig-Zucker-Salz-Lake, kurze Ziehzeit.",
-      "praxis": "So setzt du es um: Schnell eingelegtes Gemüse; Essig-Zucker-Salz-Lake, kurze Ziehzeit.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2,
-        3
-      ],
-      "category": "allgemein"
-    },
-    {
-      "term": "Ragout",
-      "definition": "Geschmortes Gericht in Sauce; zarte Stücke durch Zeit und Flüssigkeit.",
-      "praxis": "So setzt du es um: Geschmortes Gericht in Sauce; zarte Stücke durch Zeit und Flüssigkeit.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2,
-        3
-      ],
-      "category": "allgemein"
-    },
-    {
       "term": "Rare",
       "definition": "Blutig",
       "praxis": "Im Alltag ist das ein Standard-Begriff: du nutzt ihn, um Abläufe klar zu machen, Verantwortung zu definieren und Qualität wiederholbar zu halten.",
@@ -2186,19 +1394,6 @@ window.AZUBI_GLOSSARY_PRO = {
       "merksatz": "Standard schlägt Stimmung.",
       "years": [
         2
-      ],
-      "category": "allgemein"
-    },
-    {
-      "term": "Rare (Bleu)",
-      "definition": "Blutig",
-      "praxis": "So setzt du es um: Blutig",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2,
-        3
       ],
       "category": "allgemein"
     },
@@ -2212,18 +1407,6 @@ window.AZUBI_GLOSSARY_PRO = {
         1
       ],
       "category": "service"
-    },
-    {
-      "term": "Reduzieren",
-      "definition": "Flüssigkeit einkochen, um Geschmack zu konzentrieren und Konsistenz zu verdichten.",
-      "praxis": "So setzt du es um: Flüssigkeit einkochen, um Geschmack zu konzentrieren und Konsistenz zu verdichten.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2
-      ],
-      "category": "technik"
     },
     {
       "term": "Regionalität",
@@ -2246,19 +1429,6 @@ window.AZUBI_GLOSSARY_PRO = {
         1
       ],
       "category": "allgemein"
-    },
-    {
-      "term": "Reinigungsplan",
-      "definition": "Plan, was wann womit gereinigt wird; Verantwortliche festlegen.",
-      "praxis": "So setzt du es um: Plan, was wann womit gereinigt wird; Verantwortliche festlegen.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2,
-        3
-      ],
-      "category": "hygiene"
     },
     {
       "term": "Reis",
@@ -2294,30 +1464,6 @@ window.AZUBI_GLOSSARY_PRO = {
       "category": "allgemein"
     },
     {
-      "term": "Risikoprodukte",
-      "definition": "Leicht verderbliche Waren (z. B. Geflügel, Hack, Fisch) mit strengen Hygieneanforderungen.",
-      "praxis": "So setzt du es um: Leicht verderbliche Waren (z. B. Geflügel, Hack, Fisch) mit strengen Hygieneanforderungen.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2,
-        3
-      ],
-      "category": "hygiene"
-    },
-    {
-      "term": "Roastbeef",
-      "definition": "Rückenstück vom Rind; für Steaks/Braten, Gargradführung wichtig.",
-      "praxis": "So setzt du es um: Rückenstück vom Rind; für Steaks/Braten, Gargradführung wichtig.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        3
-      ],
-      "category": "organisation"
-    },
-    {
       "term": "Rohkost",
       "definition": "Unverarbeitete Gemüse (z. B. Gemüsesticks)",
       "praxis": "Im Alltag ist das ein Standard-Begriff: du nutzt ihn, um Abläufe klar zu machen, Verantwortung zu definieren und Qualität wiederholbar zu halten.",
@@ -2338,30 +1484,6 @@ window.AZUBI_GLOSSARY_PRO = {
         1
       ],
       "category": "allgemein"
-    },
-    {
-      "term": "Ruhezeit (Fleisch)",
-      "definition": "Zeit nach dem Garen, damit sich Fleischsaft verteilt und das Schnittbild stabil bleibt.",
-      "praxis": "So setzt du es um: Zeit nach dem Garen, damit sich Fleischsaft verteilt und das Schnittbild stabil bleibt.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2,
-        3
-      ],
-      "category": "allgemein"
-    },
-    {
-      "term": "Rückverfolgbarkeit",
-      "definition": "Nachweis, woher Ware stammt (Charge/Lieferant); wichtig bei Reklamationen.",
-      "praxis": "So setzt du es um: Nachweis, woher Ware stammt (Charge/Lieferant); wichtig bei Reklamationen.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        3
-      ],
-      "category": "organisation"
     },
     {
       "term": "Saisonalität",
@@ -2408,17 +1530,6 @@ window.AZUBI_GLOSSARY_PRO = {
       "category": "sicherheit"
     },
     {
-      "term": "Schichtplan",
-      "definition": "Einsatzplanung nach Bedarf; Engpässe und Überlastung vermeiden.",
-      "praxis": "So setzt du es um: Einsatzplanung nach Bedarf; Engpässe und Überlastung vermeiden.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        3
-      ],
-      "category": "organisation"
-    },
-    {
       "term": "Schmorbraten",
       "definition": "Aus faserigem Fleisch",
       "praxis": "In der Praxis ist das ein Gar-/Zubereitungshebel: Temperatur, Zeit und Produktgröße bestimmen Ergebnis und Wiederholbarkeit – nicht Bauchgefühl.",
@@ -2435,55 +1546,6 @@ window.AZUBI_GLOSSARY_PRO = {
       "praxis": "In der Praxis ist das ein Gar-/Zubereitungshebel: Temperatur, Zeit und Produktgröße bestimmen Ergebnis und Wiederholbarkeit – nicht Bauchgefühl.",
       "fehler": "Typischer Fehler: falsche Temperatur oder zu volle Pfanne/Topf. Lösung: Hitze stabilisieren, Menge reduzieren, Garzustand aktiv prüfen.",
       "merksatz": "Ergebnis kommt von Temperatur, Zeit und Schnitt – nicht von Hoffnung.",
-      "years": [
-        1,
-        2
-      ],
-      "category": "technik"
-    },
-    {
-      "term": "Schneidebrett-Farbcode",
-      "definition": "Farben trennen Rohware (Fleisch/Fisch/Gemüse), um Kontamination zu vermeiden.",
-      "praxis": "So setzt du es um: Farben trennen Rohware (Fleisch/Fisch/Gemüse), um Kontamination zu vermeiden.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2,
-        3
-      ],
-      "category": "hygiene"
-    },
-    {
-      "term": "Schneiden (Grundhaltung)",
-      "definition": "Kralle, stabile Unterlage, scharfes Messer; Sicherheit und Tempo.",
-      "praxis": "So setzt du es um: Kralle, stabile Unterlage, scharfes Messer; Sicherheit und Tempo.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2
-      ],
-      "category": "werkzeug"
-    },
-    {
-      "term": "Schockkühler",
-      "definition": "Gerät zum schnellen Abkühlen heißer Speisen zur Einhaltung der Kühlkette (HACCP).",
-      "praxis": "So setzt du es um: Gerät zum schnellen Abkühlen heißer Speisen zur Einhaltung der Kühlkette (HACCP).",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        2,
-        3
-      ],
-      "category": "hygiene"
-    },
-    {
-      "term": "Schulter",
-      "definition": "Teilstück mit Bindegewebe; ideal für Schmoren, Ragout, Pulled.",
-      "praxis": "So setzt du es um: Teilstück mit Bindegewebe; ideal für Schmoren, Ragout, Pulled.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
       "years": [
         1,
         2
@@ -2509,31 +1571,6 @@ window.AZUBI_GLOSSARY_PRO = {
       "merksatz": "Standard schlägt Stimmung.",
       "years": [
         2
-      ],
-      "category": "allgemein"
-    },
-    {
-      "term": "Schwund",
-      "definition": "Verlust durch Verderb, Fehlportionierung oder Fehler; reduzieren durch Standards.",
-      "praxis": "So setzt du es um: Verlust durch Verderb, Fehlportionierung oder Fehler; reduzieren durch Standards.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2
-      ],
-      "category": "technik"
-    },
-    {
-      "term": "Schäumen (Butter)",
-      "definition": "Butter erhitzen bis sie schäumt; Aroma, aber nicht zu dunkel werden lassen.",
-      "praxis": "So setzt du es um: Butter erhitzen bis sie schäumt; Aroma, aber nicht zu dunkel werden lassen.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2,
-        3
       ],
       "category": "allgemein"
     },
@@ -2604,19 +1641,6 @@ window.AZUBI_GLOSSARY_PRO = {
       "category": "technik"
     },
     {
-      "term": "Stabmixer",
-      "definition": "Handmixer zum Pürieren/Emulgieren direkt im Topf oder Behälter.",
-      "praxis": "So setzt du es um: Handmixer zum Pürieren/Emulgieren direkt im Topf oder Behälter.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2,
-        3
-      ],
-      "category": "allgemein"
-    },
-    {
       "term": "Stand",
       "definition": "2024 | **Gültigkeit:** Rahmenlehrplan KMK 2021 (Neuordnung 2022)",
       "praxis": "Im Alltag ist das ein Standard-Begriff: du nutzt ihn, um Abläufe klar zu machen, Verantwortung zu definieren und Qualität wiederholbar zu halten.",
@@ -2626,30 +1650,6 @@ window.AZUBI_GLOSSARY_PRO = {
         3
       ],
       "category": "allgemein"
-    },
-    {
-      "term": "Standardisierung",
-      "definition": "Abläufe vereinheitlichen; weniger Fehler, schnelleres Onboarding.",
-      "praxis": "So setzt du es um: Abläufe vereinheitlichen; weniger Fehler, schnelleres Onboarding.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        3
-      ],
-      "category": "allgemein"
-    },
-    {
-      "term": "Standardrezeptur",
-      "definition": "Rezept mit Gramm, Zeiten, Temperaturen; reproduzierbar und kalkulierbar.",
-      "praxis": "So setzt du es um: Rezept mit Gramm, Zeiten, Temperaturen; reproduzierbar und kalkulierbar.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2,
-        3
-      ],
-      "category": "hygiene"
     },
     {
       "term": "Steak",
@@ -2718,43 +1718,6 @@ window.AZUBI_GLOSSARY_PRO = {
       "category": "service"
     },
     {
-      "term": "Tarte",
-      "definition": "Mürbeteiggebäck mit Belag/Füllung; oft blindgebacken.",
-      "praxis": "So setzt du es um: Mürbeteiggebäck mit Belag/Füllung; oft blindgebacken.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        2
-      ],
-      "category": "patisserie"
-    },
-    {
-      "term": "Temperaturkontrolle",
-      "definition": "Messen und dokumentieren von Kühl-, Warmhalte- und Kerntemperaturen.",
-      "praxis": "So setzt du es um: Messen und dokumentieren von Kühl-, Warmhalte- und Kerntemperaturen.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2,
-        3
-      ],
-      "category": "hygiene"
-    },
-    {
-      "term": "Temperieren (Schokolade)",
-      "definition": "Schokolade gezielt erwärmen/abkühlen; sorgt für Glanz und Knack.",
-      "praxis": "So setzt du es um: Schokolade gezielt erwärmen/abkühlen; sorgt für Glanz und Knack.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2,
-        3
-      ],
-      "category": "hygiene"
-    },
-    {
       "term": "Tiefgefroren",
       "definition": "Verarbeitungsfähig das ganze Jahr",
       "praxis": "Im Alltag ist das ein Standard-Begriff: du nutzt ihn, um Abläufe klar zu machen, Verantwortung zu definieren und Qualität wiederholbar zu halten.",
@@ -2808,17 +1771,6 @@ window.AZUBI_GLOSSARY_PRO = {
         3
       ],
       "category": "sicherheit"
-    },
-    {
-      "term": "Vakuumierer",
-      "definition": "Gerät zum luftdichten Verpacken; wichtig für Sous-vide und Lagerung.",
-      "praxis": "So setzt du es um: Gerät zum luftdichten Verpacken; wichtig für Sous-vide und Lagerung.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        3
-      ],
-      "category": "organisation"
     },
     {
       "term": "Vanilleeis",
@@ -2898,19 +1850,6 @@ window.AZUBI_GLOSSARY_PRO = {
       "category": "allgemein"
     },
     {
-      "term": "Verfallsdatum (MHD)",
-      "definition": "Mindesthaltbarkeitsdatum beachten",
-      "praxis": "So setzt du es um: Mindesthaltbarkeitsdatum beachten",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2,
-        3
-      ],
-      "category": "hygiene"
-    },
-    {
       "term": "Verkaufsförderung",
       "definition": "Maßnahmen zur Steigerung des Verkaufs (z. B. Aperitif anbieten)",
       "praxis": "Im Alltag ist das ein Standard-Begriff: du nutzt ihn, um Abläufe klar zu machen, Verantwortung zu definieren und Qualität wiederholbar zu halten.",
@@ -2922,18 +1861,6 @@ window.AZUBI_GLOSSARY_PRO = {
       "category": "allgemein"
     },
     {
-      "term": "Vinaigrette",
-      "definition": "Dressing aus Öl und Säure; Emulsion durch Rühren/Mixen.",
-      "praxis": "So setzt du es um: Dressing aus Öl und Säure; Emulsion durch Rühren/Mixen.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2
-      ],
-      "category": "technik"
-    },
-    {
       "term": "Ware",
       "definition": "Lebensmittel und Betriebsmittel",
       "praxis": "Im Alltag ist das ein Standard-Begriff: du nutzt ihn, um Abläufe klar zu machen, Verantwortung zu definieren und Qualität wiederholbar zu halten.",
@@ -2943,32 +1870,6 @@ window.AZUBI_GLOSSARY_PRO = {
         1
       ],
       "category": "allgemein"
-    },
-    {
-      "term": "Warenausgabe",
-      "definition": "Ausgabeprozess am Pass; Kontrolle von Optik, Temperatur, Allergenen.",
-      "praxis": "So setzt du es um: Ausgabeprozess am Pass; Kontrolle von Optik, Temperatur, Allergenen.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2,
-        3
-      ],
-      "category": "hygiene"
-    },
-    {
-      "term": "Wareneingangskontrolle",
-      "definition": "Prüfung bei Lieferung: Temperatur, Qualität, Menge, MHD, Unversehrtheit.",
-      "praxis": "So setzt du es um: Prüfung bei Lieferung: Temperatur, Qualität, Menge, MHD, Unversehrtheit.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2,
-        3
-      ],
-      "category": "hygiene"
     },
     {
       "term": "Wareneinsatz",
@@ -3002,19 +1903,6 @@ window.AZUBI_GLOSSARY_PRO = {
         3
       ],
       "category": "allgemein"
-    },
-    {
-      "term": "Warmhaltebereich",
-      "definition": "Temperaturbereich fürs Warmhalten; Qualität erhalten und Zeit/Temp dokumentieren.",
-      "praxis": "So setzt du es um: Temperaturbereich fürs Warmhalten; Qualität erhalten und Zeit/Temp dokumentieren.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2,
-        3
-      ],
-      "category": "hygiene"
     },
     {
       "term": "Wein",
@@ -3072,32 +1960,6 @@ window.AZUBI_GLOSSARY_PRO = {
       "category": "allgemein"
     },
     {
-      "term": "Zesten",
-      "definition": "Dünner Abrieb der Zitrusschale ohne Bitterstoff (weißes Albedo).",
-      "praxis": "So setzt du es um: Dünner Abrieb der Zitrusschale ohne Bitterstoff (weißes Albedo).",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2,
-        3
-      ],
-      "category": "allgemein"
-    },
-    {
-      "term": "Ziehen lassen",
-      "definition": "Nachgaren ohne Hitze; Aromen verbinden, Textur stabilisiert sich.",
-      "praxis": "So setzt du es um: Nachgaren ohne Hitze; Aromen verbinden, Textur stabilisiert sich.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2,
-        3
-      ],
-      "category": "allgemein"
-    },
-    {
       "term": "Zuchtpilze",
       "definition": "Champignon, Austernpilz",
       "praxis": "Im Alltag ist das ein Standard-Begriff: du nutzt ihn, um Abläufe klar zu machen, Verantwortung zu definieren und Qualität wiederholbar zu halten.",
@@ -3107,19 +1969,6 @@ window.AZUBI_GLOSSARY_PRO = {
         2
       ],
       "category": "allgemein"
-    },
-    {
-      "term": "Zuckerstadien",
-      "definition": "Kochen von Zucker (Faden/Perle/Kugel/Karamell); Temperatur bestimmt Ergebnis.",
-      "praxis": "So setzt du es um: Kochen von Zucker (Faden/Perle/Kugel/Karamell); Temperatur bestimmt Ergebnis.",
-      "fehler": "Typischer Fehler: zu schnell, ohne Kontrolle – arbeite sauber nach Standard.",
-      "merksatz": "Standard vor Tempo.",
-      "years": [
-        1,
-        2,
-        3
-      ],
-      "category": "hygiene"
     }
   ]
 };

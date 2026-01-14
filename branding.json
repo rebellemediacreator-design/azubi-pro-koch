@@ -1,0 +1,94 @@
+{
+  "appName": "Azubi Tagebuch",
+  "appSubtitle": "Dein digitales Berichtsheft",
+  "appDescription": "IHK-konform · DSGVO-konform · Offline nutzbar",
+  
+  "company": {
+    "name": "Ihre Hotelkette",
+    "website": "https://ihre-website.de",
+    "email": "info@ihre-website.de",
+    "phone": "+49 123 456789"
+  },
+  
+  "branding": {
+    "logo": {
+      "url": "",
+      "alt": "Logo"
+    },
+    "favicon": "",
+    "colors": {
+      "primary": "#BC9E81",
+      "secondary": "#14161B",
+      "accent": "#F5F5F5",
+      "text": "#14161B",
+      "background": "#FFFFFF"
+    },
+    "fonts": {
+      "heading": "system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
+      "body": "system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif"
+    }
+  },
+  
+  "footer": {
+    "text": "© 2026 Ihre Hotelkette. Alle Rechte vorbehalten.",
+    "links": [
+      {
+        "text": "Impressum",
+        "url": "impressum.html"
+      },
+      {
+        "text": "Datenschutz",
+        "url": "datenschutz.html"
+      },
+      {
+        "text": "AGB",
+        "url": "agb.html"
+      }
+    ]
+  },
+  
+  "features": {
+    "calendar": true,
+    "glossary": true,
+    "quiz": true,
+    "exam": true,
+    "entries": true,
+    "pdfExport": true
+  },
+  
+  "ihk": {
+    "enabled": true,
+    "reportFormat": "weekly",
+    "companyName": "Ihre Hotelkette GmbH",
+    "trainerName": "",
+    "apprenticeshipStart": ""
+  },
+  
+  "api": {
+    "enabled": true,
+    "url": "https://3000-ioh0xcwy8vdsao1j7byp8-36d6cfac.us2.manus.computer",
+    "key": "default-api-key-change-me",
+    "apprenticeId": 1,
+    "syncOnline": true,
+    "syncInterval": 300000
+  },
+  
+  "customization": {
+    "showBranding": true,
+    "showFooter": true,
+    "showLogo": true,
+    "customCSS": ""
+  },
+  
+  "localization": {
+    "language": "de",
+    "dateFormat": "DD.MM.YYYY",
+    "timeFormat": "HH:mm"
+  },
+  
+  "meta": {
+    "version": "1.0.0",
+    "bundleType": "white-label",
+    "lastUpdated": "2026-01-14"
+  }
+}

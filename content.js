@@ -716,3 +716,8 @@ window.AZUBI_CONTENT = {
     { term:"Wareneinsatz", year:3, explain:"Kostenanteil der Waren am Umsatz.", standard:"Portionen/Abfall/Standard beeinflussen stark.", mistake:"Portionen schwanken lassen." }
   ]
 };
+// --- Compatibility Alias (wichtig, damit app.js nicht abstürzt) ---
+window.CONTENT = window.CONTENT || {};
+window.CONTENT.wissenByYear = (window.AZUBI_CONTENT && window.AZUBI_CONTENT.wissen && window.AZUBI_CONTENT.wissen.years)
+  ? window.AZUBI_CONTENT.wissen.years
+  : {};

@@ -1,0 +1,512 @@
+/* ============================================================================
+   ENHANCED STYLES - Glossar, Quiz, Prüfung
+   ============================================================================ */
+
+/* Glossar Layout - Sidebar + Main */
+.glossarLayout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 16px;
+  height: calc(100vh - 300px);
+}
+
+@media (max-width: 920px) {
+  .glossarLayout {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+}
+
+.glossarSide {
+  display: flex;
+  flex-direction: column;
+  border-radius: 16px;
+  border: 1px solid rgba(107,89,69,.14);
+  background: rgba(255,255,255,.60);
+  overflow: hidden;
+}
+
+.glossarSideTop {
+  padding: 12px;
+  border-bottom: 1px solid rgba(107,89,69,.12);
+}
+
+.glossarSideTitle {
+  font-weight: 900;
+  font-size: 16px;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
+.glossarSideHint {
+  font-size: 12px;
+  opacity: .75;
+  margin-bottom: 8px;
+}
+
+.glossarAZ {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.azBtn {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 1px solid rgba(107,89,69,.14);
+  background: rgba(210,202,191,.35);
+  color: var(--ink);
+  font-weight: 900;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all .15s ease;
+}
+
+.azBtn:hover {
+  background: rgba(188,158,129,.55);
+}
+
+.glossarSearchWrap {
+  padding: 10px;
+  border-bottom: 1px solid rgba(107,89,69,.12);
+  display: flex;
+  gap: 6px;
+}
+
+.glossarSearchWrap input {
+  flex: 1;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(107,89,69,.14);
+  background: rgba(255,255,255,.80);
+  font-size: 13px;
+}
+
+.glossarSearchWrap button {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(107,89,69,.14);
+  background: rgba(188,158,129,.65);
+  color: var(--ink);
+  font-weight: 900;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.glossarSideList {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.glossarAGroup {
+  margin-bottom: 12px;
+}
+
+.glossarALetter {
+  font-weight: 900;
+  font-size: 13px;
+  color: var(--ink);
+  padding: 6px 8px;
+  background: rgba(210,202,191,.35);
+  border-radius: 6px;
+  margin-bottom: 4px;
+}
+
+.glossarItemBtn {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 8px 10px;
+  margin-bottom: 2px;
+  border-radius: 8px;
+  border: 1px solid rgba(107,89,69,.12);
+  background: rgba(255,255,255,.60);
+  color: var(--ink);
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all .15s ease;
+}
+
+.glossarItemBtn:hover {
+  background: rgba(210,202,191,.55);
+}
+
+.glossarItemBtn.is-active {
+  background: rgba(188,158,129,.75);
+  border-color: rgba(107,89,69,.25);
+}
+
+.glossarMain {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.glossarDetail {
+  flex: 1;
+  border-radius: 16px;
+  border: 1px solid rgba(107,89,69,.14);
+  background: rgba(255,255,255,.60);
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.glossarEmpty {
+  text-align: center;
+  padding: 40px 20px;
+  opacity: .65;
+  font-style: italic;
+}
+
+.glossarTerm {
+  margin: 0 0 12px;
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--ink);
+}
+
+.glossarMeta {
+  margin: 0 0 16px;
+  font-size: 12px;
+  opacity: .75;
+}
+
+.glossarBlock {
+  margin-bottom: 16px;
+}
+
+.glossarBlockTitle {
+  font-weight: 900;
+  font-size: 13px;
+  color: var(--ink);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  margin-bottom: 6px;
+  opacity: .85;
+}
+
+.glossarDef {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ash);
+}
+
+.glossarDetailActions {
+  display: flex;
+  gap: 8px;
+}
+
+.glossarDetailActions button {
+  flex: 1;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(107,89,69,.18);
+  background: rgba(188,158,129,.65);
+  color: var(--ink);
+  font-weight: 900;
+  cursor: pointer;
+  transition: all .15s ease;
+}
+
+.glossarDetailActions button:hover {
+  background: rgba(188,158,129,.85);
+}
+
+/* Quiz Styles */
+.quizHome {
+  display: block;
+}
+
+.quizRun {
+  display: none;
+}
+
+.quizRun.is-on {
+  display: block;
+}
+
+.quizTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.quizTop__left {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.quizTop__right {
+  display: flex;
+  gap: 8px;
+}
+
+.qBox {
+  margin-top: 16px;
+}
+
+.qText {
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--ink);
+  line-height: 1.4;
+  margin: 12px 0;
+}
+
+.choices {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.choice {
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(107,89,69,.16);
+  background: rgba(255,255,255,.70);
+  color: var(--ink);
+  font-weight: 800;
+  text-align: left;
+  cursor: pointer;
+  transition: all .15s ease;
+}
+
+.choice:hover:not(:disabled) {
+  background: rgba(210,202,191,.55);
+  border-color: rgba(107,89,69,.25);
+}
+
+.choice:disabled {
+  opacity: .75;
+  cursor: not-allowed;
+}
+
+.choice.is-correct {
+  background: rgba(188,158,129,.75);
+  border-color: rgba(107,89,69,.25);
+}
+
+.choice.is-wrong {
+  background: rgba(107,89,69,.22);
+  border-color: rgba(107,89,69,.25);
+}
+
+.feedback {
+  border-radius: 12px;
+  padding: 14px;
+  border: 1px solid rgba(107,89,69,.14);
+  background: rgba(255,255,255,.70);
+  font-weight: 800;
+  color: var(--ink);
+  margin-top: 12px;
+  display: none;
+}
+
+.feedback.is-on {
+  display: block;
+}
+
+/* Exam / Prüfung Styles */
+.examTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.examTop__left {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.examTop__right {
+  display: flex;
+  gap: 8px;
+}
+
+.examQ {
+  margin-top: 16px;
+}
+
+.examQ__text {
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--ink);
+  line-height: 1.4;
+  margin: 12px 0;
+}
+
+.examChoices {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.examCard {
+  border-radius: 16px;
+  border: 1px solid rgba(107,89,69,.14);
+  background: rgba(255,255,255,.70);
+  padding: 16px;
+  box-shadow: var(--shadow2);
+  text-align: center;
+}
+
+.examCard__title {
+  font-weight: 900;
+  font-size: 16px;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+
+.examCard__meta {
+  font-size: 12px;
+  opacity: .75;
+  margin-bottom: 12px;
+}
+
+.examCard button {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(107,89,69,.18);
+  background: rgba(188,158,129,.75);
+  color: var(--ink);
+  font-weight: 900;
+  cursor: pointer;
+  transition: all .15s ease;
+}
+
+.examCard button:hover {
+  background: rgba(188,158,129,.95);
+}
+
+.resultBox {
+  border-radius: 16px;
+  border: 1px solid rgba(107,89,69,.14);
+  background: rgba(188,158,129,.50);
+  padding: 16px;
+  box-shadow: var(--shadow2);
+  margin-bottom: 16px;
+}
+
+.resultBox__title {
+  font-weight: 900;
+  font-size: 22px;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+
+.resultBox__meta {
+  font-size: 13px;
+  opacity: .85;
+}
+
+.examActions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.examActions button {
+  flex: 1;
+  min-width: 140px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(107,89,69,.18);
+  background: rgba(188,158,129,.65);
+  color: var(--ink);
+  font-weight: 900;
+  cursor: pointer;
+  transition: all .15s ease;
+}
+
+.examActions button:hover {
+  background: rgba(188,158,129,.85);
+}
+
+.examActions button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+#examWrongList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#examWrongList li {
+  padding: 10px;
+  margin-bottom: 6px;
+  border-radius: 8px;
+  background: rgba(255,255,255,.60);
+  border: 1px solid rgba(107,89,69,.12);
+  font-size: 13px;
+}
+
+#examWrongList b {
+  color: var(--ink);
+  font-weight: 900;
+}
+
+/* Header Hide on Scroll */
+.topbar.is-hidden {
+  transform: translateY(-110%);
+  opacity: 0;
+  pointer-events: none;
+  transition: all .3s ease;
+}
+
+.tabs.is-hidden {
+  transform: translateY(110%);
+  opacity: 0;
+  pointer-events: none;
+  transition: all .3s ease;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .glossarLayout {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+
+  .glossarSide {
+    max-height: 300px;
+  }
+
+  .glossarDetail {
+    max-height: 400px;
+  }
+
+  .quizTop,
+  .examTop {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .quizTop__right,
+  .examTop__right {
+    width: 100%;
+  }
+
+  .quizTop__right button,
+  .examTop__right button {
+    width: 100%;
+  }
+
+  .examCard {
+    margin-bottom: 12px;
+  }
+}

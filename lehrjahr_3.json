@@ -1,0 +1,530 @@
+{
+  "lehrjahr": 3,
+  "titel": "Koch/Köchin Ausbildung - 3. Lehrjahr (Monate 25-36)",
+  "dauer_monate": 12,
+  "schulische_stunden": 280,
+  "fokus": "Spezialisierung, Management & finale Abschlussprüfung",
+  "hinweis": "NUR FÜR KOCH/KÖCHIN - Fachkraft Küche schließt nach Jahr 2 ab",
+  "lernfelder": [
+    {
+      "lf_nummer": 11,
+      "titel": "Speiseeis und Backwaren herstellen und Desserts anrichten",
+      "stunden": 40,
+      "kernziele": [
+        "Speiseeis selbst herstellen (Sahneeis, Fruchteis, Sorbet)",
+        "Backwaren aus Teigen zubereiten",
+        "Desserts professionell anrichten & dekorieren",
+        "Lebensmittelrechtliche Vorschriften beachten",
+        "Saisonale & regionale Besonderheiten nutzen"
+      ],
+      "speiseeis": [
+        {
+          "typ": "Sahneeis (Eiscreme)",
+          "zutaten": ["Eigelbe", "Milch", "Sahne", "Zucker", "Aroma"]
+        },
+        {
+          "typ": "Fruchteis (Sorbet)",
+          "zutaten": ["Fruchtpüree", "Zucker-Sirup"]
+        },
+        {
+          "typ": "Spezial-Eis",
+          "beispiele": ["Champagner-Sorbet", "Basilikum-Eis", "Rosenblüten-Eis"]
+        }
+      ],
+      "eisherstellung": [
+        "Basis-Masse kochen",
+        "Abkühlen & durchseihen",
+        "In Eismaschine churnen (mit Luft anschlagen)",
+        "In Eiscreme-Form in Tiefkühler lagern"
+      ],
+      "backwaren": [
+        {
+          "typ": "Mürbeteig",
+          "verwendung": "Kekse, Torten-Boden, Tartes",
+          "wichtig": "Nicht zu lang kneten"
+        },
+        {
+          "typ": "Hefeteig",
+          "verwendung": "Brötchen, Brot, Brioche, Dänish",
+          "wichtig": "Gehzeit einhalten"
+        },
+        {
+          "typ": "Blätterteig",
+          "verwendung": "Millefeuille, Croissants, Strudel",
+          "wichtig": "Kühl lagern"
+        },
+        {
+          "typ": "Strudelteig",
+          "verwendung": "Apfelstrudel, Kirsch-Strudel",
+          "wichtig": "Sehr dünn ausziehen"
+        }
+      ],
+      "dessert_plattierung": [
+        {
+          "komponente": "Protein",
+          "optionen": ["Creme", "Mousse", "Sorbet", "Eis"]
+        },
+        {
+          "komponente": "Früchte",
+          "optionen": ["Frisch", "pochiert", "als Sauce"]
+        },
+        {
+          "komponente": "Knackiges Element",
+          "optionen": ["Keks", "Nougat", "Caramel-Splitter"]
+        },
+        {
+          "komponente": "Sauce",
+          "optionen": ["Coulis", "Schokoladen-Sauce", "Vanille-Creme"]
+        },
+        {
+          "komponente": "Dekoration",
+          "optionen": ["Minze", "Blüten", "Tuile", "Blattgold"]
+        }
+      ]
+    },
+    {
+      "lf_nummer": 12,
+      "titel": "Speisenangebote für Veranstaltungen gastorientiert planen",
+      "stunden": 80,
+      "kernziele": [
+        "Gästegruppen analysieren & beraten",
+        "Menüs erstellen & zusammenstellen",
+        "Allergene & Zusatzstoffe identifizieren",
+        "Speisekarten schreiben",
+        "Ressourcenschonung in der Küche umsetzen",
+        "Warenbedarfsermittlung & Kalkulation",
+        "Personalplanung & Kostenmanagement"
+      ],
+      "gaesttypen": [
+        "Einzelne (Reservierung mit Sonderwünschen)",
+        "Paare (Romantik, Hochzeitsfeier)",
+        "Gruppen (Betriebsfest, Vereinstreffen, Familie)",
+        "Business (Geschäfts-Lunch, Konferenz-Abend)"
+      ],
+      "spezielle_anforderungen": [
+        {
+          "typ": "Allergien",
+          "beispiele": ["Nüsse", "Meeresfrüchte", "Gluten", "Laktose", "Erdnüsse"]
+        },
+        {
+          "typ": "Ernährungsformen",
+          "beispiele": ["Vegetarisch", "Vegan", "Koscher", "Halal"]
+        },
+        {
+          "typ": "Diäten",
+          "beispiele": ["Diabetes", "Herzerkrankung", "Übergewicht"]
+        }
+      ],
+      "menu_struktur": [
+        "Amuse-Bouche (optional)",
+        "Vorspeise",
+        "Hauptgang",
+        "Zwischengang - Sorbet (optional)",
+        "Dessert",
+        "Käse (optional)",
+        "Kleine Süßes"
+      ],
+      "menu_balance": [
+        "Geschmäcke variieren",
+        "Leicht → schwer → leicht",
+        "Farben-Vielfalt",
+        "Saisonalität nutzen",
+        "Vollwertigkeit beachten"
+      ],
+      "14_hauptallergene": [
+        "1. Glutenhaltiges Getreide",
+        "2. Krebstiere",
+        "3. Eier",
+        "4. Fisch",
+        "5. Erdnüsse",
+        "6. Soja",
+        "7. Milch",
+        "8. Nüsse",
+        "9. Sellerie",
+        "10. Senf",
+        "11. Sesam",
+        "12. Schwefeldioxid/Sulfite",
+        "13. Lupinen",
+        "14. Weichtiere"
+      ],
+      "speisekarten_anforderungen": [
+        "Allergene deklariert",
+        "Herkunftsangaben korrekt",
+        "Professionelle Optik",
+        "Lesbar, nicht zu klein",
+        "Appetit weckende Beschreibungen"
+      ],
+      "ressourcenschonung": [
+        {
+          "bereich": "Einkauf",
+          "massnahmen": ["Saisonal", "Regional", "Großmengen", "Realistische Abfallmengen"]
+        },
+        {
+          "bereich": "Lagerung",
+          "massnahmen": ["Richtige Temperatur", "Getrennte Lagerung"]
+        },
+        {
+          "bereich": "Verarbeitung",
+          "massnahmen": ["Ganzheitliche Nutzung", "Portion kontrollieren"]
+        },
+        {
+          "bereich": "Entsorgung",
+          "massnahmen": ["Kompost", "Fett-Recycling", "Getrennte Sammlung"]
+        }
+      ]
+    },
+    {
+      "lf_nummer": 13,
+      "titel": "Büffets mit Fisch und Meeresfrüchten herstellen und präsentieren",
+      "stunden": 60,
+      "kernziele": [
+        "Büffets planen & organisieren",
+        "Meeresfrüchte verarbeiten",
+        "Rohkost zubereiten (Ceviche, Carpaccio, Seviche)",
+        "Kalte & warme Fischgerichte",
+        "Dekoration & Präsentation",
+        "Hygiene bei Meeresfrüchten",
+        "Kostenberechnung & Preisgestaltung",
+        "Nachhaltigkeit bei Fischbeschaffung"
+      ],
+      "buffet_layout": [
+        "Fließrichtung beachten",
+        "Stationen nach Temperatur",
+        "Abstände für Gäste",
+        "Bereiche für schmutzige Teller"
+      ],
+      "meeresfruechteverarbeitung": [
+        {
+          "produkt": "Gambas (Riesengarnelen)",
+          "zubereitung": ["Ganz gekocht servieren", "Geschält mit Cocktailsoße", "Mit Zitrone"]
+        },
+        {
+          "produkt": "Hummer",
+          "zubereitung": ["Ganz gekocht & halbiert", "Mit Hollandaise oder Zitronen-Butter"]
+        },
+        {
+          "produkt": "Austern",
+          "zubereitung": ["Roh auf Eis", "Oder kurz gedämpft im Ofen"]
+        },
+        {
+          "produkt": "Muscheln",
+          "zubereitung": ["Dämpfen in Weißwein", "Im Büffet warmhalten"]
+        },
+        {
+          "produkt": "Jakobs-Muscheln",
+          "zubereitung": ["Schnell braten (sonst zäh)", "Mit Knoblauch & Parmesan"]
+        }
+      ],
+      "rohkost_zubereitung": [
+        {
+          "gericht": "Ceviche",
+          "beschreibung": "Roher Fisch + Zitronensaft + Gemüse (Peruanisch)"
+        },
+        {
+          "gericht": "Carpaccio",
+          "beschreibung": "Dünn geschnittener roher Fisch + Öl + Salzflöckchen (Italienisch)"
+        },
+        {
+          "gericht": "Seviche",
+          "beschreibung": "Wie Ceviche, aber mit Joghurt"
+        }
+      ],
+      "wichtig": "Nur absolut frischer Fisch! (Sushi-Qualität!)"
+    },
+    {
+      "lf_nummer": 14,
+      "titel": "Eine Aktionswoche organisieren und betriebswirtschaftlich beurteilen",
+      "stunden": 100,
+      "fokus": "CAPSTONE-PROJEKT - Azubis organisieren komplette Woche mit Spezialthema",
+      "kernziele": [
+        "Thema auswählen & Menüs entwickeln",
+        "Marketing & Werbung durchführen",
+        "Personalplanung & Dienstpläne erstellen",
+        "Einkauf & Lagerung organisieren",
+        "Durchführung koordinieren",
+        "Umsatz- & Kostenkalkulationen durchführen",
+        "Kundenfeedback sammeln & auswerten",
+        "Betriebswirtschaftliche Erfolgsanalyse"
+      ],
+      "beispiel_themen": [
+        "Regionale Spezialitäten-Woche (z.B. Sächsische Küche)",
+        "Nachhaltige Küche (Zero-Waste-Konzept)",
+        "Saisonale Gerichte",
+        "Mediterrane Woche",
+        "Wild & Lamm (Herbst-Spezialitäten)"
+      ],
+      "beispiel_saechsische_woche": [
+        {
+          "tag": "Montag",
+          "gericht": "Sauerbraten mit Kartoffelpuffer & Rotkohl"
+        },
+        {
+          "tag": "Dienstag",
+          "gericht": "Linseneintopf mit Leberwurst"
+        },
+        {
+          "tag": "Mittwoch",
+          "gericht": "Rouladen mit Kartoffelpüree & grünen Bohnen"
+        },
+        {
+          "tag": "Donnerstag",
+          "gericht": "Quarkkäulchen mit Fruchtsoße"
+        },
+        {
+          "tag": "Freitag",
+          "gericht": "Eintöpfe & Wurstplatte"
+        }
+      ],
+      "marketing_massnahmen": [
+        "In-House: Poster, Durchsagen",
+        "Digital: Facebook/Instagram mit Fotos & Videos",
+        "Email-Newsletter an Kundenliste",
+        "Lokal-Presse: Zeitung/Radio",
+        "Mundpropaganda: Stammgäste einladen"
+      ],
+      "personalplanung": [
+        "Extra-Stunden für Köche?",
+        "Zusatz-Personal nötig?",
+        "Schichtplan erstellen",
+        "Verantwortlichkeiten zuteilen",
+        "Pausen & Urlaubstage berücksichtigen"
+      ],
+      "warenbedarf_ermittlung": [
+        "Geschätzte Gästezahl",
+        "Speisen-Mix analysieren",
+        "Mengen-Planung pro Person",
+        "Puffer-Bestand (+10%) einplanen",
+        "Lieferanten kontaktieren"
+      ],
+      "tagesablauf_beispiel": [
+        {
+          "zeit": "06:00 Uhr",
+          "aktivitaet": "Köche beginnen (lange Schmorgerichte!)"
+        },
+        {
+          "zeit": "10:00 Uhr",
+          "aktivitaet": "Gemüse schneiden, Vorbereitung"
+        },
+        {
+          "zeit": "11:30 Uhr",
+          "aktivitaet": "Letzte Qualitätschecks"
+        },
+        {
+          "zeit": "11:45 Uhr",
+          "aktivitaet": "Restaurant-Öffnung (Mittag)"
+        },
+        {
+          "zeit": "12:00-14:00 Uhr",
+          "aktivitaet": "Mittagsservice"
+        },
+        {
+          "zeit": "14:00-17:00 Uhr",
+          "aktivitaet": "Pause, Vorbereitung für Abend"
+        },
+        {
+          "zeit": "17:30 Uhr",
+          "aktivitaet": "Abenddienst beginnt"
+        },
+        {
+          "zeit": "18:00-22:00 Uhr",
+          "aktivitaet": "Abendservice"
+        },
+        {
+          "zeit": "22:00 Uhr",
+          "aktivitaet": "Aufräumen, Reinigung"
+        }
+      ],
+      "kostenrechnung_beispiel": [
+        {
+          "element": "Gäste Montag",
+          "wert": "65 Personen"
+        },
+        {
+          "element": "Durchschnittlicher Menü-Preis",
+          "wert": "€18"
+        },
+        {
+          "element": "Umsatz",
+          "wert": "€1.170"
+        },
+        {
+          "element": "Ohne Aktion sonst",
+          "wert": "45 × €18 = €810"
+        },
+        {
+          "element": "ZUSATZ-UMSATZ",
+          "wert": "€360"
+        },
+        {
+          "element": "Wareneinsatz (35%)",
+          "wert": "€410"
+        },
+        {
+          "element": "Arbeit Extra (2 Köche × 8h × €25)",
+          "wert": "€400"
+        },
+        {
+          "element": "Marketing",
+          "wert": "€50"
+        },
+        {
+          "element": "GESAMT-ZUSATZKOSTEN",
+          "wert": "€860"
+        },
+        {
+          "element": "ERGEBNIS (Zusatz-Umsatz - Zusatz-Kosten)",
+          "wert": "€360 − €860 = −€500 Verlust"
+        }
+      ],
+      "kundenfeedback": [
+        "Gästebefragung (Fragebogen)",
+        "Kommentare-Buch an Rezeption",
+        "Personal-Feedback sammeln",
+        "Rezeptur-Anpassungen durchführen"
+      ],
+      "team_nachbesprechung": [
+        "Was lief gut?",
+        "Was lief nicht so gut?",
+        "Welche Herausforderungen?",
+        "Welche Lernpunkte?",
+        "Dokumentation für Berichtsheft"
+      ]
+    }
+  ],
+  "pruefung_teil_2": {
+    "zeitpunkt": "Ende 3. Lehrjahr",
+    "gesamtstruktur": [
+      {
+        "pruefungsbereich": "Teil 1: Einfache Speisen",
+        "timing": "Nach Jahr 2 absolviert",
+        "dauer_minuten": 300,
+        "gewichtung": "25%",
+        "inhalte": "Praktische 3-teilige Mahlzeit + schriftlich"
+      },
+      {
+        "pruefungsbereich": "Teil 2.1: Drei-Gänge-Menü (praktisch)",
+        "timing": "Nach Jahr 3",
+        "dauer_minuten": 360,
+        "gewichtung": "35%",
+        "inhalte": "Vorspeise + Hauptgang + Dessert, noch komplexer als Teil 1"
+      },
+      {
+        "pruefungsbereich": "Teil 2.2: Warenwirtschaft & Produkte (schriftlich)",
+        "timing": "Nach Jahr 3",
+        "dauer_minuten": 90,
+        "gewichtung": "15%",
+        "inhalte": "Einkauf, Lagerung, Kalkulation, Lebensmittelkunde"
+      },
+      {
+        "pruefungsbereich": "Teil 2.3: Technologie & Gästeinformation (schriftlich)",
+        "timing": "Nach Jahr 3",
+        "dauer_minuten": 90,
+        "gewichtung": "15%",
+        "inhalte": "Geräte, Allergen-Beratung, Vegetarisch/Vegan, Hygiene"
+      },
+      {
+        "pruefungsbereich": "Teil 2.4: Wirtschafts- und Sozialkunde (schriftlich)",
+        "timing": "Nach Jahr 3",
+        "dauer_minuten": 60,
+        "gewichtung": "10%",
+        "inhalte": "Arbeitsrecht, Betriebswirtschaft, Sozialversicherung"
+      }
+    ],
+    "teil_2_1_praktisch": {
+      "dauer_minuten": 360,
+      "ablauf": [
+        "Arbeitsablaufplan schreiben",
+        "Gastgespräch (Allergen-Beratung, Menü-Variationen)",
+        "Menü kochen (3 Gänge wie Teil 1, aber komplexer)",
+        "Aufräumen & Abschlussgespräch"
+      ],
+      "menu": [
+        "1. Gang: Vorspeise oder Suppe",
+        "2. Gang: Fleisch/Wild/Geflügel/Fisch + gezogene Soße + 2+ Beilagen",
+        "3. Gang: Dessert (Creme, Mousse, Eis, Süßspeise)"
+      ]
+    },
+    "teil_2_2_schriftlich": {
+      "dauer_minuten": 90,
+      "themen": [
+        "Fleischqualitäten unterscheiden (Marmorierung, Herkunft)",
+        "Lagerungsmethoden verschiedener Produkte",
+        "Wareneingangsprüfung & -kontrolle",
+        "Kostenrechnung & Verkaufspreise",
+        "Lieferanten-Vergleich",
+        "Saisonalität & Regional-Specials",
+        "Nachhaltigkeit im Einkauf"
+      ],
+      "beispiel_aufgabe": "Rinderfiletstück 5kg à €18/kg, 10% Schwund, Menü-Preis €28. a) Wareneinsatz pro Portion b) Gewinn-Marge c) Konkurrenzfähig?"
+    },
+    "teil_2_3_schriftlich": {
+      "dauer_minuten": 90,
+      "themen": [
+        "Küchentechnologie (Maschinen, Garverfahren, Geräte)",
+        "Gästeberatung zu Speisen & Allergenen",
+        "Vegetarische & vegane Küche",
+        "Lebensmittelrecht & Kennzeichnung",
+        "Teamkommunikation & Workflows",
+        "Arbeits- & Lebensmittelhygiene"
+      ],
+      "beispiel_aufgabe": "Gast mit Glutenunverträglichkeit. Welche Gerichte der 3-Gänge-Menü geeignet? Welche Vorsichtsmaßnahmen in der Küche?"
+    },
+    "teil_2_4_wisokunde": {
+      "dauer_minuten": 60,
+      "themen": [
+        {
+          "bereich": "Wirtschaftlichkeit",
+          "beispiele": ["Kosten-Nutzen", "Wirtschaftlichkeitsprinzip"]
+        },
+        {
+          "bereich": "Unternehmensformen",
+          "beispiele": ["Einzelunternehmen", "GmbH", "Verein", "Stiftung"]
+        },
+        {
+          "bereich": "Arbeitsverträge",
+          "beispiele": ["Befristung", "Vergütung", "Kündigung"]
+        },
+        {
+          "bereich": "Tarifrecht",
+          "beispiele": ["Tarifvertrag Dehoga", "NGG-Bestimmungen"]
+        },
+        {
+          "bereich": "Berufsbildungsgesetz",
+          "beispiele": ["Ausbildungsvertrag", "Ausbildungsordnung"]
+        },
+        {
+          "bereich": "Jugendarbeitsschutzgesetz",
+          "beispiele": ["Arbeitszeiten", "Pausen", "Urlaub"]
+        },
+        {
+          "bereich": "Sozialversicherung",
+          "beispiele": ["Kranken-", "Renten-", "Arbeitslosenversicherung"]
+        }
+      ]
+    },
+    "bestehenskriterien": [
+      "Gesamtnote: Mindestens ausreichend (50%)",
+      "Teil 2 gesamt: Mindestens ausreichend",
+      "Mindestens 3 von 5 Prüfungsbereichen: Ausreichend",
+      "Kein Prüfungsbereich: Ungenügend"
+    ]
+  },
+  "kompetenzen_am_ende": [
+    "Speiseeis & Backwaren herstellen",
+    "Veranstaltungen organisieren & kalkulieren",
+    "Fisch-Büffets professionell präsentieren",
+    "Aktionswochen komplett durchführen",
+    "Personalführung & Teamleitung",
+    "Betriebswirtschaftliche Analysen",
+    "Alle Prüfungsanforderungen erfüllt",
+    "Vollständiger Koch/Köchin-Abschluss erworben!"
+  ],
+  "karriereperspektiven": [
+    "Sous-Chef",
+    "Chef de Partie (Leitung einer Station)",
+    "Küchenchef",
+    "Küchendirektor",
+    "Restaurantleitung",
+    "Fortbildungen: Meister, Techniker, Studium Gastronomie-Management"
+  ]
+}

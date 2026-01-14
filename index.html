@@ -1,228 +1,763 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>RE:BELLE™ Koch-Glossar Quiz EFZ (Schweiz)</title>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
+<meta content="#1E1E1E" name="theme-color"/>
+<meta content="Azubi-Tagebuch Küche: Kalender, Tages-/Wochen-/Monats-Checks, Notizen, Wissen &amp; Glossar nach 3 Lehrjahren. Offline nutzbar." name="description"/>
+<title>Azubi Tagebuch Küche · 3 Lehrjahre</title>
+<link id="mainStylesheet" href="styles.css" rel="stylesheet"/>
+<link href="styles-enhanced.css" rel="stylesheet"/>
+<link href="toast.css" rel="stylesheet"/>
+<link href="sync-status.css" rel="stylesheet"/>
+<script>window.__INLINE_CSS__ = ':root{\n  --dust:#D2CABF;\n  --ash:#6B5945;\n  --camel:#BC9E81;\n  --warm:#EEECE4;\n  --ink:#1A1A1A;\n\n  --radius:18px;\n  --shadow: 0 10px 30px rgba(0,0,0,.12);\n  --shadow2: 0 6px 18px rgba(0,0,0,.10);\n\n  --maxw:1100px;\n  --tap:44px;\n\n  --headerH: 148px;\n  --tabsH: 56px;\n}\n\n/* Base */\n*{box-sizing:border-box}\nhtml,body{height:100%}\nbody{\n  margin:0;\n  color:var(--ash);\n  background:\n    linear-gradient(rgba(238,236,228,.55), rgba(238,236,228,.55)),\n    url("fernlichtsicht_20260108_p_3805640354150510642_2_3805640339327833000.jpg");\n  background-size:cover;\n  background-position:center;\n  background-attachment:fixed;\n  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";\n}\n\na{color:inherit}\nbutton,input,select,textarea{font:inherit}\n\n.app{min-height:100%; display:flex; flex-direction:column}\n.wrap{max-width:var(--maxw); margin:0 auto; padding:0 16px}\n\n/* Topbar */\n.topbar{\n  position:sticky; top:0; z-index:50;\n  background:rgba(210,202,191,.92);\n  backdrop-filter: blur(10px);\n  border-bottom:1px solid rgba(107,89,69,.15);\n  transform: translateY(var(--topbarOffset, 0px));\n  transition: transform .25s ease;\n}\n.topbar.is-hidden{ --topbarOffset: -200px; }\n\n.topbar .brand{display:flex; align-items:flex-start; justify-content:space-between; gap:14px; padding:14px 16px 10px}\n.brand__title{font-weight:800; letter-spacing:.01em; font-size:18px; color:var(--ink)}\n.brand__subtitle{font-size:13px; opacity:.85}\n\n.topbar__row{display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between; padding:0 16px 12px}\n\n.yearSwitch{display:flex; gap:8px; flex-wrap:wrap}\n.yearBtn{\n  height:40px; padding:0 12px;\n  border-radius:999px;\n  border:1px solid rgba(107,89,69,.22);\n  background: rgba(238,236,228,.75);\n  color:var(--ink);\n  font-weight:700;\n}\n.yearBtn.is-active{\n  background:var(--camel);\n  border-color: rgba(107,89,69,.25);\n}\n\n.stats{display:flex; gap:10px; flex-wrap:wrap}\n.stat{\n  background: rgba(238,236,228,.70);\n  border:1px solid rgba(107,89,69,.14);\n  border-radius:14px;\n  padding:8px 12px;\n  min-width:92px;\n  box-shadow: var(--shadow2);\n}\n.stat__num{font-weight:900; font-size:18px; color:var(--ink)}\n.stat__label{font-size:12px; opacity:.75}\n\n.topbar__actions{display:flex; gap:10px; padding:0 16px 14px}\n.btn, .btn:visited{\n  height:var(--tap);\n  display:inline-flex; align-items:center; justify-content:center;\n  padding:0 14px;\n  border-radius:14px;\n  border:1px solid rgba(107,89,69,.22);\n  background: rgba(238,236,228,.80);\n  color:var(--ink);\n  font-weight:800;\n  cursor:pointer;\n  box-shadow: var(--shadow2);\n}\n.btn--primary{\n  background: var(--camel);\n  border-color: rgba(107,89,69,.25);\n}\n.btn--ghost{\n  background: rgba(238,236,228,.55);\n}\n.btn:active{transform: translateY(1px)}\n\n.filebtn input{display:none}\n\n/* Tabs */\n.tabs{\n  position:sticky; top: var(--topbarH, 0px);\n  z-index:49;\n  background: rgba(238,236,228,.86);\n  backdrop-filter: blur(10px);\n  border-bottom:1px solid rgba(107,89,69,.14);\n  display:flex;\n  gap:8px;\n  padding:10px 10px;\n  overflow-x:auto;\n  transform: translateY(var(--tabsOffset, 0px));\n  transition: transform .25s ease;\n}\n.tabs.is-hidden{ --tabsOffset: -90px; }\n\n.tab{\n  height:42px;\n  padding:0 12px;\n  border-radius:999px;\n  border:1px solid rgba(107,89,69,.18);\n  background: rgba(210,202,191,.35);\n  color:var(--ink);\n  font-weight:800;\n  cursor:pointer;\n  white-space:nowrap;\n}\n.tab.is-active{\n  background: rgba(188,158,129,.90);\n}\n\n.main{flex:1; max-width:var(--maxw); margin:0 auto; width:100%; padding:18px 16px 92px}\n.panel{display:none}\n.panel.is-active{display:block}\n\n.panel__header{display:flex; align-items:flex-end; justify-content:space-between; gap:12px; margin:16px 0 10px}\n.h1{margin:0; font-size:28px; color:var(--ink); letter-spacing:-.02em}\n.h2{margin:0; font-size:18px; color:var(--ink)}\n.p{margin:0 0 12px}\n.ul{margin:0; padding-left:18px}\n.muted{opacity:.78}\n.pill{\n  display:inline-flex; align-items:center; justify-content:center;\n  padding:8px 12px;\n  border-radius:999px;\n  background: rgba(210,202,191,.50);\n  border:1px solid rgba(107,89,69,.14);\n  color:var(--ink);\n  font-weight:800;\n}\n\n/* Cards / forms */\n.card{\n  background: rgba(238,236,228,.80);\n  border:1px solid rgba(107,89,69,.14);\n  border-radius: var(--radius);\n  box-shadow: var(--shadow);\n  padding:16px;\n}\n\n.grid{display:grid; grid-template-columns:1fr; gap:12px}\n.grid--3{grid-template-columns:1fr}\n@media (min-width: 840px){\n  .grid{grid-template-columns:1fr 1fr}\n  .grid--3{grid-template-columns:1fr 1fr 1fr}\n}\n\n.field label{display:block; font-size:12px; letter-spacing:.08em; text-transform:uppercase; font-weight:900; color:rgba(26,26,26,.78); margin-bottom:6px}\n.field input, .field select, .field textarea{\n  width:100%;\n  border-radius:14px;\n  border:1px solid rgba(107,89,69,.18);\n  background: rgba(255,255,255,.72);\n  padding:12px 12px;\n  outline:none;\n  color:var(--ink);\n}\n.field textarea{resize:vertical}\n.help{font-size:12px; opacity:.75; margin-top:6px}\n\n.divider{height:1px; background: rgba(107,89,69,.12); margin:14px 0}\n\n.row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}\n.row--end{justify-content:flex-end}\n\n.kv{display:grid; grid-template-columns: 1fr; gap:10px}\n@media (min-width:840px){ .kv{grid-template-columns: 200px 1fr} }\n\n/* Entries used for glossar and list */\n.entry{\n  border-radius:16px;\n  border:1px solid rgba(107,89,69,.14);\n  background: rgba(255,255,255,.60);\n  padding:14px;\n  box-shadow: var(--shadow2);\n  margin-bottom:10px;\n}\n.entry__title{font-weight:900; font-size:16px; color:var(--ink)}\n.entry__meta{font-size:12px; opacity:.78; margin-top:4px}\n.entry__body{margin-top:10px}\n\n.entries{display:flex; flex-direction:column; gap:10px}\n\n/* Calendar */\n.calWeekdays{display:grid; grid-template-columns:repeat(7,1fr); gap:6px; font-weight:900; font-size:12px; opacity:.72}\n.calendarGrid{display:grid; grid-template-columns:repeat(7,1fr); gap:6px; margin-top:10px}\n.calDay{\n  min-height:44px;\n  border-radius:12px;\n  border:1px solid rgba(107,89,69,.14);\n  background: rgba(255,255,255,.55);\n  display:flex; align-items:center; justify-content:center;\n  cursor:pointer;\n  font-weight:800;\n}\n.calDay.is-marked{background: rgba(188,158,129,.65)}\n\n/* Checks */\n.checks{display:flex; flex-wrap:wrap; gap:10px}\n.check{display:flex; gap:8px; align-items:center; padding:8px 10px; border-radius:999px; background: rgba(210,202,191,.35); border:1px solid rgba(107,89,69,.12)}\n.check input{width:18px; height:18px}\n\n/* Wissen */\n.wissenWrap{display:grid; grid-template-columns: 1fr; gap:12px}\n@media (min-width: 920px){ .wissenWrap{grid-template-columns: 280px 1fr} }\n.wissenNav{\n  border-radius:16px;\n  border:1px solid rgba(107,89,69,.14);\n  background: rgba(255,255,255,.55);\n  padding:12px;\n  position:sticky; top:140px;\n  height: fit-content;\n}\n.wissenNav__title{font-weight:900; margin-bottom:8px; color:var(--ink)}\n.wissenNav__items{display:flex; flex-direction:column; gap:6px}\n.wissenNav__items button{\n  text-align:left;\n  padding:10px 10px;\n  border-radius:12px;\n  border:1px solid rgba(107,89,69,.14);\n  background: rgba(238,236,228,.75);\n  cursor:pointer;\n  font-weight:800;\n}\n.wissenNav__items button.is-active{background: rgba(188,158,129,.75)}\n.wissenContent{color:var(--ink)}\n.wissenContent h2{margin:0 0 10px}\n.wissenContent h3{margin:18px 0 10px}\n\n/* Glossar TOC */\n.glossarToc{\n  display:flex;\n  gap:6px;\n  flex-wrap:wrap;\n  margin-top:12px;\n  padding-bottom:8px;\n}\n.glossarToc a{\n  display:inline-flex;\n  min-width:34px;\n  height:34px;\n  align-items:center;\n  justify-content:center;\n  border-radius:12px;\n  text-decoration:none;\n  border:1px solid rgba(107,89,69,.14);\n  background: rgba(210,202,191,.35);\n  font-weight:900;\n  color:var(--ink);\n}\n.glossarToc a:hover{background: rgba(188,158,129,.55)}\n\n/* Quiz / Exam */\n.quizTop,.examTop{display:flex; justify-content:space-between; gap:10px; align-items:center; flex-wrap:wrap}\n.qText,.examQ__text{font-size:18px; font-weight:900; color:var(--ink); line-height:1.25}\n.choices,.examChoices{display:grid; grid-template-columns:1fr; gap:10px; margin-top:12px}\n.choice{\n  padding:12px;\n  border-radius:16px;\n  border:1px solid rgba(107,89,69,.16);\n  background: rgba(255,255,255,.65);\n  cursor:pointer;\n  font-weight:800;\n  text-align:left;\n}\n.choice:hover{background: rgba(210,202,191,.55)}\n.choice.is-selected{outline: 2px solid rgba(188,158,129,.95)}\n.choice.is-correct{background: rgba(188,158,129,.65)}\n.choice.is-wrong{background: rgba(107,89,69,.22)}\n.feedback{\n  border-radius:16px;\n  padding:12px;\n  border:1px solid rgba(107,89,69,.14);\n  background: rgba(255,255,255,.60);\n}\n.examCard{\n  border-radius:18px;\n  border:1px solid rgba(107,89,69,.14);\n  background: rgba(255,255,255,.60);\n  padding:14px;\n  box-shadow: var(--shadow2);\n}\n.examCard__title{font-weight:900; color:var(--ink)}\n.examCard__meta{margin-top:6px; font-size:12px; opacity:.78}\n.resultBox{\n  border-radius:18px;\n  border:1px solid rgba(107,89,69,.14);\n  background: rgba(188,158,129,.50);\n  padding:14px;\n  box-shadow: var(--shadow2);\n}\n.resultBox__title{font-weight:900; font-size:18px; color:var(--ink)}\n.resultBox__meta{margin-top:6px; font-size:12px; opacity:.85}\n\n/* Footer */\n.footer{\n  background: rgba(107,89,69,.92);\n  color: rgba(238,236,228,.96);\n  padding:18px 16px;\n  border-top:1px solid rgba(238,236,228,.10);\n}\n.footer__wrap{max-width:var(--maxw); margin:0 auto}\n.footer__note{font-weight:900}\n.footer__sub{margin-top:6px; font-size:12px; opacity:.9}\n.footer__sub a{color: rgba(238,236,228,.96); text-decoration:none}\n.dot{opacity:.65; padding:0 6px}\n\n/* Toast */\n.toast{\n  position: fixed;\n  left: 50%;\n  bottom: 82px;\n  transform: translateX(-50%);\n  background: rgba(26,26,26,.86);\n  color: rgba(238,236,228,.96);\n  padding:10px 14px;\n  border-radius: 999px;\n  font-weight:900;\n  box-shadow: var(--shadow);\n  opacity:0;\n  pointer-events:none;\n  transition: opacity .25s ease;\n  z-index:99;\n}\n.toast.is-on{opacity:1}\n\n/* Mobile: bottom tabs, header hides on scroll */\n@media (max-width: 820px){\n  body{background-attachment:scroll}\n  .main{padding-bottom: 132px}\n  .tabs{\n    position: fixed;\n    left: 0;\n    right: 0;\n    bottom: 0;\n    top: auto;\n    border-top:1px solid rgba(107,89,69,.16);\n    border-bottom:none;\n    padding:10px 10px calc(10px + env(safe-area-inset-bottom));\n  }\n  .wissenNav{position:relative; top:auto}\n}\n/* ===== MINI STRIP (Variante C) ===== */\n.miniStrip{\n  position: sticky;\n  top: 0;\n  z-index: 60;\n\n  display: none; /* wird per JS aktiviert */\n  align-items: center;\n  justify-content: space-between;\n  gap: 10px;\n\n  padding: 10px 12px;\n  margin-bottom: 10px;\n\n  background: rgba(210,202,191,.78);\n  backdrop-filter: blur(10px);\n  border: 1px solid rgba(107,89,69,.18);\n  border-radius: var(--radius);\n  box-shadow: 0 14px 38px rgba(0,0,0,.14);\n}\n\n.miniStrip.is-on{\n  display: flex;\n}\n\n.miniStrip__left{\n  display:flex;\n  align-items:center;\n  gap:10px;\n  min-width: 0;\n}\n\n.miniStrip__title{\n  font-weight: 900;\n  font-size: 14px;\n  letter-spacing: .01em;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  max-width: 48vw;\n}\n\n.miniStrip__year{\n  padding: 7px 10px;\n  border-radius: 999px;\n  background: rgba(188,158,129,.95);\n  color: #2f241b;\n  font-weight: 900;\n  font-size: 12px;\n  white-space: nowrap;\n}\n\n.miniStrip__right{\n  display:flex;\n  gap:8px;\n  align-items:center;\n}\n\n.miniStrip__btn{\n  border:none;\n  padding: 9px 12px;\n  border-radius: 14px;\n  background: rgba(238,236,228,.92);\n  color: var(--ash);\n  font-weight: 900;\n  cursor: pointer;\n  border: 1px solid rgba(107,89,69,.14);\n  box-shadow: 0 8px 18px rgba(0,0,0,.10);\n}\n\n.miniStrip__btn--primary{\n  background: rgba(107,89,69,.92);\n  color: var(--white);\n}\n\n/* Header-Hide bleibt wie gehabt */\n.topbar.is-hidden{\n  transform: translateY(-110%);\n  opacity: 0;\n  pointer-events: none;\n}\n\n';</script>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <link rel="stylesheet" href="styles.css" />
+<script>
+(function(){
+  // If external CSS fails (e.g., wrong publish dir / 404), inject inline styles as fallback.
+  // This keeps the app usable even when Netlify serves without the css file.
+  const link = document.getElementById('mainStylesheet');
+  let injected = false;
+  function injectInline(){
+    if(injected) return;
+    injected = true;
+    const s = document.createElement('style');
+    s.id = 'inlineStyles';
+    s.textContent = window.__INLINE_CSS__ || '';
+    document.head.appendChild(s);
+    console.warn('[Azubi-App] styles.css konnte nicht geladen werden → Inline-Fallback aktiv.');
+  }
+  // Try to detect load/error on link
+  if(link){
+    link.addEventListener('error', injectInline);
+    link.addEventListener('load', function(){ /* ok */ });
+  }
+  // After 1200ms, check whether any stylesheet rules are present from styles.css
+  setTimeout(function(){
+    try{
+      const ok = Array.from(document.styleSheets).some(ss => (ss.href||'').includes('styles.css') && (ss.cssRules||[]).length>0);
+      if(!ok) injectInline();
+    }catch(e){
+      // Accessing cssRules can throw if cross-origin; ignore and inject if we don't see styles
+      injectInline();
+    }
+  }, 1200);
+})();
+</script>
+
 </head>
-
 <body>
-  <header id="appHeader" class="hero" role="banner">
-    <div class="wrap heroInner">
-      <div class="brandRow">
-        <div class="mark">🖤</div>
-        <div class="brandText">
-          <div class="kicker">KOCH-GLOSSAR · QUIZ · PRÜFUNGEN · EFZ (CH)</div>
-          <h1>Bestehen statt raten.</h1>
-          <p class="sub">Mobile-first · Lehrjahr 1/2/3 · PDF · Prüfungsmodus wie Führerschein</p>
-        </div>
-      </div>
-
-      <div class="progressWrap" aria-label="Fortschritt">
-        <div class="progressMeta">
-          <span id="progressLabel">Fortschritt: 0%</span>
-          <span id="countLabel">0 Begriffe</span>
-        </div>
-        <div class="progress">
-          <div id="progressBar" class="progressBar" style="width:0%"></div>
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <main class="wrap" role="main">
-    <section class="panel controls" aria-label="Steuerung">
-      <div class="row">
-        <label class="field">
-          <span class="label">Lehrjahr</span>
-          <select id="lehrjahrFilter" aria-label="Lehrjahr Filter">
-            <option value="all">Alle</option>
-            <option value="1">1. Lehrjahr</option>
-            <option value="2">2. Lehrjahr</option>
-            <option value="3">3. Lehrjahr</option>
-          </select>
-        </label>
-
-        <label class="field grow">
-          <span class="label">Suche</span>
-          <input id="searchInput" type="search" placeholder="Begriff oder Bedeutung…" autocomplete="off" />
-        </label>
-
-        <label class="field">
-          <span class="label">Modus</span>
-          <select id="modeSelect" aria-label="Modus wählen">
-            <option value="glossar">Glossar</option>
-            <option value="quiz">Quiz</option>
-            <option value="pruefung">Prüfungen</option>
-          </select>
-        </label>
-      </div>
-
-      <div class="btnRow">
-        <button class="btn" id="btnReset" type="button">Reset</button>
-        <button class="btn" id="btnFlashcards" type="button">Flashcards PDF</button>
-        <button class="btn" id="btnExport" type="button">Glossar PDF</button>
-        <button class="btn primary" id="btnStartQuiz" type="button">Quiz starten (10)</button>
-      </div>
-
-      <div class="hint">Prüfungen sind ohne Feedback währenddessen: wie Führerschein. Ergebnisse + Fehlerliste am Ende.</div>
-    </section>
-
-    <!-- GLOSSAR -->
-    <section id="glossarView" class="panel" aria-label="Glossar">
-      <div class="panelHead">
-        <h2>Glossar</h2>
-        <p class="muted">Filter, Suche, Reset. Klick auf einen Begriff → „gemerkt“.</p>
-      </div>
-      <div id="glossaryList" class="list" aria-live="polite"></div>
-      <div id="emptyState" class="empty" style="display:none;">Keine Treffer. Filter lockern oder Suche löschen.</div>
-    </section>
-
-    <!-- QUIZ -->
-    <section id="quizView" class="panel quiz" aria-label="Quiz" style="display:none;">
-      <div class="panelHead">
-        <h2>Quiz</h2>
-        <p class="muted">10 Fragen · 4 Optionen · Feedback sofort.</p>
-      </div>
-
-      <div class="stats">
-        <div class="stat"><div class="statNum" id="statCorrect">0</div><div class="statLbl">Richtig</div></div>
-        <div class="stat"><div class="statNum" id="statTotal">0</div><div class="statLbl">Beantwortet</div></div>
-        <div class="stat"><div class="statNum" id="statPercent">0%</div><div class="statLbl">Quote</div></div>
-      </div>
-
-      <div class="qCard">
-        <div class="qMeta">
-          <span id="qIndex">Frage 1/10</span>
-          <span id="qJahr" class="pill">Lehrjahr 1</span>
-        </div>
-
-        <div id="qText" class="qText">—</div>
-        <div id="choices" class="choices" role="group" aria-label="Antworten"></div>
-        <div id="feedback" class="feedback" aria-live="polite"></div>
-
-        <div class="qActions">
-          <button class="btn" id="btnQuit" type="button">Zurück zum Glossar</button>
-          <button class="btn primary" id="btnNext" type="button" disabled>Nächste Frage</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- PRÜFUNGEN -->
-    <section id="pruefungView" class="panel exam" aria-label="Prüfungen" style="display:none;">
-      <div class="panelHead">
-        <h2>Prüfungen</h2>
-        <p class="muted">Führerschein-Style: Timer, kein Zurück, kein Feedback. Am Ende Ergebnis + Fehlerliste.</p>
-      </div>
-
-      <!-- Auswahl -->
-      <div id="examHome" class="examHome">
-        <div class="examGrid">
-          <div class="examCard">
-            <div class="examTitle">Lehrjahr 1 Prüfung</div>
-            <div class="examMeta">30 Fragen · 45 Min · Bestehen ab 70%</div>
-            <button class="btn primary" id="btnExam1" type="button">Starten</button>
+<div class="app">
+<header class="topbar">
+<div class="brand">
+<div style="display: flex; align-items: center; gap: 10px;">
+<div class="brand__title">Azubi Tagebuch Küche</div>
+<span id="sync-badge" class="sync-badge" onclick="window.SyncStatus.open()" style="display: none;" title="Ausstehende Synchronisierungen">0</span>
+</div>
+<div class="brand__subtitle">Kalender · Notizen · Wissen · Glossar · 3 Lehrjahre</div>
+</div>
+<div class="topbar__row">
+<div aria-label="Lehrjahr wählen" class="yearSwitch" role="group">
+<button class="yearBtn is-active" data-year="1" type="button">Lehrjahr 1</button>
+<button class="yearBtn" data-year="2" type="button">Lehrjahr 2</button>
+<button class="yearBtn" data-year="3" type="button">Lehrjahr 3</button>
+</div>
+<div class="stats">
+<div class="stat">
+<div class="stat__num" id="statDays">0</div>
+<div class="stat__label">Tage</div>
+</div>
+<div class="stat">
+<div class="stat__num" id="statWeeks">0</div>
+<div class="stat__label">Wochen</div>
+</div>
+<div class="stat">
+<div class="stat__num" id="statMonths">0</div>
+<div class="stat__label">Monate</div>
+</div>
+</div>
+</div>
+<div class="topbar__actions">
+<button class="btn btn--ghost" id="btnExport" type="button">Export</button>
+<label class="btn btn--ghost filebtn">
+          Import
+          <input accept="application/json" id="fileImport" type="file"/>
+</label>
+</div>
+</header>
+<nav aria-label="Bereiche" class="tabs"><button class="tab is-active" data-tab="start" type="button">Start</button>
+<button class="tab" data-tab="calendar" type="button">Kalender</button>
+<button class="tab" data-tab="day" type="button">Tag</button>
+<button class="tab" data-tab="week" type="button">Woche</button>
+<button class="tab" data-tab="month" type="button">Monat</button>
+<button class="tab" data-tab="notes" type="button">Notizen</button>
+<button class="tab" data-tab="wissen" type="button">Wissen</button>
+<button class="tab" data-tab="glossar" type="button">Glossar</button>
+<button class="tab" data-tab="quiz" type="button">Quiz</button><button class="tab" data-tab="pruefung" type="button">Prüfung</button><button class="tab" data-tab="entries" type="button">Einträge</button>
+<button class="tab" data-tab="info" type="button">Info</button>
+</nav>
+<main class="main">
+<section class="panel is-active" id="panel-start">
+<div class="panel__header">
+<h1 class="h1">Start</h1>
+<div class="panel__meta">
+<div class="pill" id="trainingPill">—</div>
+<button class="btn btn--primary" id="btnSaveQuick" type="button">Speichern</button>
+<button class="btn" id="btnExportReport" type="button">Berichtsheft-PDF</button>
+</div>
+</div>
+<div class="card">
+<div class="grid">
+<div class="field">
+<label for="quickDate">Datum</label>
+<input id="quickDate" type="date"/>
+<div class="help" id="trainingMeta">—</div>
+</div>
+<div class="field">
+<label>Heute</label>
+<div class="kv">
+<div><strong>Lehrjahr</strong></div><div id="kvYear">—</div>
+<div><strong>Ausbildungstag</strong></div><div id="kvDay">—</div>
+<div><strong>Ausbildungswoche</strong></div><div id="kvWeek">—</div>
+<div><strong>Zeitraum</strong></div><div id="kvRange">—</div>
+</div>
+</div>
+</div>
+<div class="divider"></div>
+<div class="field">
+<label for="quickNotes">Notizen (Betrieb / Berufsschule / Unterweisung)</label>
+<textarea id="quickNotes" placeholder="Stichpunkte: Was hast du gemacht? Was gelernt? Welche Unterweisung? Welche Themen in der Schule?" rows="10"></textarea>
+<div class="help">Tipp: Schreibe stichpunktartig. Das lässt sich später sauber als Berichtsheft exportieren.</div>
+</div>
+<div class="field">
+<label for="quickGlossaryNotes">Glossar-Notizen (Begriff → mein Beispiel)</label>
+<textarea id="quickGlossaryNotes" placeholder="Begriff(e) + eigene Erklärung + ein Beispiel aus deinem Tag." rows="7"></textarea>
+</div>
+<div class="divider"></div>
+<div class="grid">
+<div class="field">
+<label for="quickTerms">Fachbegriffe dieser Woche (optional)</label>
+<input id="quickTerms" placeholder="z. B. FIFO, Mise en Place, Pochieren…" type="text"/>
+<div class="help">Die Begriffe werden im Berichtsheft-PDF als Lernnachweis aufgeführt.</div>
+</div>
+<div class="field">
+<label>Glossar schnell öffnen</label>
+<button class="btn" id="btnOpenGlossar" type="button">Zum Glossar</button>
+<div class="help">Suche im Glossar nach Begriffen und notiere dir dein Praxis-Beispiel.</div>
+</div>
+</div>
+</div>
+</section>
+<!-- CALENDAR -->
+<section class="panel" id="panel-calendar">
+<div class="panel__header">
+<h1 class="h1">Kalender</h1>
+<div class="panel__meta">
+<button class="btn" id="btnCalPrev" type="button">‹</button>
+<div class="pill" id="calLabel">—</div>
+<button class="btn" id="btnCalNext" type="button">›</button>
+<button class="btn btn--primary" id="btnCalToday" type="button">Heute</button>
+</div>
+</div>
+<div class="card">
+<div class="muted">
+            Tipp: Tippe einen Tag an → Datum wird gesetzt → trage deinen Tag ein → speichern. Markierte Tage = Eintrag vorhanden.
           </div>
-
-          <div class="examCard">
-            <div class="examTitle">Lehrjahr 2 Prüfung</div>
-            <div class="examMeta">40 Fragen · 60 Min · Bestehen ab 70%</div>
-            <button class="btn primary" id="btnExam2" type="button">Starten</button>
-          </div>
-
-          <div class="examCard">
-            <div class="examTitle">Lehrjahr 3 Prüfung</div>
-            <div class="examMeta">50 Fragen · 75 Min · Bestehen ab 70%</div>
-            <button class="btn primary" id="btnExam3" type="button">Starten</button>
-          </div>
-
-          <div class="examCard disabled">
-            <div class="examTitle">Gesamt-EFZ (später)</div>
-            <div class="examMeta">Mix aus allen · Prüfungssimulation</div>
-            <button class="btn" type="button" disabled>Kommt</button>
-          </div>
-        </div>
+<div class="divider"></div>
+<div aria-hidden="true" class="calWeekdays">
+<div>Mo</div><div>Di</div><div>Mi</div><div>Do</div><div>Fr</div><div>Sa</div><div>So</div>
+</div>
+<div class="calendarGrid" id="calendarGrid"></div>
+</div>
+</section>
+<!-- DAY -->
+<section class="panel" id="panel-day">
+<div class="panel__header">
+<h1 class="h1">Tages-Eintrag</h1>
+<div class="panel__meta">
+<button class="btn btn--primary" id="btnSaveDay" type="button">Speichern</button>
+<button class="btn" id="btnClearDay" type="button">Leeren</button>
+</div>
+</div>
+<div class="card">
+<div class="grid">
+<div class="field">
+<label for="dayDate">Datum</label>
+<input id="dayDate" type="date"/>
+</div>
+<div class="field">
+<label for="dayShift">Schicht</label>
+<select id="dayShift">
+<option value="frueh">Früh</option>
+<option value="spaet">Spät</option>
+<option value="split">Split</option>
+<option value="frei">Frei</option>
+</select>
+</div>
+</div>
+<div class="divider"></div>
+<div class="grid">
+<div class="field">
+<label for="dayStation">Station / Bereich</label>
+<input id="dayStation" placeholder="z. B. Gardemanger, Saucier, Pass, Dessert…" type="text"/>
+</div>
+<div class="field">
+<label for="dayTask">Hauptaufgabe</label>
+<input id="dayTask" placeholder="z. B. Mise, Fonds, Anrichten, Bestellungen…" type="text"/>
+</div>
+</div>
+<div class="field">
+<label for="dayLearningGoal">Lernziel heute (1 Satz)</label>
+<input id="dayLearningGoal" maxlength="140" placeholder="konkret, messbar" type="text"/>
+<div class="help">Beispiel: „Julienne gleichmäßig: 3 mm, sauberer Schnitt, ohne Hetze.“</div>
+</div>
+<div class="field">
+<label for="dayLearned">Was habe ich gelernt / geübt?</label>
+<textarea id="dayLearned" placeholder="Was genau? Wie gemacht? Woran gemerkt?" rows="7"></textarea>
+</div>
+<div class="field">
+<label for="dayStandard">Standard/Regel, die ich heute verstanden habe</label>
+<textarea id="dayStandard" placeholder="z. B. Hygiene-Standard, Pass-Regel, Mise-Logik…" rows="5"></textarea>
+</div>
+<div class="divider"></div>
+<div class="field">
+<div class="row">
+<label for="dayStress">Belastung (0–10)</label>
+<div class="pill" id="stressPill">5</div>
+</div>
+<input id="dayStress" max="10" min="0" step="1" type="range" value="5"/>
+<div class="range-hints">
+<span>0 ruhig</span>
+<span>10 am Limit</span>
+</div>
+</div>
+<div class="grid">
+<div class="field">
+<label for="dayWentWell">Was lief gut?</label>
+<textarea id="dayWentWell" placeholder="1–5 Punkte" rows="6"></textarea>
+</div>
+<div class="field">
+<label for="dayToImprove">Was muss ich verbessern?</label>
+<textarea id="dayToImprove" placeholder="1–3 Punkte, konkret" rows="6"></textarea>
+</div>
+</div>
+<div class="field">
+<label for="dayFreeNotes">Freie Notizen (Platz ohne Ende)</label>
+<textarea id="dayFreeNotes" placeholder="Alles, was raus muss: Situationen, Fragen, Aha-Momente, Notizen aus dem Service…" rows="10"></textarea>
+</div>
+<div class="divider"></div>
+<div class="field">
+<label>Basics</label>
+<div class="checks">
+<label class="check"><input id="dayWater1" type="checkbox"/><span>Wasser 1</span></label>
+<label class="check"><input id="dayWater2" type="checkbox"/><span>Wasser 2</span></label>
+<label class="check"><input id="dayWater3" type="checkbox"/><span>Wasser 3</span></label>
+<label class="check"><input id="dayPause" type="checkbox"/><span>Pause</span></label>
+<label class="check"><input id="dayFood" type="checkbox"/><span>Essen</span></label>
+</div>
+</div>
+</div>
+</section>
+<!-- WEEK -->
+<section class="panel" id="panel-week">
+<div class="panel__header">
+<h1 class="h1">Wochen-Check</h1>
+<div class="panel__meta">
+<button class="btn btn--primary" id="btnSaveWeek" type="button">Speichern</button>
+<button class="btn" id="btnClearWeek" type="button">Leeren</button>
+</div>
+</div>
+<div class="card">
+<div class="grid">
+<div class="field">
+<label for="weekNumber">Woche (Nr.)</label>
+<input id="weekNumber" max="53" min="1" placeholder="z. B. 12" type="number"/>
+</div>
+<div class="field">
+<label for="weekYear">Jahr</label>
+<input id="weekYear" max="2100" min="2000" type="number"/>
+</div>
+</div>
+<div class="field">
+<label for="weekSkills">Welche Skills habe ich geübt?</label>
+<textarea id="weekSkills" rows="8"></textarea>
+</div>
+<div class="field">
+<label for="weekMistake">Ein Fehler, den ich verstanden habe (und wie ich ihn vermeide)</label>
+<textarea id="weekMistake" rows="6"></textarea>
+</div>
+<div class="field">
+<label for="weekFocus">Fokus nächste Woche</label>
+<input id="weekFocus" maxlength="80" placeholder="z. B. Ordnung, Timing, Kommunikation…" type="text"/>
+</div>
+<div class="field">
+<label for="weekNotes">Notizen</label>
+<textarea id="weekNotes" rows="8"></textarea>
+</div>
+</div>
+</section>
+<!-- MONTH -->
+<section class="panel" id="panel-month">
+<div class="panel__header">
+<h1 class="h1">Monats-Check</h1>
+<div class="panel__meta">
+<button class="btn btn--primary" id="btnSaveMonth" type="button">Speichern</button>
+<button class="btn" id="btnClearMonth" type="button">Leeren</button>
+</div>
+</div>
+<div class="card">
+<div class="grid">
+<div class="field">
+<label for="monthName">Monat</label>
+<select id="monthName">
+<option value="1">Januar</option><option value="2">Februar</option><option value="3">März</option>
+<option value="4">April</option><option value="5">Mai</option><option value="6">Juni</option>
+<option value="7">Juli</option><option value="8">August</option><option value="9">September</option>
+<option value="10">Oktober</option><option value="11">November</option><option value="12">Dezember</option>
+</select>
+</div>
+<div class="field">
+<label for="monthYear">Jahr</label>
+<input id="monthYear" max="2100" min="2000" type="number"/>
+</div>
+</div>
+<div class="field">
+<label for="monthProgress">Fortschritt (3–7 Punkte)</label>
+<textarea id="monthProgress" rows="8"></textarea>
+</div>
+<div class="field">
+<label for="monthGap">Lücken / Lernbedarf</label>
+<textarea id="monthGap" rows="7"></textarea>
+</div>
+<div class="field">
+<label for="monthSchool">Berufsschule / Prüfung (Notizen)</label>
+<textarea id="monthSchool" rows="7"></textarea>
+</div>
+<div class="field">
+<label for="monthNotes">Freie Monatsnotizen</label>
+<textarea id="monthNotes" rows="9"></textarea>
+</div>
+</div>
+</section>
+<!-- NOTES -->
+<section class="panel" id="panel-notes">
+<div class="panel__header">
+<h1 class="h1">Notizbuch</h1>
+<div class="panel__meta">
+<button class="btn btn--primary" id="btnSaveNotebook" type="button">Speichern</button>
+</div>
+</div>
+<div class="card">
+<div class="field">
+<label for="nbQuestions">Fragen an Chef/Ausbilder</label>
+<textarea id="nbQuestions" placeholder="Alles sammeln, nichts vergessen." rows="9"></textarea>
+</div>
+<div class="field">
+<label for="nbVocabulary">Fachbegriffe &amp; Übersetzungen (mein Wörterbuch)</label>
+<textarea id="nbVocabulary" placeholder="Begriff – Erklärung in meinen Worten – Beispiel" rows="10"></textarea>
+</div>
+<div class="field">
+<label for="nbRecipes">Rezepte/Grundansätze (Notizen)</label>
+<textarea id="nbRecipes" placeholder="Grundlogik, Verhältnis, Merksätze" rows="10"></textarea>
+</div>
+<div class="field">
+<label for="nbServiceLessons">Service-Learnings (Was hat wirklich gezählt?)</label>
+<textarea id="nbServiceLessons" rows="10"></textarea>
+</div>
+</div>
+</section>
+<!-- WISSEN -->
+<section class="panel" id="panel-wissen">
+<div class="panel__header">
+<h1 class="h1">Wissen (nach Lehrjahr)</h1>
+<div class="panel__meta">
+<div class="pill" id="wissenYearPill">Lehrjahr 1</div>
+<button class="btn" id="btnWissenTop" type="button">Nach oben</button>
+</div>
+</div>
+<div class="card">
+<div class="field">
+<label for="wissenSearch">Suche im Wissen</label>
+<input id="wissenSearch" placeholder="z. B. HACCP, Pass, blanchieren, Kühlkette…" type="search"/>
+</div>
+<div class="divider"></div>
+<div class="wissenWrap">
+<aside class="wissenNav">
+<div class="wissenNav__title">Themen</div>
+<div class="wissenNav__items" id="wissenNavItems"></div>
+</aside>
+<article class="wissenContent">
+<div id="wissenContent"></div>
+</article>
+</div>
+</div>
+</section>
+<!-- GLOSSAR -->
+<section class="panel" id="panel-glossar">
+<div class="panel__header">
+<h1 class="h1">Glossar</h1>
+<div class="panel__meta">
+<div class="pill" id="glossarCount">0 Begriffe</div>
+<button class="btn" id="btnFlashcardsPDF" type="button">Flashcards PDF</button><button class="btn" id="btnGlossarPDF" type="button">Glossar PDF</button><button class="btn" id="glossarReset" type="button">Reset</button></div>
+</div>
+<div class="card">
+<div class="grid">
+<div class="field">
+<label for="glossarSearch">Suche</label>
+<input id="glossarSearch" placeholder="Begriff oder Erklärung…" type="search"/>
+</div>
+<div class="field">
+<label for="glossarYearFilter">Filter Lehrjahr</label>
+<select id="glossarYearFilter">
+<option value="all">Alle</option>
+<option value="1">Lehrjahr 1</option>
+<option value="2">Lehrjahr 2</option>
+<option value="3">Lehrjahr 3</option>
+</select>
+</div>
+</div>
+<div class="divider"></div><div aria-label="Inhaltsverzeichnis A–Z" class="glossarToc" id="glossarToc"></div>
+<div class="glossarList" id="glossarList"></div>
+</div>
+</section>
+<!-- ENTRIES -->
+<section class="panel" id="panel-quiz">
+<div class="panel__header">
+<h1 class="h1">Quiz</h1>
+<div class="panel__meta">
+<div class="pill" id="quizStatusPill">Bereit</div>
+<button class="btn" id="quizReset" type="button">Reset</button>
+</div>
+</div>
+<div class="card">
+<div class="quizHome" id="quizHome">
+<div class="muted">
+        Multiple-Choice · fair (Distraktoren bevorzugt gleiche Kategorie + gleiches Lehrjahr) · mit Feedback.
       </div>
-
-      <!-- Laufende Prüfung -->
-      <div id="examRun" class="examRun" style="display:none;">
-        <div class="examTopbar">
-          <div class="examLeft">
-            <span id="examName" class="pill">Lehrjahr 1</span>
-            <span id="examProgress" class="pill">1/30</span>
-          </div>
-          <div class="examRight">
-            <span id="examTimer" class="pill">45:00</span>
-            <button class="btn" id="btnExamAbort" type="button">Abbrechen</button>
-          </div>
-        </div>
-
-        <div class="qCard">
-          <div class="qMeta">
-            <span id="examQIdx">Frage 1/30</span>
-            <span id="examQJahr" class="pill">Lehrjahr 1</span>
-          </div>
-
-          <div id="examQText" class="qText">—</div>
-          <div id="examChoices" class="choices" role="group" aria-label="Antworten"></div>
-
-          <div class="qActions">
-            <button class="btn primary" id="btnExamNext" type="button" disabled>Nächste</button>
-          </div>
-
-          <div class="examNote">
-            Kein Feedback während der Prüfung. Am Ende bekommst du Ergebnis + Fehlerliste.
-          </div>
-        </div>
+<div class="divider"></div>
+<div class="grid">
+<div class="field">
+<label for="quizYear">Lehrjahr</label>
+<select id="quizYear">
+<option value="1">Lehrjahr 1</option>
+<option value="2">Lehrjahr 2</option>
+<option value="3">Lehrjahr 3</option>
+<option value="all">Alle (Mix)</option>
+</select>
+<div class="help">Tipp: Für echtes Training: erst ein Lehrjahr – dann Mix.</div>
+</div>
+<div class="field">
+<label for="quizCount">Fragen</label>
+<select id="quizCount">
+<option value="10">10</option>
+<option value="15">15</option>
+<option value="20">20</option>
+</select>
+</div>
+</div>
+<div class="divider"></div>
+<div class="row">
+<button class="btn btn--primary" id="quizStart" type="button">Quiz starten</button>
+<button class="btn" disabled="" id="quizOnlyWrong" type="button">Nur Fehler</button>
+</div>
+<div class="divider"></div>
+<div class="muted">
+        Ziel: nicht raten – merken. Jede Frage zeigt dir danach kurz: Definition · Praxis · typischer Fehler · Merksatz.
       </div>
+</div>
+<div class="quizRun" id="quizRun" style="display:none;">
+<div class="quizTop">
+<div class="quizTop__left">
+<div class="pill" id="quizName">—</div>
+<div class="pill" id="quizProgress">0/0</div>
+<div class="pill" id="quizScore">0%</div>
+</div>
+<div class="quizTop__right">
+<button class="btn" id="quizAbort" type="button">Abbrechen</button>
+</div>
+</div>
+<div class="divider"></div>
+<div class="qBox">
+<div class="muted" id="quizQMeta">—</div>
+<div class="qText" id="quizQText">—</div>
+<div class="choices" id="quizChoices"></div>
+<div class="divider"></div>
+<div class="feedback" id="quizFeedback" style="display:none;"></div>
+<div class="row row--end">
+<button class="btn btn--primary" disabled="" id="quizNext" type="button">Nächste</button>
+</div>
+</div>
+</div>
+</div>
+</section><section class="panel" id="panel-pruefung">
+<div class="panel__header">
+<h1 class="h1">Prüfung</h1>
+<div class="panel__meta">
+<div class="pill" id="examStatusPill">Bereit</div>
+<button class="btn" id="examReset" type="button">Reset</button>
+</div>
+</div>
+<div class="card">
 
-      <!-- Ergebnis -->
-      <div id="examResult" class="examResult" style="display:none;">
-        <div class="resultHero">
-          <div class="resultTitle" id="resultTitle">Ergebnis</div>
-          <div class="resultMeta" id="resultMeta">—</div>
-        </div>
+<!-- HOME SCREEN - Lehrjahr-Auswahl -->
+<div id="examHome">
+<div class="muted" style="margin-bottom:16px;">
+🚗 <strong>Führerschein-Stil Prüfungsvorbereitung</strong><br>
+Timer · Kein Zurück · Kein Feedback während Prüfung · Nur am Ende Ergebnis + Fehlerliste
+</div>
 
-        <div class="resultActions">
-          <button class="btn primary" id="btnRetryWrong" type="button">Nur Fehler wiederholen</button>
-          <button class="btn" id="btnBackExamHome" type="button">Zurück zu Prüfungen</button>
-        </div>
+<!-- LEHRJAHR 1 -->
+<div class="divider"></div>
+<h2 class="h2">Lehrjahr 1 - Prüfungsvorbereitung</h2>
+<div class="muted" style="margin-bottom:12px;">
+30 Fragen · 45 Minuten · Bestehen ab 70% (21 Punkte)
+</div>
+<div class="grid grid--3">
+<div class="examCard">
+<div class="examCard__title">Simulation 1</div>
+<div class="examCard__meta">30 Fragen · 45 Min</div>
+<button class="btn btn--primary exam-start-btn" data-year="1" data-simulation="1" type="button">Starten</button>
+</div>
+<div class="examCard">
+<div class="examCard__title">Simulation 2</div>
+<div class="examCard__meta">30 Fragen · 45 Min</div>
+<button class="btn btn--primary exam-start-btn" data-year="1" data-simulation="2" type="button">Starten</button>
+</div>
+<div class="examCard">
+<div class="examCard__title">Simulation 3</div>
+<div class="examCard__meta">30 Fragen · 45 Min</div>
+<button class="btn btn--primary exam-start-btn" data-year="1" data-simulation="3" type="button">Starten</button>
+</div>
+</div>
 
-        <div class="panelHead" style="padding-top:0;">
-          <h3 style="margin:0 0 6px;">Fehlerliste</h3>
-          <p class="muted" style="margin:0;">Hier siehst du genau, was du falsch hattest.</p>
-        </div>
+<!-- LEHRJAHR 2 -->
+<div class="divider"></div>
+<h2 class="h2">Lehrjahr 2 - Prüfungsvorbereitung</h2>
+<div class="muted" style="margin-bottom:12px;">
+40 Fragen · 60 Minuten · Bestehen ab 70% (28 Punkte)
+</div>
+<div class="grid grid--3">
+<div class="examCard">
+<div class="examCard__title">Simulation 1</div>
+<div class="examCard__meta">40 Fragen · 60 Min</div>
+<button class="btn btn--primary exam-start-btn" data-year="2" data-simulation="1" type="button">Starten</button>
+</div>
+<div class="examCard">
+<div class="examCard__title">Simulation 2</div>
+<div class="examCard__meta">40 Fragen · 60 Min</div>
+<button class="btn btn--primary exam-start-btn" data-year="2" data-simulation="2" type="button">Starten</button>
+</div>
+<div class="examCard">
+<div class="examCard__title">Simulation 3</div>
+<div class="examCard__meta">40 Fragen · 60 Min</div>
+<button class="btn btn--primary exam-start-btn" data-year="2" data-simulation="3" type="button">Starten</button>
+</div>
+</div>
 
-        <div id="wrongList" class="wrongList"></div>
-      </div>
-    </section>
-  </main>
+<!-- LEHRJAHR 3 -->
+<div class="divider"></div>
+<h2 class="h2">Lehrjahr 3 - Prüfungsvorbereitung</h2>
+<div class="muted" style="margin-bottom:12px;">
+50 Fragen · 75 Minuten · Bestehen ab 70% (35 Punkte)
+</div>
+<div class="grid grid--3">
+<div class="examCard">
+<div class="examCard__title">Simulation 1</div>
+<div class="examCard__meta">50 Fragen · 75 Min</div>
+<button class="btn btn--primary exam-start-btn" data-year="3" data-simulation="1" type="button">Starten</button>
+</div>
+<div class="examCard">
+<div class="examCard__title">Simulation 2</div>
+<div class="examCard__meta">50 Fragen · 75 Min</div>
+<button class="btn btn--primary exam-start-btn" data-year="3" data-simulation="2" type="button">Starten</button>
+</div>
+<div class="examCard">
+<div class="examCard__title">Simulation 3</div>
+<div class="examCard__meta">50 Fragen · 75 Min</div>
+<button class="btn btn--primary exam-start-btn" data-year="3" data-simulation="3" type="button">Starten</button>
+</div>
+</div>
 
-  <footer class="footer" role="contentinfo">
-    <div class="wrap footerInner">
-      <div class="footerTop">
-        <div class="footerBrand">
-          <div class="mark small">🖤</div>
-          <div>
-            <div class="footerTitle">🖤RE:BELLE™ Media</div>
-            <div class="footerSub">The Art of Feeling. Amplified.</div>
-          </div>
-        </div>
+<div class="divider"></div>
+<div class="muted">
+💡 <strong>Tipp:</strong> Übe alle Simulationen pro Lehrjahr, um dich optimal vorzubereiten. Jede Simulation hat andere Fragen!
+</div>
+</div>
 
-        <div class="footerLinks">
-          <a href="https://newwomanintheshop.com" target="_blank" rel="noopener">newwomanintheshop.com</a>
-          <a href="https://rebellemedia.de" target="_blank" rel="noopener">rebellemedia.de</a>
-          <a href="mailto:rebelle.media.creator@gmail.com">rebelle.media.creator@gmail.com</a>
-        </div>
-      </div>
+<!-- RUNNING EXAM SCREEN -->
+<div id="examRun" style="display:none;">
+<div class="examTop">
+<div class="examTop__left">
+<div class="pill" id="examName">—</div>
+<div class="pill" id="examProgress">0/0</div>
+<div class="pill" id="examTimer" style="background: rgba(188,158,129,.95); font-weight:900;">0:00</div>
+</div>
+<div class="examTop__right">
+<button class="btn" id="examAbort" type="button">Abbrechen</button>
+</div>
+</div>
+<div class="divider"></div>
+<div class="examQ">
+<div class="muted" id="examQMeta">—</div>
+<div class="examQ__text" id="examQText">—</div>
+<div class="examChoices" id="examChoices"></div>
+<div class="divider"></div>
+<div class="examActions">
+<button class="btn btn--primary" disabled="" id="examNext" type="button">Nächste Frage</button>
+</div>
+<div class="muted" style="margin-top:10px; font-size:12px;">
+⚠️ <strong>Kein Feedback während der Prüfung.</strong> Du bekommst alles am Ende.
+</div>
+</div>
+</div>
 
-      <div class="footerFine">Offline-fähig · Kein Login · Keine Cloud · Lernwerkzeug EFZ (CH)</div>
-    </div>
-  </footer>
-
-  <script src="app.js"></script>
+<!-- RESULTS SCREEN -->
+<div id="examResult" style="display:none;">
+<div class="resultBox">
+<div class="resultBox__title" id="examResultTitle">—</div>
+<div class="resultBox__meta" id="examResultMeta">—</div>
+</div>
+<div class="divider"></div>
+<div class="examActions">
+<button class="btn btn--primary" id="examRetryWrong" type="button">Nur Fehler wiederholen</button>
+<button class="btn" id="examBackHome" type="button">Zurück zur Übersicht</button>
+</div>
+<div class="divider"></div>
+<h2 class="h2">Fehlerliste</h2>
+<div id="examWrongList" style="max-height:400px; overflow-y:auto;"></div>
+</div>
+</div>
+</section><section class="panel" id="panel-entries">
+<div class="panel__header">
+<h1 class="h1">Einträge</h1>
+<div class="panel__meta">
+<button class="btn" id="btnDeleteYear" type="button">Lehrjahr löschen</button>
+<button class="btn" id="btnDeleteAll" type="button">Alles löschen</button>
+</div>
+</div>
+<div class="card">
+<div class="field">
+<label for="search">Suche</label>
+<input id="search" placeholder="Datum, Station, Lernziel, Notizen…" type="search"/>
+</div>
+<div class="list-head">
+<div class="muted" id="countInfo">0 Einträge</div>
+<div class="sort">
+<label class="muted" for="sortBy">Sortieren</label>
+<select id="sortBy">
+<option value="newest">Neueste zuerst</option>
+<option value="oldest">Älteste zuerst</option>
+</select>
+</div>
+</div>
+<div class="entries" id="entries"></div>
+</div>
+</section>
+<!-- INFO -->
+<section class="panel" id="panel-info">
+<div class="panel__header">
+<h1 class="h1">Info</h1>
+</div>
+<div class="card">
+<p class="p">
+            Dieses Produkt ist eine praktische Lern- und Reflexionshilfe für Koch-Azubis: Kalender, Tagebuch, Wochen/Monats-Checks, Notizen, Wissen &amp; Glossar.
+          </p>
+<ul class="ul">
+<li><strong>Offline nutzbar:</strong> Inhalte und Einträge werden lokal im Browser gespeichert.</li>
+<li><strong>Backup:</strong> Export/Import nutzen (z. B. Gerätewechsel).</li>
+<li><strong>Wichtig:</strong> Ergänzung – ersetzt kein offizielles Berichtsheft/keine betriebliche Unterweisung.</li>
+</ul>
+<div class="divider"></div>
+<p class="p">
+<strong>Autor &amp; Idee:</strong> Kevin Schlesier<br/>
+<strong>Anbieter:</strong> 🖤RE:BELLE™ Media · The Art of Feeling. Amplified.<br/>
+<strong>Web:</strong> newwomanintheshop.com · rebellemedia.de<br/>
+<strong>Kontakt:</strong> rebelle.media.creator@gmail.com
+          </p>
+<div class="divider"></div>
+<div class="legalLinks">
+<a class="legalLink" href="impressum.html">Impressum</a>
+<a class="legalLink" href="datenschutz.html">Datenschutz</a>
+<a class="legalLink" href="agb.html">AGB</a>
+</div>
+</div>
+</section>
+</main>
+<footer class="footer">
+<div class="footer__wrap">
+<div class="footer__note">🖤RE:BELLE™ Media · The Art of Feeling. Amplified.</div>
+<div class="footer__sub">
+<span>Idee/Autor: Kevin Schlesier</span>
+<span class="dot">·</span>
+<a href="impressum.html">Impressum</a>
+<span class="dot">·</span>
+<a href="datenschutz.html">Datenschutz</a>
+<span class="dot">·</span>
+<a href="agb.html">AGB</a>
+</div>
+</div>
+</footer>
+<div aria-live="polite" class="toast" id="toast" role="status"></div>
+</div>
+<script src="api-client.js?v=warm1" defer></script>
+<script src="branding-loader.js" defer></script>
+<script src="toast.js" defer></script>
+<script src="api-client.js" defer></script>
+<script src="sync-status.js" defer></script>
+<script src="wissen.js?v=warm1" defer></script>
+<script src="glossary.js?v=warm1" defer></script>
+<script src="app-enhanced.js?v=warm1" defer></script>
+<script src="exam-complete.js?v=warm1" defer></script>
+<script src="calendar-pdf.js?v=warm1" defer></script>
+<div aria-hidden="true" class="modal" id="onboarding">
+<div class="modal__backdrop"></div>
+<div aria-labelledby="obTitle" aria-modal="true" class="modal__card" role="dialog">
+<div class="modal__top">
+<div>
+<div class="modal__title" id="obTitle">Pro-Azubi Setup</div>
+<div class="modal__sub">Ausbildungsstart setzen → Lehrjahre, Wochen und Berichtsheft-Export laufen automatisch.</div>
+</div>
+</div>
+<div class="divider"></div>
+<div class="grid">
+<div class="field">
+<label for="obName">Name Azubi</label>
+<input id="obName" type="text"/>
+</div>
+<div class="field">
+<label for="obJob">Ausbildungsberuf</label>
+<input id="obJob" type="text" value="Koch/Köchin"/>
+</div>
+</div>
+<div class="grid">
+<div class="field">
+<label for="obCompany">Betrieb</label>
+<input id="obCompany" type="text"/>
+</div>
+<div class="field">
+<label for="obTrainer">Ausbilder:in</label>
+<input id="obTrainer" type="text"/>
+</div>
+</div>
+<div class="grid">
+<div class="field">
+<label for="obStart">Ausbildungsstart</label>
+<input id="obStart" type="date"/>
+</div>
+<div class="field">
+<label for="obMode">Berichtsheft-Standard</label>
+<select id="obMode">
+<option value="weekly">Wöchentlich</option>
+<option value="daily">Täglich</option>
+</select>
+<div class="help">Viele Betriebe verlangen wöchentlich. Du kannst später jederzeit wechseln.</div>
+</div>
+</div>
+<div class="divider"></div>
+<div class="modal__actions">
+<button class="btn btn--primary" id="obSave" type="button">Setup speichern</button>
+</div>
+</div>
+</div>
 </body>
 </html>

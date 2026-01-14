@@ -1,0 +1,261 @@
+{
+  "lehrjahr": 1,
+  "titel": "Koch/Köchin Ausbildung - 1. Lehrjahr (Monate 1-12)",
+  "dauer_monate": 12,
+  "schulische_stunden": 320,
+  "fokus": "Grundlagen & handwerkliche Basisfertigkeiten",
+  "lernfelder": [
+    {
+      "lf_nummer": 1,
+      "titel": "Die eigene Rolle im Betrieb mitgestalten sowie Beruf und Betrieb repräsentieren",
+      "stunden": 40,
+      "kernziele": [
+        "Ausbildungsbetrieb kennenlernen",
+        "Berufsbilder verstehen",
+        "Betriebsleitbild & Organisation erfassen",
+        "Weiterentwicklung & Aufstiegschancen erkunden",
+        "Betriebliche Präsentation erstellen",
+        "Fremdsprachen-Grundlagen (Englisch/Französisch)"
+      ],
+      "praktische_fertigkeiten": [
+        "Betriebserkundung durchführen",
+        "Interviews mit Mitarbeitern führen",
+        "Präsentationen halten",
+        "Feedback reflektieren"
+      ]
+    },
+    {
+      "lf_nummer": 2,
+      "titel": "Waren bestellen, annehmen, lagern und pflegen",
+      "stunden": 40,
+      "kernziele": [
+        "Betriebliche Warenwirtschaft verstehen",
+        "Waren sachgerecht annehmen & kontrollieren",
+        "Lagerung unter Hygieneaspekten",
+        "Warenbedarf ermitteln",
+        "Meldebestände & Lagerverwaltung",
+        "Warenverderb erkennen"
+      ],
+      "praktische_fertigkeiten": [
+        "Lieferscheine kontrollieren",
+        "Qualitätsprüfung durchführen",
+        "Warenbestand führen",
+        "Temperaturzonen einhalten",
+        "Inventuren teilnehmen"
+      ]
+    },
+    {
+      "lf_nummer": 3,
+      "titel": "In der Küche arbeiten",
+      "stunden": 120,
+      "fokus": "KERN-LERNFELD",
+      "kernziele": [
+        "Arbeitsplatz unter Hygieneaspekten vorbereiten",
+        "Küchengeräte & Maschinen richtig einsetzen",
+        "Schneidetechniken meistern",
+        "Einfache Speisen zubereiten",
+        "Garverfahren anwenden",
+        "Speisen anrichten & präsentieren",
+        "Arbeitsplatz reinigen & desinfizieren"
+      ],
+      "arbeitstechniken": [
+        "Julienne (Streichholzformat)",
+        "Brunoise (feine Würfel)",
+        "Chiffade (Blätter/Streifen)",
+        "Batonnet (Stäbchen)",
+        "Loiselle (dünne Scheiben)"
+      ],
+      "speisen": [
+        "Salate (Rohkost, Dressings)",
+        "Eierspeisen (gekochte Eier, Rührei, Omelette, Spiegeleier, Eierpfannkuchen)",
+        "Gemüsebeilagen (gedünstet, gebraten, gekocht)",
+        "Kartoffelbeilagen (Kartoffelsalat, Bratkartoffeln, Kartoffelpüree, Salzkartoffeln)"
+      ],
+      "garverfahren": [
+        "Kochen",
+        "Blanchieren",
+        "Dünsten",
+        "Braten",
+        "Frittieren"
+      ],
+      "lebensmittelkunde": [
+        "Eier: Frischeprüfung, Lagerung, Verwendungsarten",
+        "Pflanzliche Rohstoffe: Gemüse, Obst, Kräuter",
+        "Ernährungsphysiologische Eigenschaften",
+        "Vorbereitung: Waschen, Putzen, Schälen, Schneiden"
+      ]
+    },
+    {
+      "lf_nummer": 4,
+      "titel": "Das Restaurant vorbereiten und pflegen",
+      "stunden": 40,
+      "kernziele": [
+        "Gästeräume verstehen",
+        "Einrichtung & Ausstattung kennen",
+        "Tische sachgerecht decken",
+        "Reinigung & Desinfektion",
+        "Reparatur- & Ersatzbedarfe erkennen",
+        "Dokumentation (digital & analog)"
+      ],
+      "praktische_fertigkeiten": [
+        "Eindeckungs-Techniken lernen",
+        "Tischwäsche & Servietten handhaben",
+        "Besteck & Gläser richtig eindecken",
+        "Reinigungsroutinen einüben",
+        "Arbeitsplatz-Standards beachten"
+      ]
+    },
+    {
+      "lf_nummer": 5,
+      "titel": "Gastbezogenen Service im Restaurant durchführen",
+      "stunden": 80,
+      "kernziele": [
+        "Gäste verstehen (Gästetypen, Bedürfnisse)",
+        "Kommunikationsregeln & Umgangsformen",
+        "Getränkekunde (Bier, Wein, alkoholfreie Getränke)",
+        "Speisen & Getränke servieren",
+        "Allergen- & Zusatzstoff-Information weitergeben",
+        "Fremdsprachenkommunikation (Basics)",
+        "Teamfähigkeit demonstrieren"
+      ],
+      "praktische_fertigkeiten": [
+        "Speisen & Getränke sachgerecht servieren",
+        "Geschirr & Besteck handhaben",
+        "Tische abräumen",
+        "Service-Training durchführen",
+        "Gäste bedienen (Trainingsszenarien)",
+        "Feedback-Prozesse nutzen"
+      ],
+      "getraenkekunde": {
+        "bier": ["Pils", "Weizen", "Dunkel"],
+        "wein": ["Rotwein", "Weißwein", "Rosé", "Schaumwein"],
+        "alkoholfrei": ["Säfte", "Wasser", "Tee", "Kaffee"]
+      }
+    }
+  ],
+  "integrativ_vermittelt": {
+    "beschreibung": "Diese Kompetenzen durchziehen alle Lernfelder während des gesamten 1. Jahres",
+    "themen": [
+      {
+        "bereich": "Berufsbildung & Arbeitsrecht",
+        "inhalte": ["Ausbildungsvertrag", "Berufsbildungsgesetz (BBiG)", "Ausbildungsordnung", "Tarifrecht", "Kündigungsschutzgesetz"]
+      },
+      {
+        "bereich": "Arbeits- & Gesundheitsschutz",
+        "inhalte": ["Unfallverhütung", "Arbeitsschutzvorschriften", "Ergonomie", "Brandschutz", "Erste Hilfe"]
+      },
+      {
+        "bereich": "Umweltschutz & Nachhaltigkeit",
+        "inhalte": ["Ressourcenschonung", "Abfallvermeidung", "Nachhaltige Materialwahl", "Recycling"]
+      },
+      {
+        "bereich": "Digitalisierte Arbeitswelt",
+        "inhalte": ["Datenschutz", "Digitale Kommunikation", "E-Mail", "Infosysteme", "Informationsrecherche"]
+      },
+      {
+        "bereich": "Hygiene (4 Wochen Fokus)",
+        "inhalte": ["Personal-, Betriebs-, Produkthygiene", "HACCP-Konzept", "Schädlingsbekämpfung", "Meldepflichten"]
+      },
+      {
+        "bereich": "Gast & Team (4 Wochen Fokus)",
+        "inhalte": ["Kommunikation", "Feedback geben & annehmen", "Teamverhalten", "Konflikte lösen", "Gästeerwartungen"]
+      }
+    ]
+  },
+  "halbjahr_1": {
+    "wochen": "1-26",
+    "inhalte": [
+      {
+        "bereich": "Gast & Team",
+        "fertigkeit": "Persönliches Auftreten, Kommunikation",
+        "wochen": 4
+      },
+      {
+        "bereich": "Waren",
+        "fertigkeit": "Warenannahme, Kontrolle, Lagerung",
+        "wochen": 4
+      },
+      {
+        "bereich": "Arbeitsvorbereitung",
+        "fertigkeit": "Arbeitsplatz einrichten, Geräte kennenlernen",
+        "wochen": 6
+      },
+      {
+        "bereich": "Arbeitstechniken",
+        "fertigkeit": "Schneide- & Mischtechniken, einfache Garverfahren",
+        "wochen": 8
+      },
+      {
+        "bereich": "Service Basics",
+        "fertigkeit": "Service nach Serviceform, Geschirr/Besteck",
+        "wochen": 4
+      },
+      {
+        "bereich": "Einfache Speisen",
+        "fertigkeit": "Salate, Eierspeisen, Gemüsebeilagen",
+        "wochen": 12
+      },
+      {
+        "bereich": "Pflanzliche Rohstoffe",
+        "fertigkeit": "Gemüse vorbereiten & verarbeiten",
+        "wochen": 10
+      },
+      {
+        "bereich": "Suppen/Soßen",
+        "fertigkeit": "Brühen, Fonds, einfache Suppen, helle Soßen",
+        "wochen": 4
+      },
+      {
+        "bereich": "Hygiene",
+        "fertigkeit": "Alle Arbeitstechniken + Hygiene kombiniert",
+        "wochen": 4
+      }
+    ]
+  },
+  "halbjahr_2": {
+    "wochen": "27-52",
+    "inhalte": [
+      {
+        "bereich": "Fleischverarbeitung",
+        "fertigkeit": "Fleischteile kennen, parieren, zuschneiden, portionieren, einfache Gerichte",
+        "wochen": 6
+      },
+      {
+        "bereich": "Fischvorbereitung",
+        "fertigkeit": "Fisch filieren, portionieren, einfache Gerichte",
+        "wochen": 4
+      },
+      {
+        "bereich": "Suppen/Soßen (Fortsetzung)",
+        "fertigkeit": "Gebundene Suppen, Rahmsuppen, weitere Soßen",
+        "wochen": 8
+      },
+      {
+        "bereich": "Sättigungsbeilagen",
+        "fertigkeit": "Kartoffel, Reis, Pasta in vielen Varianten",
+        "wochen": 6
+      },
+      {
+        "bereich": "Süßspeisen Basics",
+        "fertigkeit": "Cremes, Eierspeisen, Obst, vorgefertigtes Eis",
+        "wochen": 2
+      },
+      {
+        "bereich": "Teamfähigkeit & Service",
+        "fertigkeit": "Erweiterte Serviceschritte, Fremdsprache (Basics)",
+        "wochen": "laufend"
+      }
+    ]
+  },
+  "kompetenzen_am_ende": [
+    "Arbeitsplatz professionell einrichten",
+    "Einfache Speisen kochen (Salate, Eierspeisen, Gemüse)",
+    "Grundlegende Hygiene & Sicherheit beachten",
+    "Service-Basics durchführen",
+    "Warenlagerung korrekt handhaben",
+    "Mit Küchengeräten umgehen",
+    "Schneide- & Gartechniken beherrschen",
+    "Im Team konstruktiv zusammenarbeiten"
+  ],
+  "prüfung_am_ende": "Keine Prüfung nach Jahr 1 (Gestreckte Prüfung startet in Jahr 2)"
+}

@@ -1,1217 +1,1248 @@
+
+// ---------------- Global Click Delegation (Buttons ALWAYS work) ----------------
+const __tabMap = {
+  "start":"start",
+  "kalender":"kalender",
+  "tag":"tag",
+  "woche":"woche",
+  "monat":"monat",
+  "notizen":"notizen",
+  "wissen":"wissen",
+  "glossar":"glossar",
+  "quiz":"quiz",
+  "prüfung":"pruefung",
+  "pruefung":"pruefung",
+  "einträge":"eintraege",
+  "eintraege":"eintraege",
+  "info":"info"
+};
+
+function __normalizeTab(raw){
+  const t = String(raw||"").trim().toLowerCase();
+  return __tabMap[t] || t;
+}
+
+document.addEventListener("click", (e)=>{
+  // Tabs (top navigation)
+  const tabBtn = e.target.closest("button.tab, .tab button, button[data-tab], [data-tab].tab");
+  if(tabBtn){
+    const dt = tabBtn.getAttribute("data-tab") || tabBtn.dataset?.tab || tabBtn.textContent;
+    const tab = __normalizeTab(dt);
+    if(typeof setTab === "function"){
+      e.preventDefault();
+      setTab(tab);
+      window.scrollTo({top:0, behavior:"smooth"});
+      return;
+    }
+  }
+
+  // Lehrjahr buttons
+  const yBtn = e.target.closest("button.yearBtn, [data-year].yearBtn, button[data-year]");
+  if(yBtn){
+    const y = yBtn.getAttribute("data-year") || yBtn.dataset?.year || yBtn.textContent;
+    if(typeof setYear === "function"){
+      e.preventDefault();
+      setYear(String(y).replace(/\D+/g,"") || "1");
+      return;
+    }
+  }
+
+  // "Zum Glossar" (fast access)
+  const openG = e.target.closest("#btnOpenGlossar, [data-action='openGlossar']");
+  if(openG){
+    if(typeof setTab === "function"){
+      e.preventDefault();
+      setTab("glossar");
+      window.scrollTo({top:0, behavior:"smooth"});
+      return;
+    }
+  }
+
+  // Glossary A–Z bar
+  const az = e.target.closest(".azBtn");
+  if(az){
+    const L = az.textContent.trim();
+    const target = document.querySelector(`[data-letter-anchor="${CSS.escape(L)}"]`);
+    if(target){
+      e.preventDefault();
+      target.scrollIntoView({behavior:"smooth", block:"start"});
+      return;
+    }
+  }
+
+  // Glossary item click (delegated)
+  const gBtn = e.target.closest(".glossarItemBtn");
+  if(gBtn){
+    const term = gBtn.getAttribute("data-term") || gBtn.textContent.trim();
+    const all = (window.__GLOSSARY_VIEW__ || []);
+    const item = all.find(it => (it.term||"") === term) || null;
+    const side = document.getElementById("glossarySidebar");
+    if(side) side.querySelectorAll(".glossarItemBtn.is-active").forEach(x=>x.classList.remove("is-active"));
+    gBtn.classList.add("is-active");
+    if(item && typeof showGlossaryItem === "function"){
+      e.preventDefault();
+      store.glossarSelected = item.term;
+      if(typeof saveStore === "function") saveStore();
+      showGlossaryItem(item);
+      return;
+    }
+  }
+
+  // Begriff → Glossar-Notizen
+  const toNotes = e.target.closest("#btnToGlossarNotes");
+  if(toNotes){
+    e.preventDefault();
+    const term = (store && store.glossarSelected) ? store.glossarSelected : "";
+    if(!term) return;
+    const def = (window.__GLOSSARY_VIEW__||[]).find(it => (it.term||"")===term);
+    const insert = `• ${term} – ${def && def.definition ? def.definition : ""}\n  Mein Beispiel: `;
+    const ta = document.querySelector(
+      'textarea[name="glossarNotes"], textarea#glossarNotes, textarea[data-field="glossarNotes"], textarea[placeholder*="Begriff("], textarea[placeholder*="Begriff(e)"]'
+    );
+    if(ta){
+      if(!ta.value.includes(term)) ta.value = (ta.value ? ta.value.trimEnd()+"\n\n" : "") + insert;
+      ta.focus();
+      try{ store.glossarNotes = ta.value; if(typeof saveStore === "function") saveStore(); }catch(_){}
+      if(typeof setTab === "function") setTab("start");
+    }else{
+      navigator.clipboard?.writeText(insert).catch(()=>{});
+      alert("Notizfeld nicht gefunden. Text wurde in die Zwischenablage kopiert.");
+    }
+    return;
+  }
+
+}, true);
+// -----------------------------------------------------------------------------
+
+
+/* app.js – Azubi Tagebuch Küche
+   Fix: komplette UI-Verkabelung (Tabs, Lehrjahr, Storage, Export/Import)
+   + Glossar Render + Quiz/Prüfung auf Basis Glossar-Pool (window.AZUBI_GLOSSARY_PRO)
+*/
 (() => {
-  const APP_VERSION = 3;
-  const APP_KEY = "azubi_kueche_complete_v3";
-  const SETTINGS_KEY = "azubi_kueche_complete_settings_v3";
-
-  const CONTENT = window.AZUBI_CONTENT;
-
-  const $ = (sel) => document.querySelector(sel);
-  const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+  const $ = (s, r=document) => r.querySelector(s);
+  const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
 
 
-  // Header/Tabs: beim Scrollen ausblenden (mobile-first)
-  (function headerAutoHide(){
+  // Header shrink on scroll (only height/spacing, no redesign)
+  const __applyHeaderShrink = () => {
     const topbar = document.querySelector(".topbar");
-    const tabs = document.querySelector(".tabs");
-    if (!topbar || !tabs) return;
-
-    let lastY = window.scrollY || 0;
-    let ticking = false;
-
-    function run(){
-      const y = window.scrollY || 0;
-      const delta = y - lastY;
-      if (Math.abs(delta) < 8) return;
-
-      if (delta > 0 && y > 80){
-        topbar.classList.add("is-hide");
-        tabs.classList.add("is-hide");
-      } else {
-        topbar.classList.remove("is-hide");
-        tabs.classList.remove("is-hide");
-      }
-      lastY = y;
+    const __syncTopbarH = () => {
+      if(!topbar) return;
+      const h = topbar.getBoundingClientRect().height;
+      document.documentElement.style.setProperty('--topbarH', h + 'px');
+    };
+    const __setTopbarH = () => {
+      const h = topbar.getBoundingClientRect().height || 0;
+      document.documentElement.style.setProperty('--topbarH', h + 'px');
+    };
+    if(!topbar) return;
+    // Ensure CSS exists even if inline fallback is active
+    if(!document.getElementById("hdrShrinkStyles")){
+      const st = document.createElement("style");
+      st.id = "hdrShrinkStyles";
+      st.textContent = ".topbar.is-scrolled .brand{padding:8px 16px 6px;}\n" +
+                     ".topbar.is-scrolled .topbar__row{padding:0 16px 8px;}\n" +
+                     ".topbar.is-scrolled .topbar__actions{padding:0 16px 10px;}";
+      document.head.appendChild(st);
     }
+    const onScroll = () => {
+      const y = window.scrollY || document.documentElement.scrollTop || 0;
+      topbar.classList.toggle("is-scrolled", y > 8);
+      __setTopbarH();
+    };
+    window.addEventListener("scroll", onScroll, {passive:true});
+    window.addEventListener("resize", __setTopbarH, {passive:true});
+    onScroll();
+    __syncTopbarH();
+  };
+  // Defer one tick to ensure DOM exists (defer scripts still run before styles sometimes)
+  setTimeout(__applyHeaderShrink, 0);
 
-    window.addEventListener("scroll", () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => {
-        run();
-        ticking = false;
+const STORE_KEY = "azubi_tagebuch_v3";
+
+  const safeJSON = {
+    parse(txt, fallback=null){
+      try { return JSON.parse(txt); } catch(e){ return fallback; }
+    },
+    stringify(obj){
+      try { return JSON.stringify(obj, null, 2); } catch(e){ return "{}"; }
+    }
+  };
+
+  const nowISO = () => new Date().toISOString();
+
+  const defaultStore = () => ({
+    version: 3,
+    updatedAt: nowISO(),
+    yearActive: "1",
+    years: {
+      "1": { quick:{}, day:{}, week:{}, month:{}, notebook:{} },
+      "2": { quick:{}, day:{}, week:{}, month:{}, notebook:{} },
+      "3": { quick:{}, day:{}, week:{}, month:{}, notebook:{} }
+    }
+  });
+
+  const loadStore = () => {
+    const raw = localStorage.getItem(STORE_KEY);
+    const parsed = safeJSON.parse(raw, null);
+    if (!parsed || !parsed.years) return defaultStore();
+    // minimal migration safety
+    const base = defaultStore();
+    const merged = { ...base, ...parsed };
+    merged.years = { ...base.years, ...(parsed.years || {}) };
+    for (const y of ["1","2","3"]) {
+      merged.years[y] = { ...base.years[y], ...(merged.years[y] || {}) };
+      merged.years[y].quick = { ...(merged.years[y].quick || {}) };
+      merged.years[y].day = { ...(merged.years[y].day || {}) };
+      merged.years[y].week = { ...(merged.years[y].week || {}) };
+      merged.years[y].month = { ...(merged.years[y].month || {}) };
+      merged.years[y].notebook = { ...(merged.years[y].notebook || {}) };
+    }
+    return merged;
+  };
+
+  const saveStore = (s) => {
+    s.updatedAt = nowISO();
+    localStorage.setItem(STORE_KEY, safeJSON.stringify(s));
+  };
+
+  let store = loadStore();
+
+  // ---------- Basics: Tabs ----------
+  const tabsNav = $(".tabs");
+  const panels = $$("section.panel");
+  const setTab = (tabName) => {
+    $$(".tab", tabsNav).forEach(b => b.classList.toggle("is-active", b.dataset.tab === tabName));
+    panels.forEach(p => p.classList.toggle("is-active", p.id === `panel-${tabName}`));
+    if(tabName === 'glossar'){ ensureGlossaryLayout(); renderGlossary(); }
+
+    // optional: focus
+    const activePanel = $(`#panel-${tabName}`);
+    if (activePanel) activePanel.scrollTop = 0;
+  };
+
+// ---------------- Glossar (Sidebar + kumulativ nach Lehrjahr) ----------------
+const getGlossaryItems = () => {
+  const g = window.AZUBI_GLOSSARY_PRO;
+  if(!g || !Array.isArray(g.items)) return [];
+  return g.items.map(it => ({
+    term: it.term || it.title || "",
+    definition: it.definition || "",
+    praxis: it.praxis || "",
+    merksatz: it.merksatz || "",
+    fehler: it.fehler || "",
+    years: Array.isArray(it.years) ? it.years.map(Number) : []
+  }));
+};
+
+const allowedYearsUpTo = (year) => {
+  const y = Number(year || 1);
+  return [1,2,3].filter(n => n <= y);
+};
+
+const renderAZBar = (letters) => {
+  const az = document.getElementById('glossaryAZ');
+  if(!az) return;
+  az.innerHTML = '';
+  const frag = document.createDocumentFragment();
+  for(const L of letters){
+    const b = document.createElement('button');
+    b.type='button';
+    b.className='azBtn';
+    b.textContent=L;
+    b.addEventListener('click', (e)=>{
+      e.preventDefault();
+      const target = document.querySelector(`[data-letter-anchor="${CSS.escape(L)}"]`);
+      if(target){
+        target.scrollIntoView({behavior:'smooth', block:'start'});
+      }
+    });
+    frag.appendChild(b);
+  }
+  az.appendChild(frag);
+};
+
+
+
+const escapeHtml = (s) => String(s ?? "")
+  .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+  .replaceAll('"',"&quot;").replaceAll("'","&#039;");
+
+const showGlossaryItem = (item) => {
+  const detail = document.getElementById("glossaryDetail");
+  if(!detail) return;
+  if(!item){
+    detail.innerHTML = '<div class="glossarEmpty">Wähle links einen Begriff.</div>';
+    return;
+  }
+  const years = (item.years||[]).map(String).join(", ");
+  const blocks = [
+    item.definition ? `<div class="glossarBlock"><div class="glossarBlockTitle">Definition</div><div class="glossarDef">${escapeHtml(item.definition)}</div></div>` : "",
+    item.praxis ? `<div class="glossarBlock"><div class="glossarBlockTitle">Praxis</div><div class="glossarDef">${escapeHtml(item.praxis)}</div></div>` : "",
+    item.merksatz ? `<div class="glossarBlock"><div class="glossarBlockTitle">Merksatz</div><div class="glossarDef">${escapeHtml(item.merksatz)}</div></div>` : "",
+    item.fehler ? `<div class="glossarBlock"><div class="glossarBlockTitle">Typische Fehler</div><div class="glossarDef">${escapeHtml(item.fehler)}</div></div>` : "",
+  ].join("");
+  detail.innerHTML = `
+    <h3 class="glossarTerm">${escapeHtml(item.term)}</h3>
+    <p class="glossarMeta">Lehrjahr: ${escapeHtml(years || "—")}</p>
+    ${blocks || '<div class="glossarEmpty">Keine Details hinterlegt.</div>'}
+  `;
+};
+
+const renderGlossary = () => {
+  const side = document.getElementById("glossarySidebar");
+  const search = document.getElementById("glossarySearch");
+  const year = (store && store.year) ? store.year : 1;
+
+  const all = getGlossaryItems();
+  const allowed = allowedYearsUpTo(year);
+
+  let view = all.filter(it => (it.years||[]).some(y => allowed.includes(Number(y))));
+  // Suche
+  const q = (search?.value || "").trim().toLowerCase();
+  if(q){
+    view = view.filter(it =>
+      (it.term||"").toLowerCase().includes(q) ||
+      (it.definition||"").toLowerCase().includes(q)
+    );
+  }
+  // Sort
+  view.sort((a,b)=> (a.term||"").localeCompare((b.term||""), "de", {sensitivity:"base"}));
+
+  window.__GLOSSARY_VIEW__ = view;
+
+  if(!side) return;
+
+  // groups A-Z
+  const groups = new Map();
+  for(const it of view){
+    const t=(it.term||"").trim();
+    const L=(t[0]||"#").toUpperCase();
+    if(!groups.has(L)) groups.set(L, []);
+    groups.get(L).push(it);
+  }
+  const letters = Array.from(groups.keys()).sort((a,b)=>a.localeCompare(b,"de"));
+  side.innerHTML = "";
+  try{ renderAZBar(letters); }catch(e){}
+
+  let firstItem = null;
+  for(const L of letters){
+    const wrap = document.createElement("div");
+    wrap.className = "glossarAGroup";
+    wrap.innerHTML = `<div class="glossarALetter" data-letter-anchor="${L}">${L}</div>`;
+    for(const it of groups.get(L)){
+      if(!firstItem) firstItem = it;
+      const btn = document.createElement("button");
+      btn.type="button";
+      btn.className="glossarItemBtn";
+      btn.textContent = it.term;
+      btn.setAttribute('data-term', it.term);
+      btn.addEventListener("click", ()=>{
+        side.querySelectorAll(".glossarItemBtn.is-active").forEach(x=>x.classList.remove("is-active"));
+        btn.classList.add("is-active");
+        store.glossarSelected = it.term;
+        saveStore();
+        showGlossaryItem(it);
       });
-    }, { passive: true });
-  })();
-
-
-  const toastEl = $("#toast");
-  let toastTimer = null;
-  function toast(msg) {
-    toastEl.textContent = msg;
-    toastEl.classList.add("is-show");
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toastEl.classList.remove("is-show"), 1600);
-  }
-
-  function safeJsonParse(str, fallback) {
-    try { return JSON.parse(str); } catch { return fallback; }
-  }
-
-  function uid() {
-    return `${Date.now()}_${Math.random().toString(16).slice(2)}`;
-  }
-
-  function todayISO() {
-    const d = new Date();
-    const yyyy = d.getFullYear();
-    const mm = String(d.getMonth() + 1).padStart(2, "0");
-    const dd = String(d.getDate()).padStart(2, "0");
-    return `${yyyy}-${mm}-${dd}`;
-  }
-
-  function currentYear() {
-    return new Date().getFullYear();
-  }
-
-  function weekNumberISO(date = new Date()) {
-    const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-    const dayNum = d.getUTCDay() || 7;
-    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
-    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-    const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
-    return { week: weekNo, year: d.getUTCFullYear() };
-  }
-
-  function parseISO(s) {
-    const [y,m,d] = String(s).split("-").map(Number);
-    return new Date(y, (m || 1) - 1, d || 1);
-  }
-
-  function toISO(d) {
-    const yyyy = d.getFullYear();
-    const mm = String(d.getMonth() + 1).padStart(2, "0");
-    const dd = String(d.getDate()).padStart(2, "0");
-    return `${yyyy}-${mm}-${dd}`;
-  }
-  function startOfISOWeek(d){
-    const x = new Date(d);
-    const day = (x.getDay() + 6) % 7; // Mon=0
-    x.setDate(x.getDate() - day);
-    x.setHours(0,0,0,0);
-    return x;
-  }
-  function endOfISOWeek(d){
-    const s = startOfISOWeek(d);
-    const e = new Date(s);
-    e.setDate(e.getDate()+6);
-    e.setHours(23,59,59,999);
-    return e;
-  }
-  function diffDays(a,b){
-    const aa = new Date(a); aa.setHours(0,0,0,0);
-    const bb = new Date(b); bb.setHours(0,0,0,0);
-    return Math.floor((bb-aa)/86400000);
-  }
-  function trainingContextFor(dateISO){
-    const startISO = settings.startDate || "";
-    if (!startISO) return { year: activeYear, dayInTraining: null, weekInTraining: null, rangeStartISO: null, rangeEndISO: null };
-    const start = parseISO(startISO);
-    const d = parseISO(dateISO);
-    const dayIdx = diffDays(start, d) + 1;
-    const year = dayIdx <= 365 ? 1 : (dayIdx <= 730 ? 2 : 3);
-    const weekInTraining = Math.max(1, Math.ceil(dayIdx / 7));
-    const ws = startOfISOWeek(d);
-    const we = endOfISOWeek(d);
-    return { year, dayInTraining: dayIdx, weekInTraining, rangeStartISO: toISO(ws), rangeEndISO: toISO(we) };
-  }
-
-
-  function escapeHtml(s) {
-    return String(s ?? "")
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;")
-      .replaceAll("'", "&#039;");
-  }
-
-  function humanShift(v) {
-    if (v === "frueh") return "Früh";
-    if (v === "spaet") return "Spät";
-    if (v === "split") return "Split";
-    if (v === "frei") return "Frei";
-    return v || "";
-  }
-
-  function monthLabel(n) {
-    const m = ["", "Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"];
-    return m[n] || String(n);
-  }
-
-  function defaultState() {
-    return {
-      version: APP_VERSION,
-      entries: {
-        1: { dayEntries: [], weekEntries: [], monthEntries: [] },
-        2: { dayEntries: [], weekEntries: [], monthEntries: [] },
-        3: { dayEntries: [], weekEntries: [], monthEntries: [] }
-      },
-      notebook: {
-        questions: "",
-        vocabulary: "",
-        recipes: "",
-        serviceLessons: ""
-      }
-    };
-  }
-
-  function normalizeState(s) {
-    if (!s || typeof s !== "object") return defaultState();
-    const out = defaultState();
-
-    if (s.entries && typeof s.entries === "object") {
-      for (const y of [1,2,3]) {
-        const src = s.entries[y] || {};
-        out.entries[y].dayEntries = Array.isArray(src.dayEntries) ? src.dayEntries : [];
-        out.entries[y].weekEntries = Array.isArray(src.weekEntries) ? src.weekEntries : [];
-        out.entries[y].monthEntries = Array.isArray(src.monthEntries) ? src.monthEntries : [];
-      }
+      wrap.appendChild(btn);
     }
+    side.appendChild(wrap);
+  }
 
-    if (s.notebook && typeof s.notebook === "object") {
-      out.notebook.questions = String(s.notebook.questions ?? "");
-      out.notebook.vocabulary = String(s.notebook.vocabulary ?? "");
-      out.notebook.recipes = String(s.notebook.recipes ?? "");
-      out.notebook.serviceLessons = String(s.notebook.serviceLessons ?? "");
+  // Auto-select previous or first
+  const sel = store.glossarSelected;
+  const found = sel ? view.find(it => it.term === sel) : null;
+  const pick = found || firstItem || null;
+  showGlossaryItem(pick);
+
+  if(pick){
+    // mark active in list
+    const btns = side.querySelectorAll(".glossarItemBtn");
+    for(const b of btns){
+      if(b.textContent === pick.term){ b.classList.add("is-active"); break; }
     }
-
-    out.version = APP_VERSION;
-    return out;
+  }else{
+    showGlossaryItem(null);
   }
+};
 
-  function loadState() {
-    const raw = localStorage.getItem(APP_KEY);
-    return normalizeState(safeJsonParse(raw, null));
-  }
+// Ensure glossary sidebar markup exists (failsafe)
+const ensureGlossaryLayout = () => {
+  const panel = document.getElementById("panel-glossar");
+  if(!panel) return;
+  if(panel.querySelector("#glossarySidebar") && panel.querySelector("#glossaryDetail")) return;
 
-  function saveState(state) {
-    localStorage.setItem(APP_KEY, JSON.stringify(state));
-  }
+  const host = document.createElement("div");
+  host.className = "glossarLayout";
+  host.innerHTML = `
+    <aside class="glossarSide" aria-label="Glossar Inhaltsverzeichnis">
+      <div class="glossarSideTop">
+        <div class="glossarSideTitle">Glossar</div>
+        <div class="glossarSideHint">A–Z · kumulativ nach Lehrjahr</div>
+        <div id="glossaryAZ" class="glossarAZ"></div>
+      </div>
+      <div class="glossarSearchWrap">
+        <input id="glossarySearch" class="input" placeholder="Begriff suchen…" />
+        <button id="btnGlossarySearch" class="btn" type="button">Suchen</button>
+      </div>
+      <div id="glossarySidebar" class="glossarSideList"></div>
+    </aside>
+    <div class="glossarMain" aria-label="Begriff">
+      <div id="glossaryDetail" class="glossarDetail">
+        <div class="glossarEmpty">Wähle links einen Begriff.</div>
+      </div>
+      <div class="glossarDetailActions">
+        <button id="btnToGlossarNotes" class="btn" type="button">Begriff → Glossar-Notizen</button>
+      </div>
+    </div>
+  `;
+  // clear panel body (keep header if exists)
+  const header = panel.querySelector(".panel__header");
+  panel.innerHTML = "";
+  if(header) panel.appendChild(header);
+  panel.appendChild(host);
+};
 
-  function loadSettings() {
-    const raw = localStorage.getItem(SETTINGS_KEY);
-    const s = safeJsonParse(raw, null);
-    const okYear = s && [1,2,3].includes(Number(s.activeYear)) ? Number(s.activeYear) : 1;
-    const okCal = s && typeof s.calMonth === "number" ? s.calMonth : new Date().getMonth();
-    const okCalY = s && typeof s.calYear === "number" ? s.calYear : new Date().getFullYear();
-    const okWissenModule = s && typeof s.activeWissenModule === "string" ? s.activeWissenModule : "";
-    return { 
-      activeYear: okYear, 
-      calMonth: okCal, 
-      calYear: okCalY, 
-      activeWissenModule: okWissenModule,
-      startDate: (s && typeof s.startDate === "string") ? s.startDate : "",
-      azubiName: (s && typeof s.azubiName === "string") ? s.azubiName : "",
-      jobTitle: (s && typeof s.jobTitle === "string") ? s.jobTitle : "Koch/Köchin",
-      company: (s && typeof s.company === "string") ? s.company : "",
-      trainer: (s && typeof s.trainer === "string") ? s.trainer : "",
-      reportMode: (s && (s.reportMode === "daily" || s.reportMode === "weekly")) ? s.reportMode : "weekly",
-      autoYear: (s && typeof s.autoYear === "boolean") ? s.autoYear : true
-    };
-  }
+// Wire "Zum Glossar" button robustly (even if something stops propagation)
+const wireOpenGlossar = () => {
+  const btn = document.getElementById("btnOpenGlossar");
+  if(!btn) return;
+  btn.addEventListener("click", (e)=>{
+    e.preventDefault();
+    e.stopPropagation();
+    if(typeof setTab === "function") setTab("glossar");
+    window.scrollTo({top:0, behavior:"smooth"});
+  }, true);
+};
+// --------------------------------------------------------------------------
 
-  function saveSettings(settings) {
-    localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
-  }
 
-  let state = loadState();
-  let settings = loadSettings();
-  let activeYear = settings.activeYear;
 
-  // === PRO: Onboarding + Auto-Lehrjahr ===
-  const onboardingEl = document.getElementById("onboarding");
-  const obName = document.getElementById("obName");
-  const obJob = document.getElementById("obJob");
-  const obCompany = document.getElementById("obCompany");
-  const obTrainer = document.getElementById("obTrainer");
-  const obStart = document.getElementById("obStart");
-  const obMode = document.getElementById("obMode");
-  const obSave = document.getElementById("obSave");
-
-  function showOnboarding(){
-    if (!onboardingEl) return;
-    onboardingEl.classList.add("is-show");
-    onboardingEl.setAttribute("aria-hidden","false");
-    obName.value = settings.azubiName || "";
-    obJob.value = settings.jobTitle || "Koch/Köchin";
-    obCompany.value = settings.company || "";
-    obTrainer.value = settings.trainer || "";
-    obStart.value = settings.startDate || todayISO();
-    obMode.value = settings.reportMode || "weekly";
-  }
-  function hideOnboarding(){
-    if (!onboardingEl) return;
-    onboardingEl.classList.remove("is-show");
-    onboardingEl.setAttribute("aria-hidden","true");
-  }
-
-  if (!settings.startDate){
-    settings.startDate = "";
-    saveSettings(settings);
-    setActiveTab("start");
-    setTimeout(showOnboarding, 50);
-  }
-
-  if (obSave){
-    obSave.addEventListener("click", () => {
-      const s = (obStart.value || "").trim();
-      if (!s){ toast("Bitte Ausbildungsstart setzen."); return; }
-      settings.azubiName = (obName.value || "").trim();
-      settings.jobTitle = (obJob.value || "Koch/Köchin").trim();
-      settings.company = (obCompany.value || "").trim();
-      settings.trainer = (obTrainer.value || "").trim();
-      settings.startDate = s;
-      settings.reportMode = obMode.value === "daily" ? "daily" : "weekly";
-      settings.autoYear = true;
-      saveSettings(settings);
-      hideOnboarding();
-      const ctx = trainingContextFor(todayISO());
-      setActiveYear(ctx.year);
-      toast("Setup gespeichert");
-      updateStartScreen();
+  if (tabsNav) {
+    tabsNav.addEventListener("click", (e) => {
+      const btn = e.target.closest("button.tab");
+      if (!btn) return;
+      setTab(btn.dataset.tab);
     });
   }
 
-  // Start screen elements
-  const trainingPill = document.getElementById("trainingPill");
-  const trainingMeta = document.getElementById("trainingMeta");
-  const kvYear = document.getElementById("kvYear");
-  const kvDay = document.getElementById("kvDay");
-  const kvWeek = document.getElementById("kvWeek");
-  const kvRange = document.getElementById("kvRange");
-  const quickDate = document.getElementById("quickDate");
-  const quickNotes = document.getElementById("quickNotes");
-  const quickGlossaryNotes = document.getElementById("quickGlossaryNotes");
-  const quickTerms = document.getElementById("quickTerms");
-  const btnSaveQuick = document.getElementById("btnSaveQuick");
-  const btnExportReport = document.getElementById("btnExportReport");
-  const btnOpenGlossar = document.getElementById("btnOpenGlossar");
-
-  function updateStartScreen(){
-    if (!quickDate) return;
-    if (!quickDate.value) quickDate.value = todayISO();
-    const ctx = trainingContextFor(quickDate.value);
-    if (ctx.dayInTraining == null){
-      if (trainingPill) trainingPill.textContent = "Setup fehlt";
-      if (trainingMeta) trainingMeta.textContent = "Setze deinen Ausbildungsstart, damit Lehrjahre automatisch laufen.";
-      if (kvYear) kvYear.textContent = "—";
-      if (kvDay) kvDay.textContent = "—";
-      if (kvWeek) kvWeek.textContent = "—";
-      if (kvRange) kvRange.textContent = "—";
-      return;
-    }
-    if (trainingPill) trainingPill.textContent = `Lehrjahr ${ctx.year}`;
-    if (trainingMeta) trainingMeta.textContent = `Ausbildungsstart: ${settings.startDate} · Modus: ${settings.reportMode === "daily" ? "täglich" : "wöchentlich"}`;
-    if (kvYear) kvYear.textContent = `Lehrjahr ${ctx.year}`;
-    if (kvDay) kvDay.textContent = String(ctx.dayInTraining);
-    if (kvWeek) kvWeek.textContent = String(ctx.weekInTraining);
-    if (kvRange) kvRange.textContent = `${ctx.rangeStartISO} – ${ctx.rangeEndISO}`;
-
-    if (settings.autoYear && ctx.year !== activeYear){
-      setActiveYear(ctx.year);
-    }
-  }
-
-  if (quickDate){
-    quickDate.addEventListener("change", updateStartScreen);
-    quickDate.value = todayISO();
-  }
-  if (btnOpenGlossar){
-    btnOpenGlossar.addEventListener("click", () => setActiveTab("glossar"));
-  }
-
-  function saveQuick(){
-    if (!quickDate || !quickNotes) return;
-    const dateISO = quickDate.value || todayISO();
-    const ctx = trainingContextFor(dateISO);
-    if (ctx.dayInTraining == null){ showOnboarding(); return; }
-
-    const p = {
-      id: uid(),
-      kind: "day",
-      trainingYear: ctx.year,
-      createdAt: Date.now(),
-      date: dateISO,
-      shift: "frueh",
-      station: "",
-      task: "",
-      learningGoal: "",
-      learned: "",
-      standard: "",
-      stress: 5,
-      wentWell: "",
-      toImprove: "",
-      freeNotes: (quickNotes.value || "").trim(),
-      glossaryNotes: (quickGlossaryNotes?.value || "").trim(),
-      terms: (quickTerms?.value || "").split(",").map(x => x.trim()).filter(Boolean),
-      basics: { water1:false, water2:false, water3:false, pause:false, food:false }
-    };
-
-    if (!p.freeNotes && !p.glossaryNotes && (!p.terms || p.terms.length===0)){
-      toast("Bitte Notizen oder Glossar-Notizen oder Fachbegriffe eintragen.");
-      return;
-    }
-
-    state.entries[ctx.year].dayEntries.push(p);
-    saveState(state);
+  // ---------- Lehrjahr ----------
+  const header = $(".topbar");
+  const yearBtns = header ? $$(".yearBtn", header) : [];
+  const setYear = (y) => {
+    store.yearActive = String(y);
+    saveStore(store);
+    yearBtns.forEach(b => b.classList.toggle("is-active", b.dataset.year === String(y)));
+    // sync filters
+    const gf = $("#glossarYearFilter");
+    if (gf) gf.value = String(y);
+    // stats
     updateStats();
-    renderCalendar();
-    renderEntries();
-    toast("Gespeichert");
-  }
-
-  if (btnSaveQuick){ btnSaveQuick.addEventListener("click", saveQuick); }
-
-  function buildReportForWeek(dateISO){
-    const ctx = trainingContextFor(dateISO);
-    if (ctx.dayInTraining == null) return null;
-    const y = ctx.year;
-    const ws = parseISO(ctx.rangeStartISO);
-    const we = parseISO(ctx.rangeEndISO);
-    const all = state.entries[y].dayEntries || [];
-    const inRange = all.filter(e => e.date && parseISO(e.date) >= ws && parseISO(e.date) <= we)
-                       .sort((a,b)=> (a.date||"").localeCompare(b.date||""));
-
-    const combinedNotes = inRange.map(e => {
-      const head = `${e.date}`;
-      const body = (e.freeNotes || "").trim();
-      return body ? `• ${head}:\n${body}` : `• ${head}`;
-    }).join("\n\n");
-
-    const combinedGloss = inRange.map(e => {
-      const head = `${e.date}`;
-      const body = (e.glossaryNotes || "").trim();
-      return body ? `• ${head}:\n${body}` : "";
-    }).filter(Boolean).join("\n\n");
-
-    const terms = Array.from(new Set(inRange.flatMap(e => Array.isArray(e.terms)? e.terms : []).map(t=>String(t).trim()).filter(Boolean)));
-
-    return {
-      year: y,
-      rangeStartISO: ctx.rangeStartISO,
-      rangeEndISO: ctx.rangeEndISO,
-      weekInTraining: ctx.weekInTraining,
-      notes: combinedNotes || "",
-      glossaryNotes: combinedGloss || "",
-      terms
-    };
-  }
-
-  function openReportPDF(){
-    if (!quickDate) return;
-    const dateISO = quickDate.value || todayISO();
-    const rep = buildReportForWeek(dateISO);
-    if (!rep){ showOnboarding(); return; }
-
-    const name = escapeHtml(settings.azubiName || "");
-    const job = escapeHtml(settings.jobTitle || "Koch/Köchin");
-    const company = escapeHtml(settings.company || "");
-    const trainer = escapeHtml(settings.trainer || "");
-
-    const title = `Ausbildungsnachweis · ${rep.rangeStartISO} – ${rep.rangeEndISO}`;
-    const html = `<!doctype html>
-<html lang="de">
-<head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>${title}</title>
-<link rel="stylesheet" href="styles.css"/>
-</head>
-<body>
-  <div class="print-page">
-    <div class="print-head">
-      <div>
-        <div class="print-title">Ausbildungsnachweis (Küche)</div>
-        <div class="print-meta">
-          <div><strong>Name:</strong> ${name}</div>
-          <div><strong>Beruf:</strong> ${job}</div>
-          <div><strong>Betrieb:</strong> ${company}</div>
-          <div><strong>Ausbilder:in:</strong> ${trainer}</div>
-        </div>
-      </div>
-      <div class="print-meta">
-        <div><strong>Lehrjahr:</strong> ${rep.year}</div>
-        <div><strong>Ausbildungswoche:</strong> ${rep.weekInTraining}</div>
-        <div><strong>Zeitraum:</strong> ${rep.rangeStartISO} – ${rep.rangeEndISO}</div>
-        <div><strong>Erstellt am:</strong> ${todayISO()}</div>
-      </div>
-    </div>
-
-    <div class="divider"></div>
-
-    <div class="print-grid">
-      <div class="print-box">
-        <h3>Tätigkeiten / Inhalte (Betrieb)</h3>
-        <p>${escapeHtml(rep.notes || "")}</p>
-      </div>
-      <div class="print-box">
-        <h3>Fachbegriffe & Praxis-Notizen</h3>
-        <p>${escapeHtml((rep.terms && rep.terms.length) ? rep.terms.join(", ") : "")}${rep.glossaryNotes ? "\n\n" + escapeHtml(rep.glossaryNotes) : ""}</p>
-      </div>
-      <div class="print-box">
-        <h3>Unterweisungen / Hygiene / Sicherheit</h3>
-        <p>${escapeHtml("")}</p>
-      </div>
-      <div class="print-box">
-        <h3>Berufsschule (Themen / Lernfelder)</h3>
-        <p>${escapeHtml("")}</p>
-      </div>
-    </div>
-
-    <div class="sign">
-      <div class="sigline">Unterschrift Azubi (Datum)</div>
-      <div class="sigline">Unterschrift Ausbilder:in (Datum)</div>
-    </div>
-
-    <div class="help" style="margin-top:10px;">
-      Hinweis: Speichere als PDF über „Drucken“ → „Als PDF speichern“. Einige Betriebe/Kammern haben eigene Vorgaben – dieses Layout ist berichtsheft-nah.
-    </div>
-  </div>
-
-  <script>
-    window.onload = () => { window.print(); };
-  </script>
-</body>
-</html>`;
-    const w = window.open("", "_blank");
-    if (!w){ toast("Pop-up blockiert. Bitte Pop-ups erlauben."); return; }
-    w.document.open();
-    w.document.write(html);
-    w.document.close();
-  }
-
-  if (btnExportReport){ btnExportReport.addEventListener("click", openReportPDF); }
-
-
-
-  // Tabs
-  function setActiveTab(tab) {
-    $$(".tab").forEach(b => b.classList.toggle("is-active", b.dataset.tab === tab));
-    $$(".panel").forEach(p => p.classList.toggle("is-active", p.id === `panel-${tab}`));
-
-    if (tab === "calendar") renderCalendar();
-    if (tab === "entries") renderEntries();
-    if (tab === "wissen") renderWissen();
-    if (tab === "glossar") renderGlossar();
-  }
-  $$(".tab").forEach(btn => btn.addEventListener("click", () => setActiveTab(btn.dataset.tab)));
-
-  // Year switch
-  function setActiveYear(year) {
-    activeYear = year;
-    $$(".yearBtn").forEach(b => b.classList.toggle("is-active", Number(b.dataset.year) === year));
-    settings.activeYear = year;
-    saveSettings(settings);
-    updateStats();
-    renderCalendar();
-    renderEntries();
-    renderWissen();
+    // refresh forms
+    hydrateQuick();
+    hydrateNotebook();
+    hydrateDayFromDate();
+    hydrateWeek();
+    hydrateMonth();
     renderGlossar();
-    $("#wissenYearPill").textContent = `Lehrjahr ${activeYear}`;
-    toast(`Lehrjahr ${year} aktiv`);
-  }
-  $$(".yearBtn").forEach(btn => btn.addEventListener("click", () => setActiveYear(Number(btn.dataset.year))));
+    quiz.reset(false);
+    exam.reset(false);
+  };
 
-  // Stats
+  if (yearBtns.length) {
+    yearBtns.forEach(b => b.addEventListener("click", () => setYear(b.dataset.year)));
+  }
+  // apply stored year
+  setYear(store.yearActive || "1");
+
+  // ---------- Stats ----------
   const statDays = $("#statDays");
   const statWeeks = $("#statWeeks");
   const statMonths = $("#statMonths");
-  function bucket() {
-    return state.entries[activeYear];
-  }
-  function updateStats() {
-    const b = bucket();
-    statDays.textContent = String(b.dayEntries.length);
-    statWeeks.textContent = String(b.weekEntries.length);
-    statMonths.textContent = String(b.monthEntries.length);
-  }
 
-  // Day form
-  const dayDate = $("#dayDate");
-  const dayShift = $("#dayShift");
-  const dayStation = $("#dayStation");
-  const dayTask = $("#dayTask");
-  const dayLearningGoal = $("#dayLearningGoal");
-  const dayLearned = $("#dayLearned");
-  const dayStandard = $("#dayStandard");
-  const dayStress = $("#dayStress");
-  const stressPill = $("#stressPill");
-  const dayWentWell = $("#dayWentWell");
-  const dayToImprove = $("#dayToImprove");
-  const dayFreeNotes = $("#dayFreeNotes");
-  const dayWater1 = $("#dayWater1");
-  const dayWater2 = $("#dayWater2");
-  const dayWater3 = $("#dayWater3");
-  const dayPause = $("#dayPause");
-  const dayFood = $("#dayFood");
+  const updateStats = () => {
+    const y = store.yearActive;
+    const yd = store.years[y] || {};
+    const d = Object.keys(yd.day || {}).length;
+    const w = Object.keys(yd.week || {}).length;
+    const m = Object.keys(yd.month || {}).length;
+    if (statDays) statDays.textContent = String(d);
+    if (statWeeks) statWeeks.textContent = String(w);
+    if (statMonths) statMonths.textContent = String(m);
+  };
 
-  dayStress.addEventListener("input", () => stressPill.textContent = String(dayStress.value));
+  // ---------- Helpers: form bind ----------
+  const val = (el) => {
+    if (!el) return "";
+    if (el.type === "checkbox") return !!el.checked;
+    return el.value ?? "";
+  };
+  const setVal = (el, v) => {
+    if (!el) return;
+    if (el.type === "checkbox") el.checked = !!v;
+    else el.value = (v ?? "");
+  };
 
-  $("#btnSaveDay").addEventListener("click", saveDay);
-  $("#btnClearDay").addEventListener("click", clearDay);
+  const yData = () => store.years[store.yearActive];
 
-  function clearDay() {
-    dayDate.value = todayISO();
-    dayShift.value = "frueh";
-    dayStation.value = "";
-    dayTask.value = "";
-    dayLearningGoal.value = "";
-    dayLearned.value = "";
-    dayStandard.value = "";
-    dayStress.value = "5";
-    stressPill.textContent = "5";
-    dayWentWell.value = "";
-    dayToImprove.value = "";
-    dayFreeNotes.value = "";
-    dayWater1.checked = false;
-    dayWater2.checked = false;
-    dayWater3.checked = false;
-    dayPause.checked = false;
-    dayFood.checked = false;
-    toast("Tagesseite geleert");
-  }
+  // ---------- Quick (Start Panel) ----------
+  const quick = {
+    date: $("#quickDate"),
+    notes: $("#quickNotes"),
+    terms: $("#quickTerms"),
+    gnotes: $("#quickGlossaryNotes"),
+    btnSave: $("#btnSaveQuick"),
+    btnToGlossar: $("#btnOpenGlossar"),
+    btnReport: $("#btnExportReport"),
+  };
 
-  function validateDay(p) {
-    if (!p.date) return "Bitte Datum wählen.";
-    if (!p.learningGoal.trim() && !p.learned.trim() && !p.freeNotes.trim()) return "Bitte mindestens Lernziel/Lerninhalt/Notizen eintragen.";
-    return null;
-  }
+  const hydrateQuick = () => {
+    const q = yData().quick || {};
+    setVal(quick.date, q.date || "");
+    setVal(quick.notes, q.notes || "");
+    setVal(quick.terms, q.terms || "");
+    setVal(quick.gnotes, q.gnotes || "");
+  };
 
-  function saveDay() {
-    const p = {
-      id: uid(),
-      kind: "day",
-      trainingYear: activeYear,
-      createdAt: Date.now(),
-      date: dayDate.value,
-      shift: dayShift.value,
-      station: dayStation.value.trim(),
-      task: dayTask.value.trim(),
-      learningGoal: dayLearningGoal.value.trim(),
-      learned: dayLearned.value.trim(),
-      standard: dayStandard.value.trim(),
-      stress: Number(dayStress.value),
-      wentWell: dayWentWell.value.trim(),
-      toImprove: dayToImprove.value.trim(),
-      freeNotes: dayFreeNotes.value.trim(),
-      basics: {
-        water1: !!dayWater1.checked,
-        water2: !!dayWater2.checked,
-        water3: !!dayWater3.checked,
-        pause: !!dayPause.checked,
-        food: !!dayFood.checked
-      }
+  const saveQuick = () => {
+    yData().quick = {
+      date: val(quick.date),
+      notes: val(quick.notes),
+      terms: val(quick.terms),
+      gnotes: val(quick.gnotes),
+      savedAt: nowISO()
     };
-
-    const err = validateDay(p);
-    if (err) { toast(err); return; }
-
-    bucket().dayEntries.push(p);
-    saveState(state);
+    saveStore(store);
     updateStats();
-    renderCalendar();
-    renderEntries();
-    toast("Tages-Eintrag gespeichert");
-  }
+    toast("Gespeichert.");
+  };
 
-  // Week form
-  const weekNumber = $("#weekNumber");
-  const weekYear = $("#weekYear");
-  const weekSkills = $("#weekSkills");
-  const weekMistake = $("#weekMistake");
-  const weekFocus = $("#weekFocus");
-  const weekNotes = $("#weekNotes");
-
-  $("#btnSaveWeek").addEventListener("click", saveWeek);
-  $("#btnClearWeek").addEventListener("click", clearWeek);
-
-  function clearWeek() {
-    const wn = weekNumberISO(new Date());
-    weekNumber.value = wn.week;
-    weekYear.value = wn.year;
-    weekSkills.value = "";
-    weekMistake.value = "";
-    weekFocus.value = "";
-    weekNotes.value = "";
-    toast("Wochenseite geleert");
-  }
-
-  function validateWeek(p) {
-    if (!p.week || p.week < 1 || p.week > 53) return "Bitte gültige Woche (1–53) eintragen.";
-    if (!p.year) return "Bitte Jahr eintragen.";
-    return null;
-  }
-
-  function saveWeek() {
-    const p = {
-      id: uid(),
-      kind: "week",
-      trainingYear: activeYear,
-      createdAt: Date.now(),
-      week: Number(weekNumber.value),
-      year: Number(weekYear.value),
-      skills: weekSkills.value.trim(),
-      mistake: weekMistake.value.trim(),
-      focus: weekFocus.value.trim(),
-      notes: weekNotes.value.trim()
-    };
-
-    const err = validateWeek(p);
-    if (err) { toast(err); return; }
-
-    bucket().weekEntries.push(p);
-    saveState(state);
-    updateStats();
-    renderEntries();
-    toast("Wochen-Check gespeichert");
-  }
-
-  // Month form
-  const monthName = $("#monthName");
-  const monthYear = $("#monthYear");
-  const monthProgress = $("#monthProgress");
-  const monthGap = $("#monthGap");
-  const monthSchool = $("#monthSchool");
-  const monthNotes = $("#monthNotes");
-
-  $("#btnSaveMonth").addEventListener("click", saveMonth);
-  $("#btnClearMonth").addEventListener("click", clearMonth);
-
-  function clearMonth() {
-    monthName.value = String(new Date().getMonth() + 1);
-    monthYear.value = currentYear();
-    monthProgress.value = "";
-    monthGap.value = "";
-    monthSchool.value = "";
-    monthNotes.value = "";
-    toast("Monatsseite geleert");
-  }
-
-  function validateMonth(p) {
-    if (!p.month || p.month < 1 || p.month > 12) return "Bitte Monat wählen.";
-    if (!p.year) return "Bitte Jahr eintragen.";
-    return null;
-  }
-
-  function saveMonth() {
-    const p = {
-      id: uid(),
-      kind: "month",
-      trainingYear: activeYear,
-      createdAt: Date.now(),
-      month: Number(monthName.value),
-      year: Number(monthYear.value),
-      progress: monthProgress.value.trim(),
-      gap: monthGap.value.trim(),
-      school: monthSchool.value.trim(),
-      notes: monthNotes.value.trim()
-    };
-
-    const err = validateMonth(p);
-    if (err) { toast(err); return; }
-
-    bucket().monthEntries.push(p);
-    saveState(state);
-    updateStats();
-    renderEntries();
-    toast("Monats-Check gespeichert");
-  }
-
-  // Notebook
-  const nbQuestions = $("#nbQuestions");
-  const nbVocabulary = $("#nbVocabulary");
-  const nbRecipes = $("#nbRecipes");
-  const nbServiceLessons = $("#nbServiceLessons");
-  $("#btnSaveNotebook").addEventListener("click", () => {
-    state.notebook.questions = nbQuestions.value;
-    state.notebook.vocabulary = nbVocabulary.value;
-    state.notebook.recipes = nbRecipes.value;
-    state.notebook.serviceLessons = nbServiceLessons.value;
-    saveState(state);
-    toast("Notizbuch gespeichert");
+  if (quick.btnSave) quick.btnSave.addEventListener("click", saveQuick);
+  if (quick.btnToGlossar) quick.btnToGlossar.addEventListener("click", () => setTab("glossar"));
+  if (quick.btnReport) quick.btnReport.addEventListener("click", () => {
+    // Minimal: Export JSON als "Berichtsheft", echte PDF-Generierung kann später kommen.
+    exportJSON("berichtsheft-export.json");
   });
 
-  function loadNotebookIntoUI() {
-    nbQuestions.value = state.notebook.questions || "";
-    nbVocabulary.value = state.notebook.vocabulary || "";
-    nbRecipes.value = state.notebook.recipes || "";
-    nbServiceLessons.value = state.notebook.serviceLessons || "";
-  }
-
-  // Entries
-  const entriesEl = $("#entries");
-  const searchEl = $("#search");
-  const sortByEl = $("#sortBy");
-  const countInfo = $("#countInfo");
-
-  searchEl.addEventListener("input", renderEntries);
-  sortByEl.addEventListener("change", renderEntries);
-
-  $("#btnDeleteYear").addEventListener("click", () => {
-    if (!confirm(`Wirklich alle Einträge löschen für Lehrjahr ${activeYear}?`)) return;
-    state.entries[activeYear] = { dayEntries: [], weekEntries: [], monthEntries: [] };
-    saveState(state);
-    updateStats();
-    renderCalendar();
-    renderEntries();
-    toast("Lehrjahr gelöscht");
-  });
-
-  $("#btnDeleteAll").addEventListener("click", () => {
-    if (!confirm("Wirklich ALLES löschen (Lehrjahr 1–3 + Notizbuch)?")) return;
-    state = defaultState();
-    saveState(state);
-    updateStats();
-    renderCalendar();
-    renderEntries();
-    loadNotebookIntoUI();
-    toast("Alles gelöscht");
-  });
-
-  function allEntriesForCurrent() {
-    const b = bucket();
-    const day = b.dayEntries.map(e => ({...e, _sortDate: e.date ? parseISO(e.date).getTime() : e.createdAt}));
-    const week = b.weekEntries.map(e => ({...e, _sortDate: e.createdAt}));
-    const month = b.monthEntries.map(e => ({...e, _sortDate: e.createdAt}));
-    return [...day, ...week, ...month];
-  }
-
-  function deleteEntryById(id) {
-    const b = bucket();
-    const before = b.dayEntries.length + b.weekEntries.length + b.monthEntries.length;
-
-    b.dayEntries = b.dayEntries.filter(e => e.id !== id);
-    b.weekEntries = b.weekEntries.filter(e => e.id !== id);
-    b.monthEntries = b.monthEntries.filter(e => e.id !== id);
-
-    const after = b.dayEntries.length + b.weekEntries.length + b.monthEntries.length;
-    if (after === before) return;
-
-    saveState(state);
-    updateStats();
-    renderCalendar();
-    renderEntries();
-    toast("Eintrag gelöscht");
-  }
-
-  function renderEntries() {
-    let list = allEntriesForCurrent();
-    const q = (searchEl.value || "").trim().toLowerCase();
-    if (q) list = list.filter(e => JSON.stringify(e).toLowerCase().includes(q));
-
-    const sortBy = sortByEl.value;
-    list.sort((a,b) => sortBy === "oldest" ? (a._sortDate - b._sortDate) : (b._sortDate - a._sortDate));
-
-    countInfo.textContent = `${list.length} Einträge · Lehrjahr ${activeYear}`;
-    entriesEl.innerHTML = "";
-
-    if (list.length === 0) {
-      entriesEl.innerHTML = `<div class="muted">Noch keine Einträge in Lehrjahr ${activeYear}.</div>`;
-      return;
-    }
-
-    for (const e of list) {
-      const card = document.createElement("div");
-      card.className = "entry";
-
-      const title = e.kind === "day"
-        ? `${e.date || "—"} · ${humanShift(e.shift)}`
-        : e.kind === "week"
-          ? `Woche ${e.week}/${e.year}`
-          : `${monthLabel(e.month)} ${e.year}`;
-
-      const meta = e.kind === "day"
-        ? (e.station ? `Station: ${e.station}` : "Tages-Eintrag")
-        : (e.kind === "week" ? "Wochen-Check" : "Monats-Check");
-
-      const body = e.kind === "day"
-        ? `<div class="entry__body">
-             ${e.learningGoal ? `<div><strong>Lernziel:</strong> ${escapeHtml(e.learningGoal)}</div>` : ""}
-             ${e.standard ? `<div style="margin-top:6px;"><strong>Standard:</strong> ${escapeHtml(e.standard)}</div>` : ""}
-             ${e.freeNotes ? `<div style="margin-top:6px;"><strong>Notizen:</strong> ${escapeHtml(e.freeNotes).slice(0, 260)}${e.freeNotes.length>260?"…":""}</div>` : ""}
-           </div>`
-        : e.kind === "week"
-          ? (e.focus ? `<div class="entry__body"><strong>Fokus:</strong> ${escapeHtml(e.focus)}</div>` : "")
-          : (e.progress ? `<div class="entry__body"><strong>Fortschritt:</strong> ${escapeHtml(e.progress)}</div>` : "");
-
-      card.innerHTML = `
-        <div class="entry__top">
-          <div>
-            <div class="entry__title">${escapeHtml(title)}</div>
-            <div class="entry__meta">${escapeHtml(meta)}</div>
-          </div>
-          <div class="entry__actions">
-            <button class="iconbtn" type="button" title="Löschen" data-del="${e.id}">✕</button>
-          </div>
-        </div>
-        ${body}
-        <div class="kv">
-          <div>Aufgabe</div><div><strong>${e.task ? escapeHtml(e.task) : "—"}</strong></div>
-          <div>Verbessern</div><div><strong>${e.toImprove ? escapeHtml(e.toImprove) : (e.focus ? escapeHtml(e.focus) : "—")}</strong></div>
-        </div>
-      `;
-
-      card.querySelector("[data-del]")?.addEventListener("click", () => deleteEntryById(e.id));
-      entriesEl.appendChild(card);
-    }
-  }
-
-  // Calendar
-  const calendarGrid = $("#calendarGrid");
-  const calLabel = $("#calLabel");
-  $("#btnCalPrev").addEventListener("click", () => shiftCalendar(-1));
-  $("#btnCalNext").addEventListener("click", () => shiftCalendar(1));
-  $("#btnCalToday").addEventListener("click", () => {
-    const d = new Date();
-    settings.calMonth = d.getMonth();
-    settings.calYear = d.getFullYear();
-    saveSettings(settings);
-    renderCalendar();
-  });
-
-  function shiftCalendar(deltaMonths) {
-    let m = settings.calMonth + deltaMonths;
-    let y = settings.calYear;
-    while (m < 0) { m += 12; y -= 1; }
-    while (m > 11) { m -= 12; y += 1; }
-    settings.calMonth = m;
-    settings.calYear = y;
-    saveSettings(settings);
-    renderCalendar();
-  }
-
-  function dayEntryMapForMonth(year, monthIndex) {
-    const m = new Map();
-    const b = bucket().dayEntries;
-    for (const e of b) {
-      if (!e.date) continue;
-      const d = parseISO(e.date);
-      if (d.getFullYear() === year && d.getMonth() === monthIndex) {
-        m.set(e.date, true);
-      }
-    }
-    return m;
-  }
-
-  function renderCalendar() {
-    const year = settings.calYear;
-    const monthIndex = settings.calMonth;
-    calLabel.textContent = `${monthLabel(monthIndex + 1)} ${year}`;
-
-    const first = new Date(year, monthIndex, 1);
-    const last = new Date(year, monthIndex + 1, 0);
-    const daysInMonth = last.getDate();
-
-    const jsDay = first.getDay();
-    const mondayIndex = (jsDay + 6) % 7;
-
-    const totalCells = Math.ceil((mondayIndex + daysInMonth) / 7) * 7;
-
-    const today = new Date();
-    const todayIso = toISO(today);
-    const hasEntry = dayEntryMapForMonth(year, monthIndex);
-
-    calendarGrid.innerHTML = "";
-
-    for (let cell = 0; cell < totalCells; cell++) {
-      const dayNum = cell - mondayIndex + 1;
-      const isInMonth = dayNum >= 1 && dayNum <= daysInMonth;
-
-      const cellEl = document.createElement("div");
-      cellEl.className = "calCell";
-
-      if (!isInMonth) {
-        cellEl.classList.add("is-muted");
-        cellEl.innerHTML = `<div class="calDayNum"> </div>`;
-        calendarGrid.appendChild(cellEl);
-        continue;
-      }
-
-      const d = new Date(year, monthIndex, dayNum);
-      const iso = toISO(d);
-
-      if (iso === todayIso) cellEl.classList.add("is-today");
-      if (hasEntry.get(iso)) cellEl.classList.add("has-entry");
-
-      cellEl.innerHTML = `
-        <div class="calDayNum">${dayNum}</div>
-        <div class="calSmall">${hasEntry.get(iso) ? "Eintrag vorhanden" : "—"}</div>
-      `;
-
-      cellEl.addEventListener("click", () => {
-        dayDate.value = iso;
-        setActiveTab("day");
-        toast(`Datum gesetzt: ${iso}`);
-      });
-
-      calendarGrid.appendChild(cellEl);
-    }
-  }
-
-  // Wissen
-  const wissenSearch = $("#wissenSearch");
-  const wissenNavItems = $("#wissenNavItems");
-  const wissenContent = $("#wissenContent");
-  const wissenYearPill = $("#wissenYearPill");
-
-  $("#btnWissenTop").addEventListener("click", () => {
-    const panel = $("#panel-wissen");
-    panel?.scrollIntoView({ behavior: "smooth", block: "start" });
-  });
-
-  wissenSearch.addEventListener("input", () => renderWissen());
-
-  function getYearWissen() {
-    return CONTENT?.wissen?.years?.[activeYear] || null;
-  }
-
-  function renderWissen() {
-    const y = getYearWissen();
-    if (!y) {
-      wissenNavItems.innerHTML = `<div class="muted">Keine Inhalte gefunden.</div>`;
-      wissenContent.innerHTML = `<div class="muted">Keine Inhalte gefunden.</div>`;
-      return;
-    }
-
-    wissenYearPill.textContent = `Lehrjahr ${activeYear}`;
-
-    const query = (wissenSearch.value || "").trim().toLowerCase();
-
-    let modules = y.modules || [];
-    if (query) {
-      modules = modules.filter(m => {
-        const blob = JSON.stringify(m).toLowerCase();
-        return blob.includes(query);
-      });
-    }
-
-    // Nav
-    wissenNavItems.innerHTML = "";
-    if (modules.length === 0) {
-      wissenNavItems.innerHTML = `<div class="muted">Keine Treffer im Lehrjahr ${activeYear}.</div>`;
-      wissenContent.innerHTML = `
-        <div class="wiModule">
-          <h2>${escapeHtml(y.title)}</h2>
-          <p class="lead">${escapeHtml(y.intro)}</p>
-          <div class="wiCallout"><strong>Keine Treffer</strong>Suchbegriff anpassen oder Suche leeren.</div>
-        </div>
-      `;
-      return;
-    }
-
-    const activeId = settings.activeWissenModule && modules.some(m => m.id === settings.activeWissenModule)
-      ? settings.activeWissenModule
-      : modules[0].id;
-
-    for (const m of modules) {
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "wissenNav__btn" + (m.id === activeId ? " is-active" : "");
-      btn.textContent = m.title;
-      btn.addEventListener("click", () => {
-        settings.activeWissenModule = m.id;
-        saveSettings(settings);
-        renderWissen();
-      });
-      wissenNavItems.appendChild(btn);
-    }
-
-    const mod = modules.find(m => m.id === activeId) || modules[0];
-    wissenContent.innerHTML = renderModuleHTML(y, mod);
-  }
-
-  function renderModuleHTML(yearObj, mod) {
-    const sections = (mod.sections || []).map(sec => {
-      const pHtml = (sec.p || []).map(t => `<p>${escapeHtml(t)}</p>`).join("");
-      const ulHtml = (sec.ul || []).length
-        ? `<ul class="wiList">${sec.ul.map(li => `<li>${escapeHtml(li)}</li>`).join("")}</ul>`
-        : "";
-      return `
-        <div class="wiSection">
-          <h3>${escapeHtml(sec.h || "")}</h3>
-          ${pHtml}
-          ${ulHtml}
-        </div>
-      `;
-    }).join("");
-
-    const callout = mod.callout
-      ? `<div class="wiCallout"><strong>${escapeHtml(mod.callout.title)}</strong>${escapeHtml(mod.callout.text)}</div>`
-      : "";
-
-    return `
-      <div class="wiModule">
-        <h2>${escapeHtml(mod.title)}</h2>
-        <p class="lead">${escapeHtml(mod.lead || "")}</p>
-        ${sections}
-        ${callout}
-        <div class="divider"></div>
-        <p class="lead"><strong>${escapeHtml(yearObj.title)}:</strong> ${escapeHtml(yearObj.intro)}</p>
-      </div>
-    `;
-  }
-
-  // Glossar
-  const glossarSearch = $("#glossarSearch");
-  const glossarYearFilter = $("#glossarYearFilter");
-  const glossarList = $("#glossarList");
-  const glossarCount = $("#glossarCount");
-
-  glossarSearch.addEventListener("input", renderGlossar);
-  glossarYearFilter.addEventListener("change", renderGlossar);
-
-  
-  function renderGlossar() {
-    const pack = window.AZUBI_GLOSSARY_PRO || window.AZUBI_GLOSSARY || null;
-    const items = pack && Array.isArray(pack.items) ? pack.items : (pack && Array.isArray(pack) ? pack : []);
-    const q = (glossarSearch.value || "").trim().toLowerCase();
-
-    let list = items;
-
-    // filter by year
-    list = list.filter(x => Array.isArray(x.years) ? x.years.includes(activeYear) : true);
-
-    if (q) {
-      list = list.filter(x => JSON.stringify(x).toLowerCase().includes(q));
-    }
-
-    list.sort((a,b) => String(a.term||"").localeCompare(String(b.term||""), "de"));
-
-    glossarInfo.textContent = `${list.length} Begriffe · Lehrjahr ${activeYear}`;
-
-    if (list.length === 0) {
-      glossarList.innerHTML = `<div class="muted">Keine Treffer.</div>`;
-      return;
-    }
-
-    glossarList.innerHTML = list.map(x => {
-      const term = escapeHtml(x.term || "");
-      const def = escapeHtml(x.definition || "");
-      const praxis = escapeHtml(x.praxis || "");
-      const fehler = escapeHtml(x.fehler || "");
-      const merksatz = escapeHtml(x.merksatz || "");
-      const cat = escapeHtml(x.category || "");
-      const years = Array.isArray(x.years) ? x.years.join(", ") : "";
-      return `
-        <div class="entry">
-          <div class="entry__top">
-            <div>
-              <div class="entry__title">${term}</div>
-              <div class="entry__meta">Kategorie: ${cat || "—"} · Lehrjahr: ${years || "—"}</div>
-            </div>
-          </div>
-          <div class="entry__body">
-            <div class="kv">
-              <div><strong>Definition</strong></div><div>${def || "—"}</div>
-              <div><strong>Praxis</strong></div><div>${praxis || "—"}</div>
-              <div><strong>Typischer Fehler</strong></div><div>${fehler || "—"}</div>
-              <div><strong>Merksatz</strong></div><div>${merksatz || "—"}</div>
-            </div>
-          </div>
-        </div>
-      `;
-    }).join("");
-  }
-
-
-;
-
-  function exportJSON() {
-    const bundle = {
-      version: APP_VERSION,
-      exportedAt: new Date().toISOString(),
-      data: state,
-      settings: settings
-    };
-    const blob = new Blob([JSON.stringify(bundle, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
+  // ---------- Export / Import ----------
+  const btnExport = $("#btnExport");
+  const fileImport = $("#fileImport");
+
+  const exportJSON = (filename="azubi-tagebuch-export.json") => {
+    const blob = new Blob([safeJSON.stringify(store)], {type:"application/json"});
     const a = document.createElement("a");
-    a.href = url;
-    a.download = "azubi-kueche-export.json";
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
     document.body.appendChild(a);
     a.click();
     a.remove();
-    URL.revokeObjectURL(url);
-    toast("Export erstellt");
-  }
+    setTimeout(()=>URL.revokeObjectURL(a.href), 600);
+  };
 
-  function importJSON(ev) {
-    const file = ev.target.files?.[0];
-    if (!file) return;
+  if (btnExport) btnExport.addEventListener("click", () => exportJSON());
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      const imported = safeJsonParse(String(reader.result || ""), null);
-      if (!imported || typeof imported !== "object") {
-        toast("Import fehlgeschlagen (JSON ungültig)");
-        ev.target.value = "";
+  if (fileImport) {
+    fileImport.addEventListener("change", async (e) => {
+      const f = e.target.files && e.target.files[0];
+      if (!f) return;
+      const txt = await f.text();
+      const imported = safeJSON.parse(txt, null);
+      if (!imported || !imported.years) {
+        toast("Import fehlgeschlagen: Datei ist kein gültiger Export.");
         return;
       }
+      store = imported;
+      // ensure basics exist
+      const base = defaultStore();
+      store = { ...base, ...store, years: { ...base.years, ...(store.years||{}) } };
+      saveStore(store);
+      setYear(store.yearActive || "1");
+      toast("Import ok.");
+      fileImport.value = "";
+    });
+  }
 
-      const next = imported.data ? imported.data : imported;
-      state = normalizeState(next);
-      saveState(state);
+  // ---------- Day ----------
+  const day = {
+    date: $("#dayDate"),
+    shift: $("#dayShift"),
+    station: $("#dayStation"),
+    task: $("#dayTask"),
+    learningGoal: $("#dayLearningGoal"),
+    learned: $("#dayLearned"),
+    standard: $("#dayStandard"),
+    stress: $("#dayStress"),
+    wentWell: $("#dayWentWell"),
+    toImprove: $("#dayToImprove"),
+    free: $("#dayFreeNotes"),
+    btnSave: $("#btnSaveDay"),
+    btnClear: $("#btnClearDay"),
+  };
 
-      if (imported.settings && typeof imported.settings === "object") {
-        settings = {
-          activeYear: [1,2,3].includes(Number(imported.settings.activeYear)) ? Number(imported.settings.activeYear) : settings.activeYear,
-          calMonth: typeof imported.settings.calMonth === "number" ? imported.settings.calMonth : settings.calMonth,
-          calYear: typeof imported.settings.calYear === "number" ? imported.settings.calYear : settings.calYear,
-          activeWissenModule: typeof imported.settings.activeWissenModule === "string" ? imported.settings.activeWissenModule : settings.activeWissenModule
-        };
-        saveSettings(settings);
-      }
+  const dayKey = () => val(day.date) || "";
 
-      activeYear = settings.activeYear;
-      $$(".yearBtn").forEach(b => b.classList.toggle("is-active", Number(b.dataset.year) === activeYear));
+  const hydrateDayFromDate = () => {
+    const k = dayKey();
+    if (!k) return;
+    const rec = (yData().day || {})[k] || {};
+    setVal(day.shift, rec.shift || "");
+    setVal(day.station, rec.station || "");
+    setVal(day.task, rec.task || "");
+    setVal(day.learningGoal, rec.learningGoal || "");
+    setVal(day.learned, rec.learned || "");
+    setVal(day.standard, rec.standard || "");
+    setVal(day.stress, rec.stress ?? "0");
+    setVal(day.wentWell, rec.wentWell || "");
+    setVal(day.toImprove, rec.toImprove || "");
+    setVal(day.free, rec.free || "");
+  };
 
-      updateStats();
-      renderCalendar();
-      renderEntries();
-      renderWissen();
-      renderGlossar();
-      loadNotebookIntoUI();
-      toast("Import abgeschlossen");
-      ev.target.value = "";
+  const saveDay = () => {
+    const k = dayKey();
+    if (!k) { toast("Bitte Datum wählen."); return; }
+    yData().day[k] = {
+      date: k,
+      shift: val(day.shift),
+      station: val(day.station),
+      task: val(day.task),
+      learningGoal: val(day.learningGoal),
+      learned: val(day.learned),
+      standard: val(day.standard),
+      stress: val(day.stress),
+      wentWell: val(day.wentWell),
+      toImprove: val(day.toImprove),
+      free: val(day.free),
+      savedAt: nowISO(),
     };
-    reader.readAsText(file);
-  }
-
-  // Boot defaults
-  function initDefaults() {
-    dayDate.value = todayISO();
-    dayStress.value = "5";
-    stressPill.textContent = "5";
-
-    const wn = weekNumberISO(new Date());
-    weekNumber.value = wn.week;
-    weekYear.value = wn.year;
-
-    monthYear.value = currentYear();
-    monthName.value = String(new Date().getMonth() + 1);
-  }
-
-  function boot() {
-    initDefaults();
-    loadNotebookIntoUI();
-    setActiveYear(activeYear);
-    setActiveTab("start");
+    saveStore(store);
     updateStats();
-    renderCalendar();
-    renderEntries();
-    renderWissen();
-    renderGlossar();
+    toast("Tages-Eintrag gespeichert.");
+  };
+
+  const clearDay = () => {
+    const k = dayKey();
+    if (!k) return;
+    if (!confirm("Tages-Eintrag wirklich leeren?")) return;
+    delete yData().day[k];
+    saveStore(store);
+    hydrateDayFromDate();
+    updateStats();
+    toast("Gelöscht.");
+  };
+
+  if (day.date) day.date.addEventListener("change", hydrateDayFromDate);
+  if (day.btnSave) day.btnSave.addEventListener("click", saveDay);
+  if (day.btnClear) day.btnClear.addEventListener("click", clearDay);
+
+  // ---------- Week ----------
+  const week = {
+    number: $("#weekNumber"),
+    year: $("#weekYear"),
+    skills: $("#weekSkills"),
+    mistake: $("#weekMistake"),
+    focus: $("#weekFocus"),
+    notes: $("#weekNotes"),
+    btnSave: $("#btnSaveWeek"),
+    btnClear: $("#btnClearWeek"),
+  };
+  const weekKey = () => {
+    const y = val(week.year);
+    const n = val(week.number);
+    if (!y || !n) return "";
+    return `${y}-KW${String(n).padStart(2,"0")}`;
+  };
+  const hydrateWeek = () => {
+    const k = weekKey();
+    if (!k) return;
+    const rec = (yData().week||{})[k] || {};
+    setVal(week.skills, rec.skills || "");
+    setVal(week.mistake, rec.mistake || "");
+    setVal(week.focus, rec.focus || "");
+    setVal(week.notes, rec.notes || "");
+  };
+  const saveWeek = () => {
+    const k = weekKey();
+    if (!k) { toast("Bitte Woche + Jahr setzen."); return; }
+    yData().week[k] = {
+      key: k,
+      weekNumber: val(week.number),
+      year: val(week.year),
+      skills: val(week.skills),
+      mistake: val(week.mistake),
+      focus: val(week.focus),
+      notes: val(week.notes),
+      savedAt: nowISO(),
+    };
+    saveStore(store); updateStats(); toast("Wochencheck gespeichert.");
+  };
+  const clearWeek = () => {
+    const k = weekKey(); if (!k) return;
+    if (!confirm("Wochen-Eintrag wirklich leeren?")) return;
+    delete yData().week[k]; saveStore(store); hydrateWeek(); updateStats(); toast("Gelöscht.");
+  };
+  [week.number, week.year].forEach(el => el && el.addEventListener("change", hydrateWeek));
+  if (week.btnSave) week.btnSave.addEventListener("click", saveWeek);
+  if (week.btnClear) week.btnClear.addEventListener("click", clearWeek);
+
+  // ---------- Month ----------
+  const month = {
+    name: $("#monthName"),
+    year: $("#monthYear"),
+    progress: $("#monthProgress"),
+    gap: $("#monthGap"),
+    school: $("#monthSchool"),
+    notes: $("#monthNotes"),
+    btnSave: $("#btnSaveMonth"),
+    btnClear: $("#btnClearMonth"),
+  };
+  const monthKey = () => {
+    const y = val(month.year);
+    const n = val(month.name);
+    if (!y || !n) return "";
+    return `${y}-${n}`;
+  };
+  const hydrateMonth = () => {
+    const k = monthKey();
+    if (!k) return;
+    const rec = (yData().month||{})[k] || {};
+    setVal(month.progress, rec.progress || "");
+    setVal(month.gap, rec.gap || "");
+    setVal(month.school, rec.school || "");
+    setVal(month.notes, rec.notes || "");
+  };
+  const saveMonth = () => {
+    const k = monthKey();
+    if (!k) { toast("Bitte Monat + Jahr setzen."); return; }
+    yData().month[k] = {
+      key:k,
+      month: val(month.name),
+      year: val(month.year),
+      progress: val(month.progress),
+      gap: val(month.gap),
+      school: val(month.school),
+      notes: val(month.notes),
+      savedAt: nowISO(),
+    };
+    saveStore(store); updateStats(); toast("Monatscheck gespeichert.");
+  };
+  const clearMonth = () => {
+    const k = monthKey(); if (!k) return;
+    if (!confirm("Monats-Eintrag wirklich leeren?")) return;
+    delete yData().month[k]; saveStore(store); hydrateMonth(); updateStats(); toast("Gelöscht.");
+  };
+  [month.name, month.year].forEach(el => el && el.addEventListener("change", hydrateMonth));
+  if (month.btnSave) month.btnSave.addEventListener("click", saveMonth);
+  if (month.btnClear) month.btnClear.addEventListener("click", clearMonth);
+
+  // ---------- Notebook ----------
+  const nbFields = [
+    "nbGoals","nbMeat","nbFish","nbVeg","nbSauces","nbBakery","nbHygiene","nbKnife",
+    "nbStations","nbPlating","nbRecipes","nbServiceLessons"
+  ];
+  const hydrateNotebook = () => {
+    const rec = yData().notebook || {};
+    nbFields.forEach(id => setVal($("#"+id), rec[id] || ""));
+  };
+  const saveNotebook = () => {
+    const rec = {};
+    nbFields.forEach(id => rec[id] = val($("#"+id)));
+    yData().notebook = { ...rec, savedAt: nowISO() };
+    saveStore(store);
+    toast("Notizbuch gespeichert.");
+  };
+  const btnSaveNotebook = $("#btnSaveNotebook");
+  if (btnSaveNotebook) btnSaveNotebook.addEventListener("click", saveNotebook);
+
+  // ---------- Glossar render ----------
+  const glossar = {
+    search: $("#glossarSearch"),
+    yearFilter: $("#glossarYearFilter"),
+    toc: $("#glossarToc"),
+    list: $("#glossarList"),
+    count: $("#glossarCount"),
+    btnReset: $("#glossarReset"),
+    btnPDF: $("#btnGlossarPDF"),
+    btnCards: $("#btnFlashcardsPDF"),
+  };
+
+  const getGlossaryPool = () => {
+    const g = window.AZUBI_GLOSSARY_PRO?.items || [];
+    return g;
+  };
+
+  const renderGlossar = () => {
+    if (!glossar.list || !glossar.toc) return;
+    const q = (val(glossar.search)||"").trim().toLowerCase();
+    const y = val(glossar.yearFilter) || store.yearActive || "1";
+    const pool = getGlossaryPool();
+
+    const filtered = pool.filter(it => {
+      const years = it.years || [];
+      const yearOK = (y === "all") ? true : years.includes(Number(y));
+      if (!yearOK) return false;
+      if (!q) return true;
+      const hay = `${it.term} ${it.definition} ${it.category||""} ${it.merksatz||""} ${it.praxis||""}`.toLowerCase();
+      return hay.includes(q);
+    });
+
+    if (glossar.count) glossar.count.textContent = `${filtered.length} Begriffe`;
+
+    // TOC by first letter
+    const groups = {};
+    filtered.forEach(it => {
+      const letter = (it.term || "?").trim().charAt(0).toUpperCase();
+      (groups[letter] ||= []).push(it);
+    });
+
+    glossar.toc.innerHTML = Object.keys(groups).sort().map(L => (
+      `<button type="button" class="chip" data-jump="${L}">${L}</button>`
+    )).join("");
+
+    glossar.list.innerHTML = Object.keys(groups).sort().map(L => {
+      const items = groups[L].sort((a,b)=> (a.term||"").localeCompare(b.term||"", "de"));
+      const rows = items.map(it => `
+        <article class="card" data-term="${escapeHTML(it.term||"")}">
+          <div class="card__top">
+            <div class="card__title">${escapeHTML(it.term||"")}</div>
+            <div class="pill">${escapeHTML((it.category||"").toString())}</div>
+          </div>
+          <div class="card__body">
+            <div class="def">${escapeHTML(it.definition||"")}</div>
+            ${it.merksatz ? `<div class="hint"><b>Merksatz:</b> ${escapeHTML(it.merksatz)}</div>` : ""}
+            ${it.praxis ? `<div class="hint"><b>Praxis:</b> ${escapeHTML(it.praxis)}</div>` : ""}
+            ${it.fehler ? `<div class="hint"><b>Fehler:</b> ${escapeHTML(it.fehler)}</div>` : ""}
+          </div>
+        </article>
+      `).join("");
+      return `<section class="group" id="G${L}">
+        <h3 class="group__title">${L}</h3>
+        <div class="group__grid">${rows}</div>
+      </section>`;
+    }).join("");
+
+    // toc jump
+    glossar.toc.onclick = (e) => {
+      const b = e.target.closest("button[data-jump]");
+      if (!b) return;
+      const t = $("#G"+b.dataset.jump);
+      if (t) t.scrollIntoView({behavior:"smooth", block:"start"});
+    };
+  };
+
+  const escapeHTML = (s) => String(s)
+    .replaceAll("&","&amp;").replaceAll("<","&lt;")
+    .replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
+
+  if (glossar.search) glossar.search.addEventListener("input", renderGlossar);
+
+  // --- Glossar: optionaler "Suchen"-Button + Enter-Handling ---
+  if (glossar.search && !document.getElementById("glossarSearchBtn")) {
+    const wrap = glossar.search.closest(".field");
+    if (wrap) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "btn";
+      btn.id = "glossarSearchBtn";
+      btn.textContent = "Suchen";
+      btn.style.marginTop = "8px";
+      wrap.appendChild(btn);
+      }
+    glossar.search.addEventListener("keydown", (e)=>{ if(e.key==="Enter"){ e.preventDefault(); renderGlossar(); } });
   }
 
-  boot();
+  if (glossar.yearFilter) glossar.yearFilter.addEventListener("change", () => { saveYearFilter(); renderGlossar(); });
+  const saveYearFilter = () => {
+    // User darf "Alle" wählen; wir merken das extra.
+    const y = val(glossar.yearFilter);
+    if (y) {
+      store.glossarYearFilter = String(y);
+      saveStore(store);
+    }
+    // Wenn nicht "Alle", koppeln wir Lehrjahr aktiv.
+    if (y && y !== "all") setYear(y);
+  };
+  if (glossar.btnReset) glossar.btnReset.addEventListener("click", () => {
+    if (glossar.search) glossar.search.value = "";
+    if (glossar.yearFilter) glossar.yearFilter.value = store.yearActive;
+    renderGlossar();
+  });
+  if (glossar.btnPDF) glossar.btnPDF.addEventListener("click", () => toast("PDF-Export kommt als nächster Schritt."));
+  if (glossar.btnCards) glossar.btnCards.addEventListener("click", () => toast("Flashcards-PDF kommt als nächster Schritt."));
+
+
+  // --- Glossar: Default an aktives Lehrjahr koppeln (statt "Alle") ---
+  if (glossar.yearFilter) {
+    const saved = store?.glossarYearFilter;
+    if (saved) {
+      glossar.yearFilter.value = saved;
+    } else if (glossar.yearFilter.value === "all" && store?.yearActive) {
+      glossar.yearFilter.value = String(store.yearActive);
+    }
+  }
+
+  // initial render
+  renderGlossar();
+
+  // ---------- Quiz ----------
+  const quiz = (() => {
+    const els = {
+      status: $("#quizStatusPill"),
+      reset: $("#quizReset"),
+      home: $("#quizHome"),
+      year: $("#quizYear"),
+      count: $("#quizCount"),
+      start: $("#quizStart"),
+      onlyWrong: $("#quizOnlyWrong"),
+      run: $("#quizRun"),
+      name: $("#quizName"),
+      progress: $("#quizProgress"),
+      score: $("#quizScore"),
+      abort: $("#quizAbort"),
+      meta: $("#quizQMeta"),
+      text: $("#quizQText"),
+      choices: $("#quizChoices"),
+      feedback: $("#quizFeedback"),
+      next: $("#quizNext"),
+    };
+
+    let pool = [];
+    let deck = [];
+    let i = 0;
+    let score = 0;
+    let wrong = [];
+
+    const buildPool = (ySel) => {
+      const g = getGlossaryPool();
+      if (ySel === "all") return g.slice();
+      const y = Number(ySel);
+      return g.filter(it => (it.years||[]).includes(y));
+    };
+
+    const makeQuestion = (item) => {
+      const correct = item.definition || "";
+      const distract = pool
+        .filter(x => x.term !== item.term && x.definition && x.definition !== correct)
+        .sort(()=>Math.random()-0.5)
+        .slice(0,3)
+        .map(x => x.definition);
+
+      const choices = [correct, ...distract].sort(()=>Math.random()-0.5);
+      return { term: item.term, correct, choices };
+    };
+
+    const render = () => {
+      const q = deck[i];
+      if (!q) return finish();
+      els.run?.classList.add("is-on");
+      if (els.name) els.name.textContent = "Quiz";
+      if (els.progress) els.progress.textContent = `${i+1}/${deck.length}`;
+      if (els.score) els.score.textContent = `${score}`;
+      if (els.meta) els.meta.textContent = "";
+      if (els.text) els.text.textContent = q.term;
+      if (els.feedback) els.feedback.textContent = "";
+      if (els.choices) {
+        els.choices.innerHTML = q.choices.map((c,idx)=>(
+          `<button type="button" class="choice" data-ans="${escapeHTML(c)}">${escapeHTML(c)}</button>`
+        )).join("");
+      }
+    };
+
+    const answer = (ans) => {
+      const q = deck[i];
+      if (!q) return;
+      const ok = ans === q.correct;
+      if (ok) score += 1; else wrong.push(q);
+      if (els.feedback) els.feedback.textContent = ok ? "✅ Richtig." : `❌ Falsch. Richtig: ${q.correct}`;
+      // disable choices
+      $$(".choice", els.choices).forEach(b => b.disabled = true);
+    };
+
+    const next = () => {
+      i += 1;
+      render();
+    };
+
+    const finish = () => {
+      if (els.text) els.text.textContent = "Fertig.";
+      if (els.choices) els.choices.innerHTML = "";
+      if (els.feedback) els.feedback.textContent = `Score: ${score}/${deck.length}`;
+      if (els.progress) els.progress.textContent = `${deck.length}/${deck.length}`;
+    };
+
+    const start = (onlyWrong=false) => {
+      const ySel = val(els.year) || store.yearActive;
+      pool = buildPool(ySel);
+      const n = Number(val(els.count) || 20);
+
+      const base = onlyWrong ? wrong : pool;
+      wrong = [];
+
+      deck = base
+        .sort(()=>Math.random()-0.5)
+        .slice(0, Math.min(n, base.length))
+        .map(makeQuestion);
+
+      i = 0; score = 0;
+      render();
+      if (els.status) els.status.textContent = "Läuft";
+    };
+
+    const reset = (toastIt=true) => {
+      pool = []; deck = []; i = 0; score = 0; wrong = [];
+      if (els.run) els.run.classList.remove("is-on");
+      if (els.status) els.status.textContent = "Bereit";
+      if (toastIt) toast("Quiz zurückgesetzt.");
+    };
+
+    if (els.start) els.start.addEventListener("click", () => start(false));
+    if (els.onlyWrong) els.onlyWrong.addEventListener("click", () => start(true));
+    if (els.next) els.next.addEventListener("click", next);
+    if (els.abort) els.abort.addEventListener("click", reset);
+    if (els.reset) els.reset.addEventListener("click", reset);
+    if (els.home) els.home.addEventListener("click", () => { reset(false); setTab("start"); });
+
+    if (els.choices) {
+      els.choices.addEventListener("click", (e) => {
+        const b = e.target.closest("button.choice");
+        if (!b || b.disabled) return;
+        answer(b.dataset.ans);
+      });
+    }
+
+    return { start, reset };
+  
+// --- Emergency delegated wiring (works even if some handlers are missing) ---
+document.addEventListener("click", (e)=>{
+  const tabBtn = e.target.closest(".tab[data-tab]");
+  if(tabBtn){
+    e.preventDefault();
+    try { setTab(tabBtn.dataset.tab); } catch(err){ console.error(err); }
+  }
+  const yearBtn = e.target.closest(".yearBtn[data-year]");
+  if(yearBtn){
+    e.preventDefault();
+    try { setYear(yearBtn.dataset.year); } catch(err){ console.error(err); }
+  }
+}, true);
+// --- END emergency ---
+
+})();
+
+  // ---------- Prüfung (Exam) ----------
+  const exam = (() => {
+    const els = {
+      status: $("#examStatusPill"),
+      reset: $("#examReset"),
+      home: $("#examHome"),
+      start1: $("#examStart1"),
+      start2: $("#examStart2"),
+      start3: $("#examStart3"),
+      run: $("#examRun"),
+      name: $("#examName"),
+      progress: $("#examProgress"),
+      timer: $("#examTimer"),
+      abort: $("#examAbort"),
+      meta: $("#examQMeta"),
+      text: $("#examQText"),
+      choices: $("#examChoices"),
+      next: $("#examNext"),
+      result: $("#examResult"),
+      resultTitle: $("#examResultTitle"),
+      resultMeta: $("#examResultMeta"),
+      retryWrong: $("#examRetryWrong"),
+      backHome: $("#examBackHome"),
+      wrongList: $("#examWrongList"),
+    };
+
+    let pool = [];
+    let deck = [];
+    let i = 0;
+    let score = 0;
+    let wrong = [];
+    let t0 = 0;
+    let timerInt = null;
+
+    const buildPool = (y) => getGlossaryPool().filter(it => (it.years||[]).includes(Number(y)));
+
+    const makeQuestion = (item) => {
+      const correct = item.definition || "";
+      const distract = pool
+        .filter(x => x.term !== item.term && x.definition && x.definition !== correct)
+        .sort(()=>Math.random()-0.5)
+        .slice(0,3)
+        .map(x => x.definition);
+      const choices = [correct, ...distract].sort(()=>Math.random()-0.5);
+      return { term: item.term, correct, choices };
+    };
+
+    const tick = () => {
+      const s = Math.max(0, Math.floor((Date.now()-t0)/1000));
+      if (els.timer) els.timer.textContent = `${s}s`;
+    };
+
+    const render = () => {
+      const q = deck[i];
+      if (!q) return finish();
+      if (els.run) els.run.classList.add("is-on");
+      if (els.result) els.result.classList.remove("is-on");
+      if (els.name) els.name.textContent = "Prüfung";
+      if (els.progress) els.progress.textContent = `${i+1}/${deck.length}`;
+      if (els.meta) els.meta.textContent = "";
+      if (els.text) els.text.textContent = q.term;
+      if (els.choices) {
+        els.choices.innerHTML = q.choices.map(c => (
+          `<button type="button" class="choice" data-ans="${escapeHTML(c)}">${escapeHTML(c)}</button>`
+        )).join("");
+      }
+    };
+
+    const answer = (ans) => {
+      const q = deck[i]; if (!q) return;
+      const ok = ans === q.correct;
+      if (ok) score += 1; else wrong.push(q);
+      // disable
+      $$(".choice", els.choices).forEach(b => b.disabled = true);
+    };
+
+    const next = () => { i += 1; render(); };
+
+    const finish = () => {
+      clearInterval(timerInt); timerInt = null;
+      if (els.run) els.run.classList.remove("is-on");
+      if (els.result) els.result.classList.add("is-on");
+      if (els.resultTitle) els.resultTitle.textContent = `Ergebnis: ${score}/${deck.length}`;
+      if (els.resultMeta) els.resultMeta.textContent = `Fehler: ${wrong.length} · Zeit: ${els.timer?.textContent || "-"}`;
+      if (els.wrongList) {
+        els.wrongList.innerHTML = wrong.slice(0, 50).map(w => `<li><b>${escapeHTML(w.term)}</b> – ${escapeHTML(w.correct)}</li>`).join("");
+      }
+      if (els.status) els.status.textContent = "Fertig";
+    };
+
+    const start = (year, onlyWrong=false) => {
+      pool = buildPool(year);
+      const base = onlyWrong ? wrong : pool;
+      if (!onlyWrong) wrong = [];
+      deck = base.sort(()=>Math.random()-0.5).slice(0, Math.min(25, base.length)).map(makeQuestion);
+      i = 0; score = 0;
+      t0 = Date.now();
+      clearInterval(timerInt);
+      timerInt = setInterval(tick, 500);
+      tick();
+      render();
+      if (els.status) els.status.textContent = "Läuft";
+    };
+
+    const reset = (toastIt=true) => {
+      clearInterval(timerInt); timerInt = null;
+      pool=[]; deck=[]; i=0; score=0; wrong=[];
+      if (els.run) els.run.classList.remove("is-on");
+      if (els.result) els.result.classList.remove("is-on");
+      if (els.timer) els.timer.textContent = "0s";
+      if (els.status) els.status.textContent = "Bereit";
+      if (toastIt) toast("Prüfung zurückgesetzt.");
+    };
+
+    if (els.start1) els.start1.addEventListener("click", ()=> start(1,false));
+    if (els.start2) els.start2.addEventListener("click", ()=> start(2,false));
+    if (els.start3) els.start3.addEventListener("click", ()=> start(3,false));
+    if (els.next) els.next.addEventListener("click", next);
+    if (els.abort) els.abort.addEventListener("click", reset);
+    if (els.reset) els.reset.addEventListener("click", reset);
+    if (els.home) els.home.addEventListener("click", ()=> { reset(false); setTab("start"); });
+    if (els.retryWrong) els.retryWrong.addEventListener("click", ()=> {
+      if (!wrong.length) return toast("Keine Fehler vorhanden.");
+      start(store.yearActive, true);
+    });
+    if (els.backHome) els.backHome.addEventListener("click", ()=> setTab("start"));
+
+    if (els.choices) {
+      els.choices.addEventListener("click", (e)=> {
+        const b = e.target.closest("button.choice");
+        if (!b || b.disabled) return;
+        answer(b.dataset.ans);
+      });
+    }
+
+    return { start, reset };
+  
+// --- Emergency delegated wiring (works even if some handlers are missing) ---
+document.addEventListener("click", (e)=>{
+  const tabBtn = e.target.closest(".tab[data-tab]");
+  if(tabBtn){
+    e.preventDefault();
+    try { setTab(tabBtn.dataset.tab); } catch(err){ console.error(err); }
+  }
+  const yearBtn = e.target.closest(".yearBtn[data-year]");
+  if(yearBtn){
+    e.preventDefault();
+    try { setYear(yearBtn.dataset.year); } catch(err){ console.error(err); }
+  }
+}, true);
+// --- END emergency ---
+
+})();
+
+  // ---------- Delete buttons ----------
+  const btnDeleteYear = $("#btnDeleteYear");
+  const btnDeleteAll = $("#btnDeleteAll");
+  if (btnDeleteYear) btnDeleteYear.addEventListener("click", () => {
+    if (!confirm("Dieses Lehrjahr wirklich löschen?")) return;
+    store.years[store.yearActive] = defaultStore().years[store.yearActive];
+    saveStore(store);
+    setYear(store.yearActive);
+    toast("Lehrjahr gelöscht.");
+  });
+  if (btnDeleteAll) btnDeleteAll.addEventListener("click", () => {
+    if (!confirm("ALLES wirklich löschen?")) return;
+    store = defaultStore();
+    saveStore(store);
+    setYear("1");
+    toast("Alles gelöscht.");
+  });
+
+  // ---------- Tiny toast ----------
+  function toast(msg){
+    let t = $("#__toast");
+    if (!t){
+      t = document.createElement("div");
+      t.id="__toast";
+      t.style.cssText="position:fixed;left:12px;bottom:12px;z-index:9999;padding:10px 12px;border-radius:12px;background:rgba(20,22,27,.92);color:#fff;font:14px/1.25 system-ui, -apple-system, Segoe UI, Roboto, Arial;box-shadow:0 10px 30px rgba(0,0,0,.2);max-width:min(520px, calc(100vw - 24px));";
+      document.body.appendChild(t);
+    }
+    t.textContent = msg;
+    t.style.opacity="1";
+    clearTimeout(window.__toastTimer);
+    window.__toastTimer=setTimeout(()=>{ t.style.opacity="0"; }, 1600);
+  }
+
+  // initial hydrations
+  hydrateQuick();
+  hydrateNotebook();
+  if (day.date && !val(day.date)) {
+    // set today by default for day entry
+    const d = new Date(); 
+    const iso = d.toISOString().slice(0,10);
+    day.date.value = iso;
+  }
+  hydrateDayFromDate();
+  hydrateWeek();
+  hydrateMonth();
+  updateStats();
+
+// --- Emergency delegated wiring (works even if some handlers are missing) ---
+document.addEventListener("click", (e)=>{
+  const tabBtn = e.target.closest(".tab[data-tab]");
+  if(tabBtn){
+    e.preventDefault();
+    try { setTab(tabBtn.dataset.tab); } catch(err){ console.error(err); }
+  }
+  const yearBtn = e.target.closest(".yearBtn[data-year]");
+  if(yearBtn){
+    e.preventDefault();
+    try { setYear(yearBtn.dataset.year); } catch(err){ console.error(err); }
+  }
+}, true);
+// --- END emergency ---
+
 })();

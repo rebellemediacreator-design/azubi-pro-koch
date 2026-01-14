@@ -1,0 +1,355 @@
+{
+  "lehrjahr": 2,
+  "titel": "Koch/Köchin Ausbildung - 2. Lehrjahr (Monate 13-24)",
+  "dauer_monate": 12,
+  "schulische_stunden": 280,
+  "fokus": "Spezialisierung & erste Abschlussprüfung",
+  "wichtig": "LF6-8 (Suppen, Fleisch, Fisch) MÜSSEN zu Beginn des 2. Jahres unterrichtet werden - Vorbereitung auf Prüfung Teil 1!",
+  "lernfelder": [
+    {
+      "lf_nummer": 6,
+      "titel": "Suppen und Saucen herstellen und präsentieren",
+      "stunden": 40,
+      "prüfungsrelevant": true,
+      "kernziele": [
+        "Brühen & Fonds herstellen",
+        "Klare Suppen kochen",
+        "Gebundene Suppen (Creme, Rahm, Püree)",
+        "Kalte Suppen zubereiten",
+        "Grundsaucen herstellen (hell & dunkel)",
+        "Aufgeschlagene Saucen (warm & kalt)",
+        "Soßen-Ableitungen verstehen"
+      ],
+      "suppenarten": [
+        {
+          "typ": "Klare Suppen",
+          "beispiele": ["Klare Brühe", "Consommé", "Klare Suppe mit Einlagen"]
+        },
+        {
+          "typ": "Gebundene Suppen",
+          "beispiele": ["Rahmsuppe", "Püreesuppe", "Creme-Suppe"]
+        },
+        {
+          "typ": "Kalte Suppen",
+          "beispiele": ["Gazpacho", "Kartoffelsuppe kalt", "Fruchtsuppen"]
+        }
+      ],
+      "saucen": [
+        {
+          "typ": "Helle Grundsaucen",
+          "beispiele": ["Béchamel", "Velouté", "Senfsoße", "Käsesoße"]
+        },
+        {
+          "typ": "Dunkle Grundsaucen",
+          "beispiele": ["Demiglace", "Jus", "Pilzsoße", "Rotweinsauce"]
+        },
+        {
+          "typ": "Aufgeschlagene warme Saucen",
+          "beispiele": ["Holländaise", "Béarnaise", "Sauce Maltaise"]
+        },
+        {
+          "typ": "Kalte Saucen",
+          "beispiele": ["Mayonnaise", "Aïoli", "Remoulade", "Vinaigrette", "Pesto"]
+        }
+      ]
+    },
+    {
+      "lf_nummer": 7,
+      "titel": "Gerichte aus Fleischteilen herstellen und präsentieren",
+      "stunden": 60,
+      "prüfungsrelevant": true,
+      "kernziele": [
+        "Fleischarten & -teile unterscheiden",
+        "Fleisch parieren, zuschneiden, portionieren",
+        "Fleisch auslösen aus Schlachtfleisch",
+        "Garverfahren anwenden (Schmoren, Grillen, Braten, Niedrigtemperatur)",
+        "Garstufen beachten (rare, medium, well-done)",
+        "Komplette Fleischgerichte zusammenstellen",
+        "Innereien vorbereiten"
+      ],
+      "fleischarten": {
+        "rind": ["Hochrippe", "Roastbeef", "Lendenbraten", "Huft", "Unterschale", "Oberschale"],
+        "schwein": ["Schnitzel", "Karbonade", "Hüfte", "Nacken", "Bauch"],
+        "hausgeflügel": ["Huhn", "Ente", "Gans", "Truthahn"]
+      },
+      "bearbeitungstechniken": [
+        "Parieren (Silberhäute, Sehnen entfernen)",
+        "Zuschneiden (Portionieren)",
+        "Auslösen (Rücken, Schulter, Keule)",
+        "Fleisch filetieren"
+      ],
+      "garverfahren": [
+        "Braten (schnell, hohe Hitze)",
+        "Grillen (direkte Hitze)",
+        "Schmoren (anbraten + lange garen mit Flüssigkeit)",
+        "Niedrigtemperaturgaren (60-80°C im Ofen)"
+      ],
+      "garpunkte": {
+        "rind": {
+          "rare": "52-55°C",
+          "medium": "58-62°C",
+          "well-done": "65-70°C"
+        }
+      }
+    },
+    {
+      "lf_nummer": 8,
+      "titel": "Gerichte aus Fisch herstellen und präsentieren",
+      "stunden": 40,
+      "prüfungsrelevant": true,
+      "kernziele": [
+        "Fischarten unterscheiden & Frischemerkmale prüfen",
+        "Fisch schuppen, säubern, ausnehmen",
+        "Fisch filetieren & portionieren",
+        "Garverfahren anwenden",
+        "Schalen- & Krustentiere vorbereiten",
+        "Fisch- & Meeresfrüchte-Speisen zubereiten",
+        "Spezielle Fisch-Hygiene beachten"
+      ],
+      "fischarten": [
+        "Seefische: Kabeljau, Seelachs, Rotbarsch, Heilbutt, Brasse, Forelle",
+        "Süßwasserfische: Hecht, Karpfen, Zander",
+        "Edle Fische: Seezunge, Turbot (Steinbutt)"
+      ],
+      "frischemerkmale": [
+        "Augen: Hell & klar (nicht trüb)",
+        "Kiemen: Rot & feuchtig (nicht grau)",
+        "Fleisch: Fest & elastisch",
+        "Geruch: Frischer Fischgeruch",
+        "Haut: Glänzend & schleimig"
+      ],
+      "meeresfrüchte": [
+        "Gambas (Riesengarnelen)",
+        "Hummer",
+        "Austern",
+        "Muscheln",
+        "Jakobs-Muscheln"
+      ],
+      "garverfahren": [
+        "Braten",
+        "Grillen",
+        "Pochieren",
+        "Dünsten",
+        "Kochen",
+        "Frittieren"
+      ]
+    },
+    {
+      "lf_nummer": 9,
+      "titel": "Pflanzliche Rohstoffe und Pilze verarbeiten",
+      "stunden": 80,
+      "kernziele": [
+        "Gemüse & Obst vorbereiten & verarbeiten",
+        "Kartoffeln zu vielfältigen Gerichten zubereiten",
+        "Reis & Pasta als Beilage & Hauptgericht",
+        "Pilze & Hülsenfrüchte kochen",
+        "Vegetarische & vegane Speisen zubereiten",
+        "Saisonalität & Regionalität nutzen",
+        "Nährstoffe & Ernährung beachten"
+      ],
+      "gemuese_arten": [
+        "Blattgemüse: Salate, Spinat, Kohl",
+        "Wurzelgemüse: Möhren, Pastinaken, Rüben",
+        "Fruchtgemüse: Tomaten, Paprika, Aubergine, Zucchini",
+        "Kohlgemüse: Brokkoli, Blumenkohl"
+      ],
+      "kartoffelspezialitaeten": [
+        "Kartoffelpüree",
+        "Kartoffelsalat (deutsch, französisch)",
+        "Bratkartoffeln",
+        "Rösti",
+        "Gnocchi",
+        "Salzkartoffeln"
+      ],
+      "reis_pasta": [
+        {
+          "kategorie": "Reis",
+          "arten": ["Langkorn", "Risotto-Reis (Carnaroli, Arborio)", "Basmatireis"]
+        },
+        {
+          "kategorie": "Pasta",
+          "arten": ["Spaghetti", "Penne", "Fusilli", "Ravioli", "Lasagne-Blätter"]
+        }
+      ],
+      "pilze_huelsenfruechte": [
+        "Champignons",
+        "Pfifferlinge",
+        "Flöckchen",
+        "Linsen",
+        "Kichererbsen",
+        "Bohnen"
+      ],
+      "vegetarisch_vegan": [
+        "Vegetarische Speisen (mit Eier & Käse)",
+        "Vegane Speisen (ohne tierische Produkte)",
+        "Fleischalternativen"
+      ]
+    },
+    {
+      "lf_nummer": 10,
+      "titel": "Süßspeisen herstellen und präsentieren",
+      "stunden": 60,
+      "kernziele": [
+        "Cremespeisen herstellen",
+        "Süße Eierspeisen zubereiten",
+        "Obst & Früchte verarbeiten",
+        "Gefrorene & Halbgefrorene zubereiten",
+        "Vorgefertigtes Eis professionell anrichten",
+        "Schokolade & Dekorationen nutzen",
+        "Saisonale & regionale Spezialitäten"
+      ],
+      "cremespeisen": [
+        "Zabaglione (Eigelbe + Zucker + Marsala)",
+        "Sabayon (mit Weißwein)",
+        "Mousse (aufgeschlagene Creme)",
+        "Panna Cotta (Sahne + Gelatine)"
+      ],
+      "bindungsmittel": [
+        "Stärke (Maizena)",
+        "Gelatine",
+        "Eiweißschaum",
+        "Emulsionen"
+      ],
+      "suessigkeiten": [
+        "Kaiserschmarrn",
+        "Soufflé",
+        "Pfannkuchen",
+        "Crêpes"
+      ],
+      "obst_verarbeitung": [
+        "Roh: Frische Beeren, geschnittene Früchte",
+        "Gegart: Pochierte Birnen, gebratene Ananas",
+        "Kompott: Gekochte Früchte im Sirup",
+        "Coulis: Püree als Soße"
+      ],
+      "gefrorene_desserts": [
+        "Parfait",
+        "Granité",
+        "Sorbet"
+      ]
+    }
+  ],
+  "integrativ_vermittelt": [
+    "Berufsbildung & Arbeitsrecht (fortlaufend)",
+    "Arbeits- & Gesundheitsschutz (fortlaufend)",
+    "Umweltschutz & Nachhaltigkeit (fortlaufend)",
+    "Digitalisierte Arbeitswelt (fortlaufend)"
+  ],
+  "lernplan_im_Jahr": [
+    {
+      "monat": "13-15 (Monate 1-3 des 2. Jahres)",
+      "fokus": "LF6-8 INTENSIV unterrichten (Prüfungsvorbereitung!)"
+    },
+    {
+      "monat": "16-24 (Monate 4-12 des 2. Jahres)",
+      "fokus": "LF6-8 vertiefen + LF9-10 parallel unterrichten"
+    }
+  ],
+  "pruefung_teil_1": {
+    "zeitpunkt": "Ende 2. Lehrjahr (Monat 21-24)",
+    "prüfungsbereich": "Zubereiten von einfachen Speisen und Gerichten",
+    "gesamtdauer_minuten": 300,
+    "gewichtung_gesamtnote": "25%",
+    "schriftlich": {
+      "gewichtung": "30%",
+      "dauer_minuten": 60,
+      "inhalte": [
+        "Lebensmittel ihren Verwendungsmöglichkeiten zuordnen",
+        "Zubereitungsmöglichkeiten erläutern",
+        "Arbeitsabläufe planen",
+        "Hygiene, Nachhaltigkeit, Ressourcenschonung",
+        "Praxisorientierte Aufgaben"
+      ]
+    },
+    "praktisch": {
+      "gewichtung": "70%",
+      "dauer_minuten": 240,
+      "ablauf": [
+        {
+          "schritt": 1,
+          "tätigkeit": "Arbeitsablaufplan schreiben",
+          "dauer_minuten": 30
+        },
+        {
+          "schritt": 2,
+          "tätigkeit": "Gastgespräch",
+          "dauer_minuten": 15,
+          "fokus": "Allergien, Besonderheiten, Wünsche"
+        },
+        {
+          "schritt": 3,
+          "tätigkeit": "Menü kochen (3-teilig)",
+          "dauer_minuten": 180,
+          "komponenten": [
+            {
+              "gang": 1,
+              "name": "Vorspeise oder Suppe",
+              "optionen": ["Kalte oder warme Vorspeise", "Klare oder Creme-Suppe"]
+            },
+            {
+              "gang": 2,
+              "name": "Hauptgericht",
+              "protein": ["Fleisch", "Wild", "Geflügel", "Fisch"],
+              "soße": "Gezogene Soße (selbst hergestellt!)",
+              "beilagen": "Mindestens 2 Gemüsebeilagen (verschiedene Garverfahren)"
+            },
+            {
+              "gang": 3,
+              "name": "Beilage",
+              "optionen": ["Kartoffelpüree", "Reis", "Pasta", "Kartoffel-Variante"]
+            }
+          ]
+        },
+        {
+          "schritt": 4,
+          "tätigkeit": "Arbeitsplatz aufräumen & reinigen",
+          "dauer_minuten": 30
+        },
+        {
+          "schritt": 5,
+          "tätigkeit": "Abschlussgespräch mit Prüfern",
+          "dauer_minuten": 15,
+          "fokus": "Garpunkte, Schwierigkeiten, Begründungen"
+        }
+      ]
+    },
+    "bewertungskriterien": [
+      {
+        "kriterium": "Arbeitsablaufplan",
+        "gewichtung": "10%",
+        "inhalte": "Logische Planung, Zeitmanagement"
+      },
+      {
+        "kriterium": "Fachgespräche",
+        "gewichtung": "20%",
+        "inhalte": "Kommunikation, Fachwissen, Allergen-Umgang"
+      },
+      {
+        "kriterium": "Arbeitsergebnis",
+        "gewichtung": "60%",
+        "inhalte": ["Geschmack", "Optik", "Genießbarkeit"]
+      },
+      {
+        "kriterium": "Hygiene während Prüfung",
+        "gewichtung": "10%",
+        "inhalte": "Laufend beobachtet"
+      }
+    ],
+    "bestehenskriterien": [
+      "Schriftlich: Mindestens 50%",
+      "Praktisch: Mindestens 50%",
+      "Gesamt Teil 1: Mindestens 50%",
+      "Wiederholung nach 6 Monaten möglich, falls nicht bestanden"
+    ]
+  },
+  "kompetenzen_am_ende": [
+    "Suppen & Saucen professionell herstellen",
+    "Fleisch & Fisch verarbeiten & garen",
+    "Verschiedene Garverfahren sicher anwenden",
+    "Gemüse & pflanzliche Speisen vielfältig zubereiten",
+    "Süßspeisen & Desserts herstellen",
+    "Prüfung Teil 1 erfolgreich absolvieren",
+    "3-teilige Mahlzeit selbstständig kochen",
+    "Gäste kompetent beraten (Allergien, Wünsche)"
+  ]
+}

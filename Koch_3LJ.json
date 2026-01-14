@@ -1,0 +1,152 @@
+{
+  "kind": "companyPack",
+  "schema": 1,
+  "packId": "Koch_3LJ_v1",
+  "track": "Koch",
+  "year": 3,
+  "title": "Koch · Lehrjahr 3 · Betriebspaket (Standard)",
+  "language": "de-DE",
+  "version": 1,
+  "updatedAt": "2025-12-31T13:50:00+01:00",
+  "scope": {
+    "containsPersonalData": false,
+    "offlineFirst": true,
+    "notes": "Dieses Paket enthält ausschließlich fachliche Inhalte/Standards. Keine Profile, keine Berichte."
+  },
+  "compat": {
+    "azubiAppMinSchema": 1,
+    "adminAppMinSchema": 1
+  },
+  "requiredLearning": {
+    "principle": "IHK-nah (praxisorientiert). Betrieb kann später individuell anpassen.",
+    "modules": [
+      {
+        "id": "K3-01",
+        "title": "Planung, Kalkulation, Einkauf",
+        "bullets": [
+          "Rezeptkalkulation (Wareneinsatz, Portion)",
+          "Bestellwesen, Lieferkontrolle",
+          "Abweichungen: Nachkalkulation"
+        ],
+        "checklist": [
+          "Eine Kalkulation gerechnet",
+          "Lieferung geprüft",
+          "Abweichung notiert"
+        ]
+      },
+      {
+        "id": "K3-02",
+        "title": "Führung & Pass-Organisation",
+        "bullets": [
+          "Rollen am Pass, Ansagen, Prioritäten",
+          "Fehlerkultur: schnell korrigieren",
+          "Einarbeitung von Juniors"
+        ],
+        "checklist": [
+          "Pass-Aufgabe übernommen",
+          "Ansage dokumentiert",
+          "Einarbeitung reflektiert"
+        ]
+      },
+      {
+        "id": "K3-03",
+        "title": "Prüfungsvorbereitung Praxis",
+        "bullets": [
+          "Ablaufprobe, Zeitplan, Mise en Place",
+          "Anrichten: Sauberkeit, Temperatur, Wiederholbarkeit",
+          "Begründung: warum diese Technik"
+        ],
+        "checklist": [
+          "Probe gekocht",
+          "Zeit eingehalten",
+          "Techniken begründet"
+        ]
+      },
+      {
+        "id": "K3-04",
+        "title": "Qualitätsmanagement & Standards",
+        "bullets": [
+          "Standard-Rezepte (SOP) schreiben",
+          "Kontrollpunkte definieren",
+          "Schulung & Aktualisierung im Team"
+        ],
+        "checklist": [
+          "SOP erstellt",
+          "Kontrollpunkt gesetzt",
+          "Update verstanden"
+        ]
+      },
+      {
+        "id": "K3-05",
+        "title": "Nachhaltigkeit & Wirtschaftlichkeit",
+        "bullets": [
+          "Food-Waste reduzieren",
+          "Nose-to-tail / Root-to-stem (wo passend)",
+          "Energie/Wasser effizient"
+        ],
+        "checklist": [
+          "Maßnahme umgesetzt",
+          "Waste dokumentiert",
+          "Effizienzpunkt notiert"
+        ]
+      }
+    ]
+  },
+  "standards": {
+    "hygiene": [
+      "Hände: vor Arbeitsbeginn, nach WC, nach Müll/rohem Fleisch/Fisch, nach Handy.",
+      "Bretter/Messer trennen: roh/gar, Allergene separat.",
+      "Temperaturen: Kühlschrank Ziel 2–7°C (betriebsintern prüfen), Warmhalten >60°C (wenn gefordert)."
+    ],
+    "workflow": [
+      "Mise en Place nach Liste, Par-Level einhalten.",
+      "Pass-Kommunikation: 'Ja Chef' + Rückmeldung bei Verzögerung.",
+      "Reinigung: von sauber nach schmutzig, trocken nach nass."
+    ],
+    "houseRules": [
+      "Handy nur in Pausen/definierten Bereichen.",
+      "Unfälle sofort melden.",
+      "Labeln/Datieren ist Pflicht, nicht optional."
+    ]
+  },
+  "glossary": [
+    {
+      "term": "Mise en Place",
+      "definition": "Arbeitsvorbereitung: alle Zutaten/Tools bereitstellen, abwiegen, vorkühlen/erwärmen, Station organisieren."
+    },
+    {
+      "term": "FIFO",
+      "definition": "First In, First Out: ältere Ware zuerst verbrauchen, um Verderb zu vermeiden."
+    },
+    {
+      "term": "HACCP",
+      "definition": "System zur Gefahrenanalyse und Festlegung kritischer Kontrollpunkte für Lebensmittelsicherheit."
+    },
+    {
+      "term": "Allergene",
+      "definition": "Stoffe, die Allergien auslösen können; Kennzeichnungspflicht (z. B. Gluten, Nüsse, Milch)."
+    },
+    {
+      "term": "Cross-Contamination",
+      "definition": "Kreuzkontamination: Übertragung von Keimen/Allergenen z. B. durch Brett/Messer/Handschuhe."
+    },
+    {
+      "term": "Pass",
+      "definition": "Ausgabepunkt in der Küche; hier werden Teller final geprüft und geschickt."
+    }
+  ],
+  "recommendedTasks": [
+    "Tagesstart: kurze Checkliste (Station, Hygiene, Tools).",
+    "Am Ende: 3 Stichpunkte 'Gelernt – Gut – Verbessern'.",
+    "Wöchentlich: 1 Fehler verstehen + 1 Verbesserung planen."
+  ],
+  "updates": [
+    {
+      "id": "upd_koch_3_001",
+      "title": "⚠️ Update: Lernfokus diese Woche",
+      "effectiveFrom": "2026-01-01",
+      "severity": "info",
+      "text": "Neuigkeiten im Betriebsstandard: Diese Woche liegt der Fokus auf Hygiene & Mise en Place. Bitte im Tages-Eintrag unter „Was habe ich gelernt?“ kurz dokumentieren."
+    }
+  ]
+}

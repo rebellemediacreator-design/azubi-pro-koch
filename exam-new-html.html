@@ -1,0 +1,142 @@
+<!-- NEUE PRÜFUNGS-STRUKTUR FÜR MEHRERE SIMULATIONEN PRO LEHRJAHR -->
+
+<section class="panel" id="panel-pruefung">
+<div class="panel__header">
+<h1 class="h1">Prüfung</h1>
+<div class="panel__meta">
+<div class="pill" id="examStatusPill">Bereit</div>
+<button class="btn" id="examReset" type="button">Reset</button>
+</div>
+</div>
+<div class="card">
+
+<!-- HOME SCREEN - Lehrjahr-Auswahl -->
+<div id="examHome">
+<div class="muted" style="margin-bottom:16px;">
+🚗 <strong>Führerschein-Stil Prüfungsvorbereitung</strong><br>
+Timer · Kein Zurück · Kein Feedback während Prüfung · Nur am Ende Ergebnis + Fehlerliste
+</div>
+
+<!-- LEHRJAHR 1 -->
+<div class="divider"></div>
+<h2 class="h2">Lehrjahr 1 - Prüfungsvorbereitung</h2>
+<div class="muted" style="margin-bottom:12px;">
+30 Fragen · 45 Minuten · Bestehen ab 70% (21 Punkte)
+</div>
+<div class="grid grid--3">
+<div class="examCard">
+<div class="examCard__title">Simulation 1</div>
+<div class="examCard__meta">30 Fragen · 45 Min</div>
+<button class="btn btn--primary exam-start-btn" data-year="1" data-simulation="1" type="button">Starten</button>
+</div>
+<div class="examCard">
+<div class="examCard__title">Simulation 2</div>
+<div class="examCard__meta">30 Fragen · 45 Min</div>
+<button class="btn btn--primary exam-start-btn" data-year="1" data-simulation="2" type="button">Starten</button>
+</div>
+<div class="examCard">
+<div class="examCard__title">Simulation 3</div>
+<div class="examCard__meta">30 Fragen · 45 Min</div>
+<button class="btn btn--primary exam-start-btn" data-year="1" data-simulation="3" type="button">Starten</button>
+</div>
+</div>
+
+<!-- LEHRJAHR 2 -->
+<div class="divider"></div>
+<h2 class="h2">Lehrjahr 2 - Prüfungsvorbereitung</h2>
+<div class="muted" style="margin-bottom:12px;">
+40 Fragen · 60 Minuten · Bestehen ab 70% (28 Punkte)
+</div>
+<div class="grid grid--3">
+<div class="examCard">
+<div class="examCard__title">Simulation 1</div>
+<div class="examCard__meta">40 Fragen · 60 Min</div>
+<button class="btn btn--primary exam-start-btn" data-year="2" data-simulation="1" type="button">Starten</button>
+</div>
+<div class="examCard">
+<div class="examCard__title">Simulation 2</div>
+<div class="examCard__meta">40 Fragen · 60 Min</div>
+<button class="btn btn--primary exam-start-btn" data-year="2" data-simulation="2" type="button">Starten</button>
+</div>
+<div class="examCard">
+<div class="examCard__title">Simulation 3</div>
+<div class="examCard__meta">40 Fragen · 60 Min</div>
+<button class="btn btn--primary exam-start-btn" data-year="2" data-simulation="3" type="button">Starten</button>
+</div>
+</div>
+
+<!-- LEHRJAHR 3 -->
+<div class="divider"></div>
+<h2 class="h2">Lehrjahr 3 - Prüfungsvorbereitung</h2>
+<div class="muted" style="margin-bottom:12px;">
+50 Fragen · 75 Minuten · Bestehen ab 70% (35 Punkte)
+</div>
+<div class="grid grid--3">
+<div class="examCard">
+<div class="examCard__title">Simulation 1</div>
+<div class="examCard__meta">50 Fragen · 75 Min</div>
+<button class="btn btn--primary exam-start-btn" data-year="3" data-simulation="1" type="button">Starten</button>
+</div>
+<div class="examCard">
+<div class="examCard__title">Simulation 2</div>
+<div class="examCard__meta">50 Fragen · 75 Min</div>
+<button class="btn btn--primary exam-start-btn" data-year="3" data-simulation="2" type="button">Starten</button>
+</div>
+<div class="examCard">
+<div class="examCard__title">Simulation 3</div>
+<div class="examCard__meta">50 Fragen · 75 Min</div>
+<button class="btn btn--primary exam-start-btn" data-year="3" data-simulation="3" type="button">Starten</button>
+</div>
+</div>
+
+<div class="divider"></div>
+<div class="muted">
+💡 <strong>Tipp:</strong> Übe alle Simulationen pro Lehrjahr, um dich optimal vorzubereiten. Jede Simulation hat andere Fragen!
+</div>
+</div>
+
+<!-- RUNNING EXAM SCREEN -->
+<div id="examRun" style="display:none;">
+<div class="examTop">
+<div class="examTop__left">
+<div class="pill" id="examName">—</div>
+<div class="pill" id="examProgress">0/0</div>
+<div class="pill" id="examTimer" style="background: rgba(188,158,129,.95); font-weight:900;">0:00</div>
+</div>
+<div class="examTop__right">
+<button class="btn" id="examAbort" type="button">Abbrechen</button>
+</div>
+</div>
+<div class="divider"></div>
+<div class="examQ">
+<div class="muted" id="examQMeta">—</div>
+<div class="examQ__text" id="examQText">—</div>
+<div class="examChoices" id="examChoices"></div>
+<div class="divider"></div>
+<div class="examActions">
+<button class="btn btn--primary" disabled="" id="examNext" type="button">Nächste Frage</button>
+</div>
+<div class="muted" style="margin-top:10px; font-size:12px;">
+⚠️ <strong>Kein Feedback während der Prüfung.</strong> Du bekommst alles am Ende.
+</div>
+</div>
+</div>
+
+<!-- RESULTS SCREEN -->
+<div id="examResult" style="display:none;">
+<div class="resultBox">
+<div class="resultBox__title" id="examResultTitle">—</div>
+<div class="resultBox__meta" id="examResultMeta">—</div>
+</div>
+<div class="divider"></div>
+<div class="examActions">
+<button class="btn btn--primary" id="examRetryWrong" type="button">Nur Fehler wiederholen</button>
+<button class="btn" id="examBackHome" type="button">Zurück zur Übersicht</button>
+</div>
+<div class="divider"></div>
+<h2 class="h2">Fehlerliste</h2>
+<div id="examWrongList" style="max-height:400px; overflow-y:auto;"></div>
+</div>
+
+</div>
+</section>
